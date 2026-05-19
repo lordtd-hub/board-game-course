@@ -1,0 +1,663 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SMA2106 Week 1 - Interactive Slide</title>
+  <style>
+    :root {
+      --bg: #191714;
+      --paper: #fff8ec;
+      --ink: #22201c;
+      --muted: #756f66;
+      --line: #eadcc4;
+      --teal: #159a9c;
+      --teal-dark: #0f6f72;
+      --coral: #ec6a5c;
+      --gold: #f5b84b;
+      --blue: #3767c8;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background:
+        radial-gradient(circle at 20% 10%, rgba(245, 184, 75, 0.18), transparent 26%),
+        linear-gradient(135deg, #191714, #2a2722 52%, #0f3f42);
+      color: var(--ink);
+      font-family: Arial, "Noto Sans Thai", sans-serif;
+      min-height: 100vh;
+    }
+
+    button, input {
+      font: inherit;
+    }
+
+    .deck {
+      align-items: center;
+      display: grid;
+      gap: 0;
+      grid-template-rows: 1fr;
+      min-height: 100vh;
+      padding: 0;
+    }
+
+    .frame {
+      background: linear-gradient(135deg, rgba(255, 248, 236, 0.99), rgba(248, 251, 255, 0.99));
+      border: 0;
+      border-radius: 0;
+      box-shadow: none;
+      height: 100vh;
+      max-height: none;
+      max-width: none;
+      overflow: hidden;
+      position: relative;
+      width: 100vw;
+    }
+
+    .progress {
+      background: linear-gradient(90deg, var(--teal), var(--gold), var(--coral));
+      height: 8px;
+      left: 0;
+      position: absolute;
+      top: 0;
+      transition: width 160ms ease;
+      z-index: 2;
+    }
+
+    .meta {
+      color: var(--muted);
+      display: flex;
+      font-size: clamp(11px, 1.2vw, 14px);
+      font-weight: 700;
+      gap: 10px;
+      justify-content: space-between;
+      left: clamp(28px, 4vw, 72px);
+      position: absolute;
+      right: clamp(28px, 4vw, 72px);
+      top: clamp(18px, 2.4vw, 34px);
+      z-index: 2;
+    }
+
+    .slide {
+      display: grid;
+      height: 100%;
+      padding: clamp(72px, 8vw, 118px) clamp(56px, 9vw, 144px) clamp(70px, 8vw, 118px);
+      place-items: stretch;
+    }
+
+    .layout {
+      align-content: center;
+      display: grid;
+      gap: clamp(18px, 2.5vw, 30px);
+      height: 100%;
+    }
+
+    .eyebrow {
+      color: var(--teal-dark);
+      font-size: clamp(15px, 1.7vw, 22px);
+      font-weight: 800;
+      margin: 0;
+    }
+
+    h1 {
+      font-size: clamp(48px, 6.3vw, 82px);
+      letter-spacing: 0;
+      line-height: 1.02;
+      margin: 0;
+      max-width: 1250px;
+    }
+
+    h2 {
+      font-size: clamp(36px, 5.6vw, 72px);
+      letter-spacing: 0;
+      line-height: 1.06;
+      margin: 0;
+      max-width: 1200px;
+    }
+
+    p, li, span {
+      font-size: clamp(18px, 2.1vw, 30px);
+      line-height: 1.35;
+    }
+
+    .title {
+      align-content: center;
+      background: transparent;
+      padding: 0;
+    }
+
+    .split, .compare {
+      align-items: center;
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .card, .mini-card, .big-idea {
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      display: grid;
+      gap: 10px;
+      padding: clamp(18px, 2.3vw, 28px);
+    }
+
+    .question {
+      text-align: center;
+    }
+
+    .choices {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: center;
+    }
+
+    .choices button, .controls button, .timeline button {
+      align-items: center;
+      background: var(--teal-dark);
+      border: 1px solid var(--teal-dark);
+      border-radius: 6px;
+      color: white;
+      cursor: pointer;
+      display: inline-flex;
+      font-weight: 700;
+      justify-content: center;
+      min-height: 38px;
+      padding: 8px 14px;
+    }
+
+    .choices button.secondary, .controls button.secondary, .timeline button.secondary {
+      background: white;
+      border-color: var(--line);
+      color: var(--ink);
+    }
+
+    button.active {
+      background: var(--coral) !important;
+      border-color: var(--coral) !important;
+      color: white !important;
+    }
+
+    button:disabled {
+      cursor: not-allowed;
+      opacity: .45;
+    }
+
+    .three, .four, .mini-grid, .flow, .timeline {
+      display: grid;
+      gap: 16px;
+    }
+
+    .three { grid-template-columns: repeat(3, 1fr); }
+    .four, .mini-grid { grid-template-columns: repeat(2, 1fr); }
+    .flow, .timeline { grid-template-columns: repeat(4, 1fr); }
+
+    .choice-feedback {
+      background: white;
+      border: 2px solid #b9e5e6;
+      border-radius: 10px;
+      box-shadow: 0 18px 45px rgba(15, 111, 114, 0.12);
+      justify-self: center;
+      max-width: 980px;
+      padding: clamp(18px, 2.4vw, 32px);
+      text-align: left;
+    }
+
+    .choice-feedback strong {
+      color: var(--teal-dark);
+      display: block;
+      font-size: clamp(22px, 2.4vw, 36px);
+      margin-bottom: 8px;
+    }
+
+    .choice-feedback p {
+      margin: 0;
+    }
+
+    .three strong {
+      color: var(--coral);
+      font-size: clamp(34px, 4.6vw, 62px);
+      line-height: 1;
+    }
+
+    .flow div, .timeline button {
+      align-content: center;
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      color: var(--ink);
+      display: grid;
+      font-weight: 800;
+      min-height: 120px;
+      padding: 16px;
+      text-align: center;
+    }
+
+    .video-grid {
+      align-items: center;
+      grid-template-columns: minmax(0, 0.9fr) minmax(520px, 1.1fr);
+    }
+
+    .compact-flow {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .compact-flow div {
+      min-height: 92px;
+    }
+
+    .video-card {
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      box-shadow: 0 20px 60px rgba(15, 63, 66, 0.14);
+      display: grid;
+      gap: 12px;
+      padding: 14px;
+    }
+
+    .video-frame {
+      aspect-ratio: 16 / 9;
+      background: #111;
+      border-radius: 8px;
+      overflow: hidden;
+      width: 100%;
+    }
+
+    .video-frame iframe {
+      border: 0;
+      height: 100%;
+      width: 100%;
+    }
+
+    .video-card a {
+      color: var(--teal-dark);
+      font-size: clamp(14px, 1.35vw, 18px);
+      font-weight: 800;
+      text-decoration: none;
+    }
+
+    .large-list {
+      display: grid;
+      gap: 18px;
+      margin: 0;
+      padding-left: 1.2em;
+    }
+
+    .compare > div {
+      align-content: center;
+      border-radius: 10px;
+      display: grid;
+      min-height: 420px;
+      padding: 34px;
+    }
+
+    .compare > div:first-child {
+      background: #effbfb;
+      border: 2px solid #b9e5e6;
+    }
+
+    .compare > div:last-child {
+      background: #fff3ed;
+      border: 2px solid #ffc7b8;
+    }
+
+    .mini-card p {
+      font-size: clamp(16px, 1.55vw, 21px);
+      margin: 0;
+    }
+
+    .input-grid {
+      display: grid;
+      gap: 14px;
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .input-grid input {
+      background: white;
+      border: 2px solid var(--line);
+      border-radius: 10px;
+      font-size: clamp(18px, 2vw, 28px);
+      min-height: 78px;
+      padding: 16px;
+    }
+
+    .play {
+      justify-items: center;
+      text-align: center;
+    }
+
+    .play strong {
+      color: var(--teal-dark);
+      font-size: clamp(90px, 14vw, 170px);
+      line-height: .95;
+    }
+
+    .prompt {
+      color: var(--muted);
+      font-weight: 700;
+      margin: 0;
+    }
+
+    .notes {
+      background: #edf7ff;
+      border: 1px solid #b7dfff;
+      border-radius: 8px;
+      bottom: 20px;
+      color: #1d4d8f;
+      font-size: clamp(14px, 1.4vw, 18px);
+      font-weight: 700;
+      left: 34px;
+      line-height: 1.4;
+      padding: 10px 12px;
+      position: absolute;
+      right: 34px;
+      z-index: 3;
+    }
+
+    .controls {
+      align-items: center;
+      background: rgba(25, 23, 20, 0.64);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 999px;
+      bottom: 14px;
+      color: white;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      left: 50%;
+      opacity: .22;
+      padding: 8px;
+      position: fixed;
+      transform: translateX(-50%);
+      transition: opacity 140ms ease;
+      z-index: 10;
+    }
+
+    .controls:hover,
+    .controls:focus-within {
+      opacity: 1;
+    }
+
+    .controls span {
+      color: rgba(255,255,255,.82);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    @media (max-width: 760px) {
+      .deck { overflow-y: auto; }
+      .frame {
+        min-height: 76vh;
+        width: 100vw;
+      }
+      .slide { padding: 58px 20px 46px; }
+      .split, .compare, .three, .four, .mini-grid, .flow, .timeline, .input-grid, .video-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="deck">
+    <section class="frame" id="frame">
+      <div class="progress" id="progress"></div>
+      <div class="meta">
+        <span>Week 1</span>
+        <span id="count">1/16</span>
+        <span id="minutes">4 นาที</span>
+        <span>รวม 3 ชม. 50 นาที</span>
+      </div>
+      <div class="slide" id="slide"></div>
+      <aside class="notes" id="notes" hidden></aside>
+    </section>
+
+    <nav class="controls">
+      <button class="secondary" id="back">Back</button>
+      <button class="secondary" id="noteToggle">Notes</button>
+      <button class="secondary" id="full">Full screen</button>
+      <span id="elapsed">0 นาที / 3 ชม. 50 นาที</span>
+      <button id="next">Next</button>
+    </nav>
+  </main>
+
+  <script>
+    const slides = [
+      { id: "title", title: "บทนำสู่การคิดเชิงกลยุทธ์", minutes: 4, html: titleSlide },
+      { id: "why", title: "ทำไมต้องเรียนผ่านบอร์ดเกม", minutes: 6, html: whySlide },
+      { id: "question", title: "คำถามเปิดคาบ", minutes: 8, html: questionSlide },
+      { id: "outcomes", title: "วันนี้ต้องทำอะไรได้", minutes: 6, html: outcomesSlide },
+      { id: "splendor", title: "Splendor แบบเร็ว", minutes: 12, html: splendorSlide },
+      { id: "roles", title: "ก่อนเริ่มเล่น", minutes: 7, html: rolesSlide },
+      { id: "checkpoint", title: "Guided play checkpoint", minutes: 14, html: checkpointSlide },
+      { id: "strategy", title: "กลยุทธ์ vs ยุทธวิธี", minutes: 10, html: strategySlide },
+      { id: "sorter", title: "Interactive sorter", minutes: 14, html: sorterSlide },
+      { id: "decision", title: "โครงสร้าง Decision", minutes: 8, html: decisionSlide },
+      { id: "canvas", title: "Decision canvas", minutes: 14, html: canvasSlide },
+      { id: "play", title: "Play Lab", minutes: 80, html: playSlide },
+      { id: "compound", title: "Compound Advantage", minutes: 12, html: compoundSlide },
+      { id: "timeline", title: "Interactive timeline", minutes: 12, html: timelineSlide },
+      { id: "debrief", title: "Debrief", minutes: 18, html: debriefSlide },
+      { id: "exit", title: "Exit ticket", minutes: 5, html: exitSlide }
+    ];
+
+    const notes = {
+      title: "เปิดด้วยน้ำเสียงว่าเกมคือเครื่องมือเรียน ไม่ใช่กิจกรรมพักเบรก",
+      why: "เชื่อมกับบทที่ 1: บอร์ดเกมทำให้แนวคิดนามธรรมกลายเป็นรูปธรรมและสังเกตได้",
+      question: "อย่าเฉลยเร็ว ให้เก็บคำตอบไว้เทียบหลังเล่น",
+      play: "ถ้าเวลาบาน ให้จบเกมแบบไม่ต้องครบ 15 คะแนน แล้วใช้สถานะล่าสุด debrief"
+    };
+
+    const sorterCards = [
+      ["engine", "ซื้อการ์ดถูกหลายสีเพื่อให้ตาถัดไปซื้อได้ง่ายขึ้น", "strategy"],
+      ["token", "เก็บ token สีเขียว เพราะขาดอีกหนึ่งเม็ด", "tactics"],
+      ["reserve", "จองการ์ดที่คู่แข่งกำลังเล็ง", "tactics"],
+      ["noble", "วางแผนไล่สีเพื่อดึง noble ในอีกหลายตา", "strategy"]
+    ];
+
+    const engineSteps = [
+      ["cheap", "ซื้อการ์ดถูก", "ได้ส่วนลดถาวร", 1],
+      ["chain", "ซื้อได้เร็วขึ้น", "ใช้ token น้อยลง", 2],
+      ["choice", "มีตัวเลือกมากขึ้น", "ไม่ติดทรัพยากรเดิม", 2],
+      ["points", "เร่งคะแนนปลายเกม", "แต้มมาทีหลัง แต่หนักกว่า", 3]
+    ];
+
+    const splendorThaiVideo = {
+      title: "วิธีเล่น Splendor โดย Wanderer",
+      watchUrl: "https://www.youtube.com/watch?v=Mc8-4zA-nDw",
+      embedUrl: "https://www.youtube.com/embed/Mc8-4zA-nDw"
+    };
+
+    const stanceFeedback = {
+      "เอาแต้มตอนนี้": ["มุมคิดแบบ Tactical", "เหมาะเมื่อแต้มตรงหน้าทำให้เข้าใกล้จบเกม หรือกันคู่แข่งไม่ให้แซง แต่ต้องถามต่อว่าตาถัดไปเรายังมีทางไปไหม"],
+      "สร้างทางให้ตาถัดไป": ["มุมคิดแบบ Strategic", "นี่คือการมองหลายตาต่อเนื่อง ยอมช้าบางจังหวะเพื่อให้อนาคตมีต้นทุนต่ำลงและมีตัวเลือกมากขึ้น"],
+      "ขึ้นกับสถานการณ์": ["มุมคิดแบบ Adaptive", "เป็นคำตอบที่ดีถ้าบอกเงื่อนไขได้ เช่น แต้มของคู่แข่ง token ที่เหลือ หรือการ์ดที่กำลังจะถูกแย่ง"]
+    };
+
+    function normalizeChoiceParam(choice) {
+      if (choice === "tactical") return "เอาแต้มตอนนี้";
+      if (choice === "strategic") return "สร้างทางให้ตาถัดไป";
+      if (choice === "adaptive") return "ขึ้นกับสถานการณ์";
+      return choice || "";
+    }
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const slideParam = urlParams.get("slide") || "1";
+    let index = Math.min(Math.max(Number(slideParam.split("_")[0] || 1) - 1, 0), slides.length - 1);
+    let showNotes = false;
+    let playSeconds = 80 * 60;
+    let timer = null;
+    let selectedChoice = normalizeChoiceParam(urlParams.get("choice") || slideParam.split("_")[1]);
+    const sorterState = {};
+    const timelineState = new Set();
+
+    const totalMinutes = slides.reduce((sum, slide) => sum + slide.minutes, 0);
+
+    function minutesLabel(total) {
+      const hours = Math.floor(total / 60);
+      const minutes = total % 60;
+      return hours ? `${hours} ชม. ${minutes} นาที` : `${minutes} นาที`;
+    }
+
+    function clock(seconds) {
+      const minutes = Math.floor(seconds / 60);
+      const rest = seconds % 60;
+      return `${String(minutes).padStart(2, "0")}:${String(rest).padStart(2, "0")}`;
+    }
+
+    function render() {
+      const current = slides[index];
+      document.getElementById("progress").style.width = `${((index + 1) / slides.length) * 100}%`;
+      document.getElementById("count").textContent = `${index + 1}/${slides.length}`;
+      document.getElementById("minutes").textContent = minutesLabel(current.minutes);
+      document.getElementById("elapsed").textContent = `${minutesLabel(slides.slice(0, index).reduce((sum, slide) => sum + slide.minutes, 0))} / ${minutesLabel(totalMinutes)}`;
+      document.getElementById("back").disabled = index === 0;
+      document.getElementById("next").disabled = index === slides.length - 1;
+      document.getElementById("slide").innerHTML = current.html();
+      const noteBox = document.getElementById("notes");
+      noteBox.hidden = !showNotes;
+      noteBox.textContent = notes[current.id] || "ใช้สไลด์นี้เป็นคำสั่งกิจกรรม ไม่ต้องอ่านข้อความทั้งหมดให้ผู้เรียนฟัง";
+      bindSlideEvents();
+    }
+
+    function bindSlideEvents() {
+      document.querySelectorAll("[data-choice]").forEach((button) => {
+        button.addEventListener("click", () => {
+          selectedChoice = button.dataset.choice;
+          render();
+        });
+      });
+
+      document.querySelectorAll("[data-sort]").forEach((button) => {
+        button.addEventListener("click", () => {
+          sorterState[button.dataset.card] = button.dataset.sort;
+          render();
+        });
+      });
+
+      document.querySelectorAll("[data-engine]").forEach((button) => {
+        button.addEventListener("click", () => {
+          if (timelineState.has(button.dataset.engine)) timelineState.delete(button.dataset.engine);
+          else timelineState.add(button.dataset.engine);
+          render();
+        });
+      });
+
+      const start = document.getElementById("timerStart");
+      if (start) {
+        start.addEventListener("click", () => {
+          if (timer) {
+            clearInterval(timer);
+            timer = null;
+          } else {
+            timer = setInterval(() => {
+              playSeconds = Math.max(0, playSeconds - 1);
+              if (playSeconds === 0) clearInterval(timer);
+              render();
+            }, 1000);
+          }
+          render();
+        });
+      }
+
+      const reset = document.getElementById("timerReset");
+      if (reset) {
+        reset.addEventListener("click", () => {
+          if (timer) clearInterval(timer);
+          timer = null;
+          playSeconds = 80 * 60;
+          render();
+        });
+      }
+    }
+
+    function titleSlide() {
+      return `<div class="layout title"><p class="eyebrow">SMA2106 · Week 1</p><h1>บทนำสู่การคิดเชิงกลยุทธ์</h1><p>เรียนผ่านการตัดสินใจจริงใน Splendor และเทียบกับการคิดล่วงหน้าใน Chess</p></div>`;
+    }
+
+    function whySlide() {
+      return `<div class="layout split"><div><p class="eyebrow">Bridge-in</p><h2>บอร์ดเกมทำให้ “การคิด” มองเห็นได้</h2></div><div class="big-idea"><p>ทุกตาที่ผู้เล่นเลือก คือหลักฐานของการวางแผน การคาดการณ์ และการปรับตัว</p></div></div>`;
+    }
+
+    function questionSlide() {
+      const choices = ["เอาแต้มตอนนี้", "สร้างทางให้ตาถัดไป", "ขึ้นกับสถานการณ์"];
+      const buttons = choices.map((choice) => `<button class="${selectedChoice === choice ? "active" : "secondary"}" data-choice="${choice}">${choice}</button>`).join("");
+      const feedback = selectedChoice ? `<div class="choice-feedback"><strong>${stanceFeedback[selectedChoice][0]}</strong><p>${stanceFeedback[selectedChoice][1]}</p></div>` : `<p class="prompt">เลือกก่อนเรียน แล้วระบบจะสะท้อนให้เห็นว่าคำตอบนั้นเอนไปทางกลยุทธ์หรือยุทธวิธี</p>`;
+      return `<div class="layout question"><p class="eyebrow">Pre-assessment</p><h2>ถ้าต้องเลือก คุณจะเลือกอะไร</h2><div class="choices">${buttons}</div>${feedback}</div>`;
+    }
+
+    function outcomesSlide() {
+      return `<div class="layout"><p class="eyebrow">Learning outcomes</p><h2>จบคาบนี้ นักศึกษาต้องทำได้ 3 อย่าง</h2><div class="three"><div class="card"><strong>แยก</strong><span>กลยุทธ์ vs ยุทธวิธี</span></div><div class="card"><strong>มอง</strong><span>ผู้เล่น ตัวเลือก สิ่งแวดล้อม เป้าหมาย</span></div><div class="card"><strong>อธิบาย</strong><span>ความได้เปรียบสะสมใน Splendor</span></div></div></div>`;
+    }
+
+    function splendorSlide() {
+      return `<div class="layout video-grid"><div><p class="eyebrow">Learn to play</p><h2>สอนเล่น Splendor แบบพร้อมเริ่มโต๊ะจริง</h2><div class="flow compact-flow"><div>เก็บ token</div><div>ซื้อ/จองการ์ด</div><div>สร้างส่วนลด</div><div>ถึง 15 คะแนน</div></div><p class="prompt">เปิดคลิปช่วงอธิบายกติกา แล้วหยุดเป็นช่วง ๆ เพื่อให้ผู้เรียนจับอุปกรณ์จริงตามทัน</p></div><div class="video-card"><div class="video-frame"><iframe src="${splendorThaiVideo.embedUrl}" title="${splendorThaiVideo.title}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></div><a href="${splendorThaiVideo.watchUrl}" target="_blank" rel="noreferrer">เปิดบน YouTube ถ้าคลิปไม่โหลด</a></div></div>`;
+    }
+
+    function rolesSlide() {
+      return `<div class="layout"><p class="eyebrow">Classroom setup</p><h2>หนึ่งโต๊ะต้องมี 3 บทบาท</h2><div class="three"><div class="card"><strong>Player</strong><span>ตัดสินใจและพูดเหตุผล</span></div><div class="card"><strong>Observer</strong><span>จด key decision</span></div><div class="card"><strong>Captain</strong><span>คุมเวลาและชวนทุกคนพูด</span></div></div></div>`;
+    }
+
+    function checkpointSlide() {
+      return `<div class="layout"><p class="eyebrow">Guided first round</p><h2>ก่อนเดิน ให้หยุดถาม 3 ข้อ</h2><ol class="large-list"><li>ตานี้ฉันแก้ปัญหาอะไร</li><li>ถ้าไม่เลือก action นี้ ฉันเสียโอกาสอะไร</li><li>ตาถัดไปจะง่ายขึ้นหรือยากขึ้น</li></ol></div>`;
+    }
+
+    function strategySlide() {
+      return `<div class="layout compare"><div><p class="eyebrow">Strategy</p><h2>ทำให้หลายตาไปทางเดียวกัน</h2></div><div><p class="eyebrow">Tactics</p><h2>แก้จังหวะตรงหน้าให้รอดหรือได้เปรียบ</h2></div></div>`;
+    }
+
+    function sorterSlide() {
+      const correct = sorterCards.filter(([id,,answer]) => sorterState[id] === answer).length;
+      const cards = sorterCards.map(([id, text]) => `<div class="mini-card"><p>${text}</p><div class="choices"><button class="${sorterState[id] === "strategy" ? "active" : "secondary"}" data-sort="strategy" data-card="${id}">Strategy</button><button class="${sorterState[id] === "tactics" ? "active" : "secondary"}" data-sort="tactics" data-card="${id}">Tactics</button></div></div>`).join("");
+      return `<div class="layout"><p class="eyebrow">Interactive</p><h2>ข้อความนี้เป็น Strategy หรือ Tactics</h2><div class="mini-grid">${cards}</div><p class="prompt">ถูก ${correct}/${sorterCards.length}</p></div>`;
+    }
+
+    function decisionSlide() {
+      return `<div class="layout"><p class="eyebrow">Decision structure</p><h2>ก่อนวิเคราะห์ ต้องเห็น 4 ช่องนี้</h2><div class="four"><div>ผู้ตัดสินใจ</div><div>ชุดตัวเลือก</div><div>สภาพแวดล้อม</div><div>วัตถุประสงค์</div></div></div>`;
+    }
+
+    function canvasSlide() {
+      return `<div class="layout"><p class="eyebrow">Interactive</p><h2>กรอก decision จากโต๊ะของคุณ</h2><div class="input-grid"><input placeholder="ใครตัดสินใจ"><input placeholder="เลือกอะไรได้บ้าง"><input placeholder="เห็นข้อมูลอะไร"><input placeholder="ต้องการอะไร"></div></div>`;
+    }
+
+    function playSlide() {
+      return `<div class="layout play"><p class="eyebrow">Play lab</p><h2>เล่นจริง 80 นาที</h2><strong>${clock(playSeconds)}</strong><div class="choices"><button id="timerStart">${timer ? "Pause" : "Start"}</button><button class="secondary" id="timerReset">Reset</button></div><p class="prompt">นาทีที่ 30 และ 60 หยุดถาม: “แผนเดิมยังดีอยู่ไหม”</p></div>`;
+    }
+
+    function compoundSlide() {
+      return `<div class="layout"><p class="eyebrow">Compound advantage</p><h2>ข้อได้เปรียบเล็กๆ ที่ทบกัน คือหัวใจของ Splendor</h2><div class="flow"><div>ลดต้นทุน</div><div>มีทางเลือก</div><div>ซื้อเร็วขึ้น</div><div>คะแนนไหลมา</div></div></div>`;
+    }
+
+    function timelineSlide() {
+      const score = engineSteps.reduce((sum, [id,,,gain]) => sum + (timelineState.has(id) ? gain : 0), 0);
+      const steps = engineSteps.map(([id, label, detail]) => `<button class="${timelineState.has(id) ? "active" : "secondary"}" data-engine="${id}"><strong>${label}</strong><span>${detail}</span></button>`).join("");
+      return `<div class="layout"><p class="eyebrow">Interactive</p><h2>สร้าง engine timeline</h2><div class="timeline">${steps}</div><p class="prompt">Engine score +${score}</p></div>`;
+    }
+
+    function debriefSlide() {
+      return `<div class="layout"><p class="eyebrow">Debrief</p><h2>เลือก decision หนึ่งครั้งจากเกมจริง</h2><ol class="large-list"><li>ตอนนั้นคุณเห็นตัวเลือกอะไร</li><li>คุณเลือกเพราะผลทันทีหรือผลสะสม</li><li>ถ้าเล่นใหม่ จะเปลี่ยนอะไร</li></ol></div>`;
+    }
+
+    function exitSlide() {
+      return `<div class="layout title"><p class="eyebrow">Exit ticket</p><h1>หนึ่ง decision ที่บอกวิธีคิดของคุณ</h1><p>อธิบาย 3-5 ประโยคว่าเป็นกลยุทธ์หรือยุทธวิธี เพราะอะไร</p></div>`;
+    }
+
+    document.getElementById("next").addEventListener("click", () => { index = Math.min(index + 1, slides.length - 1); showNotes = false; render(); });
+    document.getElementById("back").addEventListener("click", () => { index = Math.max(index - 1, 0); showNotes = false; render(); });
+    document.getElementById("noteToggle").addEventListener("click", () => { showNotes = !showNotes; render(); });
+    document.getElementById("full").addEventListener("click", async () => {
+      if (document.fullscreenElement) await document.exitFullscreen();
+      else await document.documentElement.requestFullscreen();
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "ArrowRight" || event.key === " ") document.getElementById("next").click();
+      if (event.key === "ArrowLeft") document.getElementById("back").click();
+    });
+
+    render();
+  </script>
+</body>
+</html>

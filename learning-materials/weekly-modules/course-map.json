@@ -1,0 +1,414 @@
+{
+  "course": {
+    "code": "SMA2106",
+    "title": "กลยุทธ์และการคิดเชิงวิเคราะห์ผ่านบอร์ดเกม",
+    "mode": "play-first elective course",
+    "defaultClassFlow": [
+      "Opening challenge 10-15 นาที",
+      "Mini lecture 25-35 นาที",
+      "Board game play/session 90-120 นาที",
+      "Debrief 30-40 นาที",
+      "Exit ticket 5-10 นาที"
+    ],
+    "activeLatexSource": "learning-materials/bookref/เอกสารประกอบวิชาบอร์ดเกม/latex_source"
+  },
+  "sharedWorksheets": [
+    {
+      "id": "game-observation",
+      "title": "Game Observation Worksheet",
+      "sourceFile": "chapters/appendix_a.tex",
+      "bestFor": ["ระหว่างเล่นเกม", "บันทึก key decision", "reflection หลังเกม"]
+    },
+    {
+      "id": "strategy-analysis",
+      "title": "Strategy Analysis Worksheet",
+      "sourceFile": "chapters/appendix_b.tex",
+      "bestFor": ["หลังเล่นเกม", "วิเคราะห์กลยุทธ์", "multi-framework analysis"]
+    }
+  ],
+  "weeks": [
+    {
+      "week": 1,
+      "chapter": "บทนำสู่การคิดเชิงกลยุทธ์",
+      "englishTitle": "Introduction to Strategic Thinking",
+      "sourceFiles": ["chapters/ch01.tex"],
+      "games": ["Chess", "Splendor"],
+      "learningOutcomes": [
+        "แยกกลยุทธ์ออกจากยุทธวิธีได้",
+        "ระบุผู้ตัดสินใจ ชุดการกระทำ สภาพแวดล้อม และวัตถุประสงค์ได้",
+        "อธิบาย information, uncertainty และ interaction ในสถานการณ์เชิงกลยุทธ์ได้",
+        "วิเคราะห์ Chess และ Splendor ด้วยกรอบกลยุทธ์พื้นฐานได้"
+      ],
+      "coreConcepts": ["strategy", "tactics", "decision maker", "action set", "environment", "objectives", "compound advantage", "engine building"],
+      "playFirstFlow": [
+        "เริ่มด้วย Splendor quick game หรือ table demo 4-6 รอบ",
+        "ให้ผู้เรียนบันทึก decision ที่คิดว่าสำคัญที่สุด 1 ครั้ง",
+        "ใช้ Chess puzzle สั้นเพื่อเทียบ tactical move กับ strategic plan",
+        "debrief ว่า action เดียวกันอาจเป็นยุทธวิธีหรือกลยุทธ์ขึ้นกับแผนระยะยาว"
+      ],
+      "interactiveHtmlIdeas": [
+        "Strategy vs Tactics card sorter",
+        "Decision structure canvas: player/action/environment/objective",
+        "Splendor engine-building timeline ให้ลาก action ลง timeline แล้วเห็น compound advantage"
+      ],
+      "worksheet": "game-observation",
+      "submission": {
+        "type": "short-reflection",
+        "title": "Strategic Move Reflection",
+        "prompt": "เลือก decision สำคัญจากเกมวันนี้ แล้วอธิบายว่าเป็นกลยุทธ์หรือยุทธวิธี พร้อมเหตุผล",
+        "estimatedLength": "300-500 คำ"
+      }
+    },
+    {
+      "week": 2,
+      "chapter": "โครงสร้างข้อมูลในเกม",
+      "englishTitle": "Information Structure in Games",
+      "sourceFiles": ["chapters/ch02.tex"],
+      "games": ["Chess", "Love Letter", "Avalon"],
+      "learningOutcomes": [
+        "แยก perfect information, hidden information และ asymmetric information ได้",
+        "อธิบาย information sets และ common knowledge ได้",
+        "ใช้ Bayesian updating แบบ informal วิเคราะห์ Love Letter ได้",
+        "อธิบาย screening และการอ่านประเภทผู้เล่นใน Avalon ได้"
+      ],
+      "coreConcepts": ["information structure", "perfect information", "hidden information", "asymmetric information", "common knowledge", "information set", "deduction", "screening"],
+      "playFirstFlow": [
+        "เล่น Love Letter หลายรอบเร็วเพื่อให้เห็นหลักฐานใหม่ทุกตา",
+        "หยุดหลังบางตาให้ผู้เรียนเขียนว่าความเชื่อเกี่ยวกับไพ่ของคู่แข่งเปลี่ยนอย่างไร",
+        "demo Avalon role reveal เฉพาะฝั่ง เพื่อเปรียบเทียบข้อมูลไม่สมมาตร",
+        "debrief ด้วยคำถาม ใครรู้อะไร และใครต้องเดาอะไร"
+      ],
+      "interactiveHtmlIdeas": [
+        "Information map: แสดงข้อมูลที่แต่ละผู้เล่นรู้/ไม่รู้",
+        "Love Letter belief tracker",
+        "Avalon screening simulator สำหรับทดลองจัดทีมและอ่าน voting pattern"
+      ],
+      "worksheet": "game-observation",
+      "submission": {
+        "type": "observation-log",
+        "title": "Information Structure Log",
+        "prompt": "บันทึก key decision 2 ครั้ง และระบุว่าข้อมูลใดเปิดเผย ซ่อนอยู่ หรือไม่สมมาตร"
+      }
+    },
+    {
+      "week": 3,
+      "chapter": "การตัดสินใจภายใต้ความไม่แน่นอน",
+      "englishTitle": "Decision Making under Uncertainty",
+      "sourceFiles": ["chapters/ch03.tex"],
+      "games": ["Werewolf", "Avalon"],
+      "learningOutcomes": [
+        "แยก social uncertainty ออกจาก risk และ ambiguity ได้",
+        "อธิบาย mixed strategy และเหตุผลของ bluffing ได้",
+        "แยก cheap talk, credible communication และ costly/corroborated evidence ได้",
+        "วิเคราะห์ Werewolf และ Avalon ในมุมการสื่อสารเชิงกลยุทธ์ได้"
+      ],
+      "coreConcepts": ["social uncertainty", "mixed strategy", "bluffing", "cheap talk", "credible communication", "herding", "social proof"],
+      "playFirstFlow": [
+        "เล่น Werewolf หรือ Avalon แบบ discussion-heavy",
+        "หยุดก่อน vote สำคัญให้แต่ละคนบันทึกว่าตนเชื่อใครและเพราะอะไร",
+        "หลัง vote เปิด debrief เรื่อง bluffing pattern และ cheap talk",
+        "ให้ผู้เรียนเทียบคำพูดกับ action จริง"
+      ],
+      "interactiveHtmlIdeas": [
+        "Credibility meter สำหรับจัดอันดับคำพูด/หลักฐาน",
+        "Vote history visualization",
+        "Bluff pattern mixer ให้ลองสร้าง mixed strategy"
+      ],
+      "worksheet": "game-observation",
+      "submission": {
+        "type": "case-analysis",
+        "title": "Credible or Cheap Talk",
+        "prompt": "เลือกคำพูดหรือการ vote หนึ่งครั้งจากเกม แล้ววิเคราะห์ว่ามีความน่าเชื่อถือเพียงใด"
+      }
+    },
+    {
+      "week": 4,
+      "chapter": "ความน่าจะเป็นและความเสี่ยง",
+      "englishTitle": "Probability and Risk",
+      "sourceFiles": ["chapters/ch04.tex"],
+      "games": ["Catan", "Stone Age"],
+      "learningOutcomes": [
+        "แยก risk, uncertainty และ social uncertainty ได้",
+        "คำนวณ expected value เบื้องต้นจากลูกเต๋าได้",
+        "อธิบาย risk attitude, expected utility และ prospect theory ได้",
+        "วิเคราะห์ diversification และ variance ใน Catan/Stone Age ได้"
+      ],
+      "coreConcepts": ["risk", "probability distribution", "expected value", "expected utility", "loss aversion", "reference point", "variance", "diversification", "law of large numbers"],
+      "playFirstFlow": [
+        "ใช้ Catan board setup ให้ผู้เรียนเลือก settlement ก่อนสอนสูตรเต็ม",
+        "ค่อยเปิด dice distribution แล้วให้ปรับคำตอบ",
+        "ทำ Stone Age dice allocation lab เปรียบเทียบส่ง worker กระจุก/กระจาย",
+        "debrief เรื่อง EV สูงไม่ได้แปลว่าดีที่สุดเสมอ"
+      ],
+      "interactiveHtmlIdeas": [
+        "2d6 probability visualizer",
+        "Catan settlement EV calculator",
+        "Stone Age worker variance simulator",
+        "Loss aversion scenario slider"
+      ],
+      "worksheet": "strategy-analysis",
+      "submission": {
+        "type": "calculation-plus-reflection",
+        "title": "Risk Decision Note",
+        "prompt": "เลือกตำแหน่งหรือการกระจาย worker แล้วอธิบายด้วย EV, variance และ risk attitude"
+      }
+    },
+    {
+      "week": 5,
+      "chapter": "การบริหารทรัพยากร",
+      "englishTitle": "Resource Management",
+      "sourceFiles": ["chapters/ch05.tex"],
+      "games": ["Splendor", "7 Wonders"],
+      "learningOutcomes": [
+        "อธิบาย scarcity และ opportunity cost ได้",
+        "วิเคราะห์ diminishing marginal utility ใน Splendor ได้",
+        "อธิบาย allocative efficiency, Pareto improvement และ externality ได้",
+        "วิเคราะห์ chain dependency และ comparative advantage ใน 7 Wonders ได้"
+      ],
+      "coreConcepts": ["scarcity", "opportunity cost", "diminishing marginal utility", "allocative efficiency", "Pareto improvement", "externality", "chain dependency", "comparative advantage"],
+      "playFirstFlow": [
+        "เล่น Splendor โดยให้บันทึกทุกครั้งที่เลือกหยิบ gem/จอง/ซื้อ",
+        "หยุดกลางเกมให้คำนวณ opportunity cost ของ action ถัดไป",
+        "ถ้ามีเวลา เล่น 7 Wonders เฉพาะ age/scenario เพื่อดู chain dependency",
+        "debrief ว่าทรัพยากรที่มีเพิ่มขึ้นไม่ได้มีคุณค่าเท่าเดิมเสมอ"
+      ],
+      "interactiveHtmlIdeas": [
+        "Splendor opportunity cost calculator",
+        "Gem marginal utility tracker",
+        "7 Wonders chain dependency map",
+        "Resource allocation mini-game"
+      ],
+      "worksheet": "strategy-analysis",
+      "submission": {
+        "type": "strategy-analysis",
+        "title": "Opportunity Cost Analysis",
+        "prompt": "วิเคราะห์ action สำคัญหนึ่งครั้งใน Splendor หรือ 7 Wonders โดยระบุทางเลือกที่ถูกละทิ้ง"
+      }
+    },
+    {
+      "week": 6,
+      "chapter": "กลยุทธ์การวางคนงาน",
+      "englishTitle": "Worker Placement Strategy",
+      "sourceFiles": ["chapters/ch06.tex"],
+      "games": ["Stone Age", "Agricola", "Architects of the West Kingdom"],
+      "learningOutcomes": [
+        "อธิบาย worker placement ในฐานะ allocation mechanism ได้",
+        "วิเคราะห์ first-mover advantage และ congestion effect ใน Stone Age ได้",
+        "วิเคราะห์ scheduling และ urgency-importance ใน Agricola ได้",
+        "วิเคราะห์ deterrence และ adversarial placement ใน Architects ได้"
+      ],
+      "coreConcepts": ["worker placement", "allocation mechanism", "action space", "first-mover advantage", "congestion effect", "scheduling", "deterrence", "adversarial placement"],
+      "playFirstFlow": [
+        "เล่น Stone Age แบบจำกัดรอบเพื่อเน้นการแย่ง action space",
+        "ให้ผู้เรียนเขียน priority ก่อนวาง worker แล้วเทียบกับสิ่งที่เกิดจริง",
+        "ใช้ Agricola/Architects เป็น scenario cards ถ้าเวลาไม่พอเล่นเต็ม",
+        "debrief ว่าลำดับการลงมือเปลี่ยนมูลค่าของ action อย่างไร"
+      ],
+      "interactiveHtmlIdeas": [
+        "Worker placement board simulator",
+        "Action priority planner",
+        "Congestion heatmap",
+        "Deterrence scenario chooser"
+      ],
+      "worksheet": "game-observation",
+      "submission": {
+        "type": "action-log",
+        "title": "Worker Priority Log",
+        "prompt": "บันทึก 3 action ที่อยากทำมากที่สุดก่อนรอบเริ่ม แล้วเปรียบเทียบกับ action ที่ได้ทำจริง"
+      }
+    },
+    {
+      "week": 7,
+      "chapter": "กลยุทธ์เศรษฐกิจและการแข่งขัน",
+      "englishTitle": "Economic and Competitive Strategy",
+      "sourceFiles": ["chapters/ch07.tex"],
+      "games": ["Stockpile", "Catan", "7 Wonders"],
+      "learningOutcomes": [
+        "อธิบาย oligopoly และ price discovery ได้",
+        "อธิบาย price system ในฐานะ information mechanism ได้",
+        "วิเคราะห์ bargaining power, BATNA และ coalition ใน Catan ได้",
+        "เชื่อม market behavior กับ competitive strategy ได้"
+      ],
+      "coreConcepts": ["oligopoly", "price discovery", "information mechanism", "bargaining power", "BATNA", "coalition", "market power", "anti-leader dynamics"],
+      "playFirstFlow": [
+        "เล่น Stockpile รอบสั้นเพื่อให้เห็น insider information และ price signal",
+        "หรือเล่น Catan trade-heavy โดยตั้งเป้าให้เกิด negotiation หลายครั้ง",
+        "ให้ผู้เรียนจดดีลที่สำเร็จ/ล้มเหลว และ BATNA ของแต่ละฝ่าย",
+        "debrief ว่าราคาและข้อเสนอเป็นทั้งข้อมูลและเครื่องมือกลยุทธ์"
+      ],
+      "interactiveHtmlIdeas": [
+        "BATNA negotiation canvas",
+        "Stockpile price signal board",
+        "Catan trade network graph",
+        "Coalition risk tracker"
+      ],
+      "worksheet": "strategy-analysis",
+      "submission": {
+        "type": "negotiation-memo",
+        "title": "Bargaining and BATNA Memo",
+        "prompt": "เลือกดีลหนึ่งครั้ง วิเคราะห์ BATNA ของแต่ละฝ่าย อำนาจต่อรอง และผลต่อผู้นำเกม"
+      }
+    },
+    {
+      "week": 8,
+      "chapter": "แนวคิด Game Theory",
+      "englishTitle": "Game Theory Concepts",
+      "sourceFiles": ["chapters/ch08.tex"],
+      "games": ["7 Wonders Duel", "Catan"],
+      "learningOutcomes": [
+        "นิยาม normal form game ได้",
+        "อธิบาย dominant strategy และ Nash equilibrium ได้",
+        "วิเคราะห์ Prisoner's Dilemma และ multiple equilibria ได้",
+        "ใช้ Catan อธิบาย repeated games และ cooperation ได้"
+      ],
+      "coreConcepts": ["normal form", "payoff matrix", "dominant strategy", "Nash equilibrium", "Prisoner's Dilemma", "coordination game", "repeated game", "Folk Theorem"],
+      "playFirstFlow": [
+        "ใช้ 7 Wonders Duel military/science mini-scenario",
+        "ให้ผู้เรียนแปลงสถานการณ์เป็น payoff matrix",
+        "ทดลองเปลี่ยน payoff แล้วดูว่าดุลยภาพเปลี่ยนหรือไม่",
+        "เชื่อมกับ Catan repeated trade และการลงโทษผู้เล่นที่ผิดสัญญา"
+      ],
+      "interactiveHtmlIdeas": [
+        "Payoff matrix builder",
+        "Dominant strategy highlighter",
+        "Nash equilibrium checker",
+        "Repeated game cooperation simulator"
+      ],
+      "worksheet": "strategy-analysis",
+      "submission": {
+        "type": "matrix-exercise",
+        "title": "Payoff Matrix from Play",
+        "prompt": "สร้าง payoff matrix จากสถานการณ์ในเกม แล้วระบุ dominant strategy หรือ Nash equilibrium ถ้ามี"
+      }
+    },
+    {
+      "week": 9,
+      "chapter": "กลยุทธ์เชิงพื้นที่",
+      "englishTitle": "Spatial Strategy",
+      "sourceFiles": ["chapters/ch09.tex"],
+      "games": ["Taluva", "Chess"],
+      "learningOutcomes": [
+        "อธิบาย spatial strategy ได้",
+        "ใช้ graph theory วิเคราะห์ village connectivity ใน Taluva ได้",
+        "วิเคราะห์ territory control, blocking และ height advantage ได้",
+        "เชื่อม positional chess กับ spatial advantage ได้"
+      ],
+      "coreConcepts": ["spatial strategy", "graph theory", "connectivity", "cut vertex", "territory control", "blocking", "height advantage", "center control"],
+      "playFirstFlow": [
+        "เล่น Taluva หรือจัด spatial board challenge แบบสั้น",
+        "ให้ผู้เรียนวาด node/edge ของพื้นที่ที่ตนถือ",
+        "ระบุจุดเปราะและแผน block ของคู่แข่ง",
+        "เทียบกับ Chess center control/piece mobility"
+      ],
+      "interactiveHtmlIdeas": [
+        "Taluva connectivity graph tool",
+        "Cut vertex detector",
+        "Territory influence heatmap",
+        "Chess mobility mini-board"
+      ],
+      "worksheet": "game-observation",
+      "submission": {
+        "type": "map-analysis",
+        "title": "Spatial Map and Weak Point",
+        "prompt": "วาดแผนที่หรือ graph ของสถานการณ์ในเกม ระบุจุดแข็ง จุดอ่อน และตำแหน่งที่ควร block"
+      }
+    },
+    {
+      "week": 10,
+      "chapter": "กลยุทธ์เชิงปรับตัว",
+      "englishTitle": "Adaptive Strategy",
+      "sourceFiles": ["chapters/ch10.tex"],
+      "games": ["Evolution", "7 Wonders Duel", "Catan", "Stone Age"],
+      "learningOutcomes": [
+        "อธิบาย adaptive strategy ได้",
+        "อธิบาย fitness landscape, local optimum และ exploration vs exploitation ได้",
+        "ใช้ ESS วิเคราะห์ dynamics ของ Evolution ได้",
+        "อธิบาย Red Queen effect และ co-evolutionary arms race ได้"
+      ],
+      "coreConcepts": ["adaptive strategy", "fitness landscape", "local optimum", "exploration", "exploitation", "ESS", "Red Queen effect", "co-evolution"],
+      "playFirstFlow": [
+        "เล่น Evolution โดยบังคับให้บันทึก environment changes เป็นช่วงๆ",
+        "หยุดกลางเกมให้ผู้เรียนประเมินว่า strategy เดิมยังเหมาะหรือไม่",
+        "ใช้ cross-game flashback ไปยัง 7 Wonders Duel, Catan, Stone Age เพื่อหา Red Queen pattern",
+        "debrief ว่า optimal strategy ที่ถาวรแทบไม่มีในระบบที่เปลี่ยนตลอด"
+      ],
+      "interactiveHtmlIdeas": [
+        "Fitness landscape explorer",
+        "Species adaptation tracker",
+        "Exploration vs exploitation slider",
+        "Red Queen arms race timeline"
+      ],
+      "worksheet": "game-observation",
+      "submission": {
+        "type": "adaptive-reflection",
+        "title": "When Good Strategy Expired",
+        "prompt": "อธิบาย strategy ที่เคยดีในช่วงหนึ่งแต่ต้องเปลี่ยน เพราะ environment หรือคู่แข่งเปลี่ยนไป"
+      }
+    },
+    {
+      "week": 11,
+      "chapter": "ระบบกลยุทธ์ซับซ้อน",
+      "englishTitle": "Complex Adaptive Systems",
+      "sourceFiles": ["chapters/ch11.tex"],
+      "games": ["Terraforming Mars"],
+      "learningOutcomes": [
+        "แยก individual adaptation ออกจาก system-level emergence ได้",
+        "อธิบาย emergence, self-organization และ positive feedback ได้",
+        "วิเคราะห์ increasing returns, path dependence และ lock-in ได้",
+        "ระบุ tipping points และ early warning signals ได้"
+      ],
+      "coreConcepts": ["complex adaptive system", "emergence", "self-organization", "positive feedback", "increasing returns", "path dependence", "lock-in", "tipping point", "steer not control"],
+      "playFirstFlow": [
+        "ใช้ Terraforming Mars guided scenario หรือ selected rounds เพราะเกมเต็มยาว",
+        "ให้แต่ละกลุ่มเลือก engine/resource system หนึ่งระบบแล้วตามผลสะสม",
+        "สังเกต global parameters และ tipping points",
+        "debrief ว่าผู้เล่นไม่ได้ควบคุมระบบทั้งหมด แต่ steer ตำแหน่งของตนในระบบ"
+      ],
+      "interactiveHtmlIdeas": [
+        "Terraforming parameter dashboard",
+        "Feedback loop mapper",
+        "Tipping point signal tracker",
+        "Path dependence branching timeline"
+      ],
+      "worksheet": "strategy-analysis",
+      "submission": {
+        "type": "systems-map",
+        "title": "Emergence and Feedback Map",
+        "prompt": "สร้าง systems map แสดงว่า action หลายฝ่ายทำให้เกิดผลระดับระบบอย่างไร"
+      }
+    },
+    {
+      "week": 12,
+      "chapter": "การวิเคราะห์และประยุกต์ใช้กลยุทธ์",
+      "englishTitle": "Strategic Analysis and Application",
+      "sourceFiles": ["chapters/ch12.tex"],
+      "games": ["Catan", "student-selected game"],
+      "learningOutcomes": [
+        "ใช้ 4 layers of strategic thinking เพื่อ diagnose สถานการณ์ได้",
+        "วิเคราะห์สถานการณ์เดียวกันผ่านหลาย frameworks ได้",
+        "ระบุ tensions ระหว่าง frameworks และ synthesize recommendation ได้",
+        "สะท้อนพัฒนาการของตนในฐานะ strategic thinker ได้"
+      ],
+      "coreConcepts": ["4 layers", "decision diagnostic", "multi-framework analysis", "framework tension", "cognitive bias", "strategic toolkit"],
+      "playFirstFlow": [
+        "ใช้ Catan เป็น shared synthesis case หรือให้กลุ่มเลือกเกมที่เล่นมาก่อน",
+        "แต่ละกลุ่มเลือกอย่างน้อย 3 frameworks จาก 11 บทก่อนหน้า",
+        "ทำ studio critique: framework ใดช่วยเห็นอะไร และ blind spot คืออะไร",
+        "นำเสนอ recommendation พร้อม reflection รายบุคคล"
+      ],
+      "interactiveHtmlIdeas": [
+        "Decision diagnostic wizard",
+        "Framework selector",
+        "Multi-framework comparison board",
+        "Final project presentation builder"
+      ],
+      "worksheet": "strategy-analysis",
+      "submission": {
+        "type": "final-mini-project",
+        "title": "Multi-Framework Strategy Analysis",
+        "prompt": "เลือกเกมหรือสถานการณ์หนึ่ง วิเคราะห์ด้วยอย่างน้อย 3 frameworks และเสนอ strategic recommendation",
+        "deliverables": ["group presentation", "individual reflection"]
+      }
+    }
+  ]
+}

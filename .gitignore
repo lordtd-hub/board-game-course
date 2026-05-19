@@ -1,0 +1,26 @@
+.next/
+node_modules/
+.env
+.env*.local
+dist/
+coverage/
+*.tsbuildinfo
+.DS_Store
+
+# LaTeX/book build artifacts that are not needed for the interactive app repo
+learning-materials/bookref/
+learning-materials/**/_archive/
+learning-materials/**/*.pdf
+learning-materials/**/*.docx
+learning-materials/**/*.zip
+*.aux
+*.bbl
+*.bcf
+*.blg
+*.idx
+*.ilg
+*.ind
+*.log
+*.out
+*.run.xml
+*.synctex.gz
