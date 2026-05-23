@@ -1,0 +1,805 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Love Letter 0-9 Teach-to-Play Slides</title>
+  <style>
+    :root {
+      --velvet: #6f1937;
+      --velvet-dark: #32101f;
+      --rose: #d94f6d;
+      --gold: #d8a642;
+      --gold-soft: #f7df9b;
+      --paper: #fff6df;
+      --paper-2: #f7ead0;
+      --ink: #24151a;
+      --muted: #755d62;
+      --line: #dfbf79;
+      --green: #2f7b58;
+      --blue: #2f628f;
+      --violet: #6b4d94;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      background:
+        radial-gradient(circle at 15% 12%, rgba(216, 166, 66, .22), transparent 28%),
+        radial-gradient(circle at 88% 10%, rgba(217, 79, 109, .16), transparent 28%),
+        linear-gradient(135deg, #210915, #501329 46%, #8b243f);
+      color: var(--ink);
+      font-family: Arial, "Noto Sans Thai", sans-serif;
+      margin: 0;
+      min-height: 100vh;
+    }
+
+    button { font: inherit; }
+
+    .deck {
+      background:
+        linear-gradient(135deg, rgba(255, 246, 223, .99), rgba(247, 234, 208, .98)),
+        radial-gradient(circle at 88% 84%, rgba(216, 166, 66, .16), transparent 30%);
+      min-height: 100vh;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .deck::before {
+      border: 2px solid rgba(216, 166, 66, .35);
+      content: "";
+      inset: clamp(14px, 2vw, 28px);
+      pointer-events: none;
+      position: absolute;
+      z-index: 1;
+    }
+
+    .progress {
+      background: linear-gradient(90deg, var(--velvet), var(--rose), var(--gold));
+      height: 8px;
+      left: 0;
+      position: absolute;
+      top: 0;
+      transition: width 160ms ease;
+      z-index: 5;
+    }
+
+    .meta {
+      color: var(--muted);
+      display: flex;
+      font-size: clamp(11px, 1.05vw, 14px);
+      font-weight: 900;
+      justify-content: space-between;
+      left: clamp(24px, 4vw, 70px);
+      position: absolute;
+      right: clamp(24px, 4vw, 70px);
+      top: clamp(18px, 2.2vw, 32px);
+      z-index: 6;
+    }
+
+    .slide {
+      display: none;
+      min-height: 100vh;
+      padding: clamp(72px, 8vw, 108px) clamp(40px, 7vw, 116px) clamp(78px, 7vw, 108px);
+      position: relative;
+      z-index: 2;
+    }
+
+    .slide.active {
+      display: grid;
+    }
+
+    h1, h2, h3, p { margin: 0; }
+
+    h1 {
+      color: var(--velvet);
+      font-size: clamp(52px, 8vw, 112px);
+      line-height: .96;
+      max-width: 920px;
+    }
+
+    h2 {
+      color: var(--velvet);
+      font-size: clamp(34px, 5vw, 68px);
+      line-height: 1.04;
+    }
+
+    h3 {
+      color: var(--velvet-dark);
+      font-size: clamp(20px, 2.1vw, 31px);
+      line-height: 1.16;
+    }
+
+    p, li {
+      font-size: clamp(16px, 1.75vw, 25px);
+      line-height: 1.42;
+    }
+
+    ul {
+      display: grid;
+      gap: 12px;
+      margin: 0;
+      padding-left: 1.2em;
+    }
+
+    .kicker {
+      color: var(--blue);
+      font-size: clamp(16px, 1.55vw, 22px);
+      font-weight: 900;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .title-grid {
+      align-items: center;
+      display: grid;
+      gap: clamp(24px, 4vw, 58px);
+      grid-template-columns: minmax(0, 1.05fr) minmax(330px, .95fr);
+    }
+
+    .two-col {
+      align-items: center;
+      display: grid;
+      gap: clamp(22px, 4vw, 58px);
+      grid-template-columns: minmax(0, .95fr) minmax(320px, 1.05fr);
+    }
+
+    .stack {
+      display: grid;
+      gap: clamp(16px, 2vw, 26px);
+    }
+
+    .panel {
+      background: rgba(255, 255, 255, .58);
+      border: 1px solid rgba(216, 166, 66, .7);
+      border-radius: 8px;
+      box-shadow: 0 24px 58px rgba(80, 19, 41, .12);
+      padding: clamp(18px, 2.3vw, 30px);
+    }
+
+    .note {
+      background: rgba(111, 25, 55, .08);
+      border-left: 8px solid var(--rose);
+      border-radius: 8px;
+      padding: 16px 18px;
+    }
+
+    .small {
+      color: var(--muted);
+      font-size: clamp(13px, 1.25vw, 18px);
+      line-height: 1.4;
+    }
+
+    .cards {
+      display: grid;
+      gap: 12px;
+      grid-template-columns: repeat(5, minmax(90px, 1fr));
+    }
+
+    .role-card {
+      aspect-ratio: 2 / 3;
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, .9), rgba(255, 246, 223, .96)),
+        radial-gradient(circle at 50% 26%, rgba(216, 166, 66, .34), transparent 34%);
+      border: 2px solid var(--line);
+      border-radius: 8px;
+      box-shadow: 0 16px 32px rgba(80, 19, 41, .16);
+      display: grid;
+      gap: 7px;
+      grid-template-rows: auto 1fr auto;
+      min-height: 150px;
+      padding: 12px;
+      position: relative;
+    }
+
+    .role-card::after {
+      border: 1px solid rgba(111, 25, 55, .18);
+      border-radius: 5px;
+      content: "";
+      inset: 7px;
+      pointer-events: none;
+      position: absolute;
+    }
+
+    .value {
+      align-items: center;
+      background: var(--velvet);
+      border-radius: 999px;
+      color: #fff7df;
+      display: inline-grid;
+      font-size: clamp(18px, 2vw, 28px);
+      font-weight: 900;
+      height: 42px;
+      justify-content: center;
+      width: 42px;
+    }
+
+    .role-name {
+      align-self: center;
+      color: var(--velvet-dark);
+      font-size: clamp(17px, 1.7vw, 24px);
+      font-weight: 900;
+      line-height: 1;
+      text-align: center;
+    }
+
+    .role-effect {
+      color: var(--muted);
+      font-size: clamp(11px, 1vw, 14px);
+      font-weight: 700;
+      line-height: 1.25;
+      text-align: center;
+    }
+
+    .hand-demo {
+      align-items: center;
+      display: grid;
+      gap: 16px;
+      grid-template-columns: 1fr auto 1fr;
+    }
+
+    .mini-card {
+      background: #fffaf0;
+      border: 2px solid var(--line);
+      border-radius: 8px;
+      box-shadow: 0 12px 28px rgba(80, 19, 41, .14);
+      display: grid;
+      min-height: 138px;
+      padding: 15px;
+      place-items: center;
+      text-align: center;
+    }
+
+    .mini-card strong {
+      color: var(--velvet);
+      font-size: clamp(28px, 4vw, 52px);
+      line-height: .92;
+    }
+
+    .arrow {
+      color: var(--rose);
+      font-size: clamp(36px, 5vw, 70px);
+      font-weight: 900;
+    }
+
+    .turn-flow {
+      display: grid;
+      gap: 14px;
+      grid-template-columns: repeat(4, 1fr);
+    }
+
+    .step {
+      background: rgba(255, 255, 255, .62);
+      border: 1px solid rgba(216, 166, 66, .72);
+      border-radius: 8px;
+      display: grid;
+      gap: 10px;
+      min-height: 170px;
+      padding: 20px;
+    }
+
+    .step b {
+      color: var(--rose);
+      font-size: clamp(28px, 3vw, 46px);
+      line-height: .9;
+    }
+
+    .memory-grid {
+      display: grid;
+      gap: 14px;
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .memory-tile {
+      background: #fffaf0;
+      border: 1px solid rgba(216, 166, 66, .76);
+      border-radius: 8px;
+      display: grid;
+      gap: 8px;
+      padding: 18px;
+    }
+
+    .memory-tile strong {
+      color: var(--velvet);
+      font-size: clamp(20px, 2.1vw, 30px);
+      line-height: 1.1;
+    }
+
+    .quiz {
+      display: grid;
+      gap: 16px;
+    }
+
+    .choices {
+      display: grid;
+      gap: 12px;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .choice {
+      background: #fffaf0;
+      border: 2px solid rgba(111, 25, 55, .2);
+      border-radius: 8px;
+      color: var(--ink);
+      cursor: pointer;
+      font-weight: 900;
+      min-height: 64px;
+      padding: 14px 16px;
+      text-align: left;
+    }
+
+    .choice:hover,
+    .choice:focus-visible {
+      border-color: var(--rose);
+      outline: 3px solid rgba(217, 79, 109, .2);
+    }
+
+    .choice.correct {
+      background: rgba(47, 123, 88, .14);
+      border-color: var(--green);
+    }
+
+    .choice.wrong {
+      background: rgba(217, 79, 109, .12);
+      border-color: var(--rose);
+    }
+
+    .feedback {
+      background: rgba(255, 255, 255, .65);
+      border: 1px dashed rgba(111, 25, 55, .45);
+      border-radius: 8px;
+      color: var(--velvet-dark);
+      font-size: clamp(16px, 1.45vw, 22px);
+      font-weight: 800;
+      min-height: 58px;
+      padding: 14px 16px;
+    }
+
+    .table {
+      display: grid;
+      gap: 8px;
+    }
+
+    .row {
+      align-items: center;
+      background: rgba(255, 255, 255, .52);
+      border: 1px solid rgba(216, 166, 66, .55);
+      border-radius: 8px;
+      display: grid;
+      gap: 10px;
+      grid-template-columns: 64px 1fr 70px;
+      padding: 10px 14px;
+    }
+
+    .badge {
+      background: var(--velvet);
+      border-radius: 999px;
+      color: white;
+      display: inline-flex;
+      font-weight: 900;
+      justify-content: center;
+      padding: 8px 12px;
+      width: fit-content;
+    }
+
+    .controls {
+      align-items: center;
+      bottom: clamp(18px, 2.5vw, 34px);
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      left: 50%;
+      position: absolute;
+      transform: translateX(-50%);
+      z-index: 8;
+    }
+
+    .nav {
+      background: var(--velvet);
+      border: 0;
+      border-radius: 999px;
+      color: #fff7df;
+      cursor: pointer;
+      font-weight: 900;
+      min-width: 46px;
+      padding: 12px 16px;
+    }
+
+    .nav.secondary {
+      background: #fff7df;
+      border: 1px solid rgba(111, 25, 55, .35);
+      color: var(--velvet);
+    }
+
+    .deck.fullscreen .deck::before { display: none; }
+
+    .seal {
+      background:
+        radial-gradient(circle at 50% 42%, #f5cd68 0 24%, transparent 25%),
+        conic-gradient(from 30deg, #c9962f, #f7df9b, #b67c24, #f7df9b, #c9962f);
+      border-radius: 50%;
+      height: clamp(150px, 18vw, 260px);
+      margin: auto;
+      position: relative;
+      width: clamp(150px, 18vw, 260px);
+    }
+
+    .seal::after {
+      color: var(--velvet-dark);
+      content: "LL";
+      font-family: Georgia, serif;
+      font-size: clamp(58px, 7vw, 104px);
+      font-weight: 900;
+      left: 50%;
+      position: absolute;
+      top: 51%;
+      transform: translate(-50%, -50%);
+    }
+
+    .reference a {
+      color: var(--velvet);
+      font-weight: 900;
+    }
+
+    @media (max-width: 900px) {
+      .title-grid,
+      .two-col {
+        grid-template-columns: 1fr;
+      }
+
+      .cards {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .turn-flow,
+      .memory-grid,
+      .choices {
+        grid-template-columns: 1fr;
+      }
+
+      .slide {
+        min-height: 100svh;
+        overflow-y: auto;
+        padding-inline: 24px;
+      }
+
+      .controls {
+        background: rgba(255, 246, 223, .9);
+        border-radius: 999px;
+        padding: 6px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="deck" id="deck">
+    <div class="progress" id="progress"></div>
+    <div class="meta">
+      <span>Love Letter 0-9</span>
+      <span id="counter">1/15</span>
+      <span>Teach-to-play</span>
+    </div>
+
+    <section class="slide active">
+      <div class="title-grid">
+        <div class="stack">
+          <p class="kicker">เกมจดหมายลับ • หักเหลี่ยม • อ่านใจ</p>
+          <h1>สอนเล่น Love Letter</h1>
+          <p>เวอร์ชันการ์ด 0-9 สำหรับคนไม่เคยเล่นมาก่อน: เล่นเป็นใน 15 นาที แล้วเริ่มรอบทดลองได้ทันที</p>
+          <div class="note">
+            <p><strong>เป้าหมายของคาบ:</strong> นักศึกษารู้ลำดับเทิร์น จำการ์ดสำคัญได้ และตัดสินใจได้ว่า “ควรเล่นใบไหน เพราะอะไร”</p>
+          </div>
+        </div>
+        <div class="seal" aria-label="ตราจดหมาย Love Letter แบบจำลอง"></div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="two-col">
+        <div class="stack">
+          <p class="kicker">1 idea first</p>
+          <h2>เกมนี้ไม่ใช่เกมถือไพ่เยอะ</h2>
+          <p>ในมือเรามีแค่ 1 ใบ พอถึงเทิร์นจะจั่วเพิ่มเป็น 2 ใบ แล้วเลือกเล่น 1 ใบ</p>
+          <div class="note">
+            <p>ความสนุกคือเราเห็นการ์ดที่ถูกเล่นออกไป จึงค่อย ๆ เดาว่าใครน่าจะถืออะไร</p>
+          </div>
+        </div>
+        <div class="hand-demo">
+          <div class="mini-card"><strong>ถือ 1</strong><span>ก่อนถึงเทิร์น</span></div>
+          <div class="arrow">+</div>
+          <div class="mini-card"><strong>จั่ว 1</strong><span>เลือกเล่น 1 จาก 2</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="stack">
+        <p class="kicker">Round structure</p>
+        <h2>หนึ่งรอบเล่นแบบนี้</h2>
+        <div class="turn-flow">
+          <div class="step"><b>1</b><h3>จั่ว</h3><p>จั่ว 1 ใบ ให้ในมือมี 2 ใบ</p></div>
+          <div class="step"><b>2</b><h3>เลือกเล่น</h3><p>เล่น 1 ใบ แล้วทำ effect ถ้าทำได้</p></div>
+          <div class="step"><b>3</b><h3>อ่านข้อมูล</h3><p>ดูว่าใครเล่นอะไรไปแล้ว ใครยังน่าสงสัย</p></div>
+          <div class="step"><b>4</b><h3>จบรอบ</h3><p>เหลือคนเดียว หรือกองจั่วหมดแล้วเทียบเลข</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="stack">
+        <p class="kicker">Card map</p>
+        <h2>จำการ์ดจาก “เลขต่ำ = ใช้ข้อมูล / เลขสูง = อยู่รอด”</h2>
+        <div class="cards">
+          <div class="role-card"><span class="value">0</span><div class="role-name">Spy</div><div class="role-effect">โบนัส token ถ้าเราเป็นคนเดียวที่ใช้/ทิ้ง Spy</div></div>
+          <div class="role-card"><span class="value">1</span><div class="role-name">Guard</div><div class="role-effect">ทายใบคนอื่น ห้ามทาย Guard</div></div>
+          <div class="role-card"><span class="value">2</span><div class="role-name">Priest</div><div class="role-effect">แอบดูมือคนอื่น</div></div>
+          <div class="role-card"><span class="value">3</span><div class="role-name">Baron</div><div class="role-effect">เทียบเลข ใครต่ำกว่าตกรอบ</div></div>
+          <div class="role-card"><span class="value">4</span><div class="role-name">Handmaid</div><div class="role-effect">ป้องกันตัวเองถึงเทิร์นหน้า</div></div>
+          <div class="role-card"><span class="value">5</span><div class="role-name">Prince</div><div class="role-effect">เลือกคนทิ้งมือแล้วจั่วใหม่</div></div>
+          <div class="role-card"><span class="value">6</span><div class="role-name">Chancellor</div><div class="role-effect">จั่ว 2 เลือกเก็บ 1 วางที่เหลือใต้กอง</div></div>
+          <div class="role-card"><span class="value">7</span><div class="role-name">King</div><div class="role-effect">สลับมือกับอีกคน</div></div>
+          <div class="role-card"><span class="value">8</span><div class="role-name">Countess</div><div class="role-effect">ต้องเล่นถ้าอยู่คู่ King หรือ Prince</div></div>
+          <div class="role-card"><span class="value">9</span><div class="role-name">Princess</div><div class="role-effect">ถ้าทิ้งหรือเล่น ตกรอบทันที</div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="two-col">
+        <div class="stack">
+          <p class="kicker">Must remember</p>
+          <h2>3 ใบที่ต้องจำก่อนเริ่มเล่น</h2>
+          <p>ถ้าจำครบ 3 ใบนี้ เกมจะไม่สะดุด และลดการเล่นผิดกฎได้มาก</p>
+        </div>
+        <div class="memory-grid">
+          <div class="memory-tile"><strong>Guard 1</strong><p>ใช้ทายใบคนอื่น แต่ทาย Guard ไม่ได้</p></div>
+          <div class="memory-tile"><strong>Countess 8</strong><p>ถ้าอีกใบคือ King หรือ Prince ต้องเล่น Countess</p></div>
+          <div class="memory-tile"><strong>Princess 9</strong><p>ถ้าถูกทิ้งไม่ว่าด้วยเหตุใด เจ้าของมือตกรอบ</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="two-col">
+        <div class="stack">
+          <p class="kicker">Teaching example</p>
+          <h2>ตัวอย่างคอมโบที่ทำให้เล่นเป็นเร็ว</h2>
+          <ul>
+            <li><strong>Priest → Guard:</strong> ดูไพ่ก่อน แล้วรอบถัดไปทายให้แม่น</li>
+            <li><strong>Prince → Princess:</strong> ถ้าสงสัยว่าใครถือ 9 ให้บังคับเขาทิ้ง</li>
+            <li><strong>Handmaid:</strong> ใช้กันตัวตอนเราถือเลขสูงหรือถูกเพ่งเล็ง</li>
+            <li><strong>Chancellor:</strong> จัดมือและซ่อนข้อมูลด้วยการวางไพ่ใต้กอง</li>
+          </ul>
+        </div>
+        <div class="panel table">
+          <div class="row"><span class="badge">2</span><p>ดูมือ A เห็น Princess</p><strong>ข้อมูล</strong></div>
+          <div class="row"><span class="badge">5</span><p>บังคับ A ทิ้งมือ</p><strong>โจมตี</strong></div>
+          <div class="row"><span class="badge">4</span><p>กันตัวเองจากการถูกเลือก</p><strong>ป้องกัน</strong></div>
+          <div class="row"><span class="badge">6</span><p>จั่ว 2 เลือกเก็บใบดีที่สุด</p><strong>ควบคุม</strong></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="quiz panel">
+        <p class="kicker">Quick check 1</p>
+        <h2>ในมือคุณมี Countess 8 และ Prince 5 ต้องเล่นอะไร?</h2>
+        <div class="choices">
+          <button class="choice" data-q="countess" data-a="wrong">เล่น Prince เพื่อบังคับคนอื่นทิ้งมือ</button>
+          <button class="choice" data-q="countess" data-a="correct">เล่น Countess เพราะกฎบังคับ</button>
+          <button class="choice" data-q="countess" data-a="wrong">เลือกอะไรก็ได้ เพราะ Countess ไม่มี effect</button>
+          <button class="choice" data-q="countess" data-a="wrong">ทิ้ง Countess คว่ำไว้ ไม่ต้องบอกใคร</button>
+        </div>
+        <div class="feedback" id="countess-feedback">เลือกคำตอบเพื่อดู feedback</div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="quiz panel">
+        <p class="kicker">Quick check 2</p>
+        <h2>คุณเล่น Guard 1 แล้วจะทายอะไรได้บ้าง?</h2>
+        <div class="choices">
+          <button class="choice" data-q="guard" data-a="wrong">ทาย Guard เพราะมีเยอะสุด</button>
+          <button class="choice" data-q="guard" data-a="correct">ทาย Priest, Baron, Handmaid, Prince, Chancellor, King, Countess, Princess หรือ Spy ได้ แต่ห้ามทาย Guard</button>
+          <button class="choice" data-q="guard" data-a="wrong">ทายได้เฉพาะเลขสูงกว่า 5</button>
+          <button class="choice" data-q="guard" data-a="wrong">ทายไม่ได้ ถ้าเราไม่เคยเห็นมือเขา</button>
+        </div>
+        <div class="feedback" id="guard-feedback">เลือกคำตอบเพื่อดู feedback</div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="quiz panel">
+        <p class="kicker">Quick check 3</p>
+        <h2>ถ้าผู้เล่นคนหนึ่งถูก Prince บังคับให้ทิ้ง Princess 9 จะเกิดอะไร?</h2>
+        <div class="choices">
+          <button class="choice" data-q="princess" data-a="correct">คนนั้นตกรอบทันที</button>
+          <button class="choice" data-q="princess" data-a="wrong">จั่วใหม่แล้วเล่นต่อ เพราะไม่ได้ตั้งใจทิ้งเอง</button>
+          <button class="choice" data-q="princess" data-a="wrong">คนที่ใช้ Prince ตกรอบแทน</button>
+          <button class="choice" data-q="princess" data-a="wrong">ไม่มีอะไรเกิดขึ้น เพราะ Princess ไม่มี effect ตอนถูกบังคับทิ้ง</button>
+        </div>
+        <div class="feedback" id="princess-feedback">เลือกคำตอบเพื่อดู feedback</div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="two-col">
+        <div class="stack">
+          <p class="kicker">Spy and Chancellor</p>
+          <h2>เวอร์ชัน 0-9 มีสองใบที่ทำให้เกมลึกขึ้น</h2>
+          <div class="memory-tile"><strong>Spy 0</strong><p>ดูเหมือนอ่อน แต่ถ้าจบรอบแล้วมีเราเพียงคนเดียวที่เคยเล่นหรือทิ้ง Spy จะได้ token เพิ่ม</p></div>
+          <div class="memory-tile"><strong>Chancellor 6</strong><p>จั่วเพิ่ม 2 ใบ เลือกเก็บ 1 ใบ แล้ววางอีก 2 ใบไว้ใต้กอง เป็นการจัดมือและจัดข้อมูล</p></div>
+        </div>
+        <div class="panel">
+          <h3>คำถามชวนคิด</h3>
+          <p>ถ้าเกมใกล้กองหมด Chancellor ดีขึ้นหรือแย่ลง?</p>
+          <div class="note">
+            <p>ดีขึ้น เพราะเราได้เห็นไพ่เพิ่มและควบคุมว่าอะไรจะไม่ถูกจั่วในรอบนี้ แต่อาจทำให้คนอื่นเดาว่าเรากำลังหาเลขสูง</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="quiz panel">
+        <p class="kicker">Decision drill</p>
+        <h2>สถานการณ์: คุณถือ Princess 9 แล้วจั่ว Handmaid 4 ควรเล่นอะไร?</h2>
+        <div class="choices">
+          <button class="choice" data-q="decision" data-a="correct">เล่น Handmaid เพื่อกันตัวเองและเก็บ Princess ไว้</button>
+          <button class="choice" data-q="decision" data-a="wrong">เล่น Princess เพราะเลขสูงสุด</button>
+          <button class="choice" data-q="decision" data-a="wrong">ทิ้ง Princess แล้วหวังจั่วใหม่</button>
+          <button class="choice" data-q="decision" data-a="wrong">ขอผ่านเทิร์น</button>
+        </div>
+        <div class="feedback" id="decision-feedback">เลือกคำตอบเพื่อดู feedback</div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="two-col">
+        <div class="stack">
+          <p class="kicker">What to watch</p>
+          <h2>เวลาเล่นจริง ต้องจำอะไรบ้าง?</h2>
+          <ul>
+            <li>การ์ดที่ออกแล้ว: โดยเฉพาะ Guard, Prince, Countess, Princess</li>
+            <li>ใครถูก Priest ดูมือไปแล้ว และคนดูมือยังมีชีวิตไหม</li>
+            <li>ใครเพิ่งใช้ Handmaid จึงเลือกเป็นเป้าหมายไม่ได้</li>
+            <li>ใครมีท่าทีปกป้องมือมากผิดปกติ อาจถือเลขสูง</li>
+          </ul>
+        </div>
+        <div class="panel">
+          <h3>ตารางจำหน้าห้อง</h3>
+          <p class="small">ให้อาจารย์เขียนบนกระดานระหว่างเล่นรอบแรก</p>
+          <div class="table">
+            <div class="row"><span class="badge">ชื่อ</span><p>เล่นอะไรแล้ว</p><strong>สงสัย</strong></div>
+            <div class="row"><span class="badge">A</span><p>Priest, Guard</p><strong>รู้มือคนอื่น</strong></div>
+            <div class="row"><span class="badge">B</span><p>Handmaid</p><strong>ห้ามเลือก</strong></div>
+            <div class="row"><span class="badge">C</span><p>Countess</p><strong>เคยมี 5/7?</strong></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="stack">
+        <p class="kicker">Class activity</p>
+        <h2>กิจกรรมสอนในห้อง: รอบแรกเปิดไพ่สอน รอบสองเล่นจริง</h2>
+        <div class="turn-flow">
+          <div class="step"><b>3 นาที</b><h3>แจก reference</h3><p>ชี้ให้จำ 1, 5, 8, 9 ก่อน</p></div>
+          <div class="step"><b>7 นาที</b><h3>รอบเปิดไพ่</h3><p>ทุกคนพูดเหตุผลตอนเล่นการ์ด</p></div>
+          <div class="step"><b>10 นาที</b><h3>รอบปิดไพ่</h3><p>เล่นจริงและจดการ์ดที่ออกแล้ว</p></div>
+          <div class="step"><b>5 นาที</b><h3>สะท้อน</h3><p>ถามว่าชนะเพราะดวง ข้อมูล หรือ bluff</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="quiz panel">
+        <p class="kicker">Exit ticket</p>
+        <h2>ก่อนเริ่มเล่นจริง ตอบให้ได้ 3 ข้อ</h2>
+        <div class="choices">
+          <button class="choice" data-q="exit" data-a="wrong">ชนะด้วยการถือการ์ดเยอะที่สุด</button>
+          <button class="choice" data-q="exit" data-a="correct">ชนะรอบด้วยการเหลือคนเดียว หรือถือเลขสูงสุดเมื่อกองหมด</button>
+          <button class="choice" data-q="exit" data-a="wrong">Princess 9 ควรเล่นทันทีเพราะเลขสูง</button>
+          <button class="choice" data-q="exit" data-a="wrong">Guard 1 ทาย Guard ได้ถ้าคิดว่าอีกคนถืออยู่</button>
+        </div>
+        <div class="feedback" id="exit-feedback">เลือกคำตอบเพื่อดู feedback</div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="two-col">
+        <div class="stack">
+          <p class="kicker">Ready to play</p>
+          <h2>กติกาสั้นที่ให้นักศึกษาพูดซ้ำ</h2>
+          <ul>
+            <li>ถึงเทิร์น: จั่ว 1 เล่น 1</li>
+            <li>เล่นการ์ดแล้วทำ effect ให้ครบ</li>
+            <li>เห็นการ์ดที่ออกแล้ว ใช้เป็นข้อมูล</li>
+            <li>Princess ห้ามทิ้ง, Countess มีเงื่อนไขบังคับ, Guard ห้ามทาย Guard</li>
+          </ul>
+        </div>
+        <div class="panel reference">
+          <h3>อ้างอิงกติกา</h3>
+          <p class="small">สไลด์นี้ใช้ภาพการ์ดจำลองเพื่อการสอน ไม่ใช้ artwork จากเกมจริง</p>
+          <p class="small"><a href="https://cdn.1j1ju.com/medias/c0/d4/2b-love-letter-2019-rulebook.pdf">Love Letter 2019 Rulebook PDF</a></p>
+          <p class="small"><a href="https://www.rulespal.com/love-letter/rulebook">RulesPal Love Letter Rulebook</a></p>
+        </div>
+      </div>
+    </section>
+
+    <div class="controls">
+      <button class="nav secondary" id="prev" aria-label="Previous slide">‹</button>
+      <button class="nav" id="fullscreen">เต็มจอ</button>
+      <button class="nav secondary" id="next" aria-label="Next slide">›</button>
+    </div>
+  </main>
+
+  <script>
+    const slides = Array.from(document.querySelectorAll('.slide'));
+    const progress = document.querySelector('#progress');
+    const counter = document.querySelector('#counter');
+    let index = 0;
+
+    function showSlide(nextIndex) {
+      index = Math.max(0, Math.min(slides.length - 1, nextIndex));
+      slides.forEach((slide, i) => slide.classList.toggle('active', i === index));
+      counter.textContent = `${index + 1}/${slides.length}`;
+      progress.style.width = `${((index + 1) / slides.length) * 100}%`;
+    }
+
+    document.querySelector('#next').addEventListener('click', () => showSlide(index + 1));
+    document.querySelector('#prev').addEventListener('click', () => showSlide(index - 1));
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'ArrowRight' || event.key === 'PageDown' || event.key === ' ') showSlide(index + 1);
+      if (event.key === 'ArrowLeft' || event.key === 'PageUp') showSlide(index - 1);
+      if (event.key.toLowerCase() === 'f') toggleFullscreen();
+    });
+
+    function toggleFullscreen() {
+      const root = document.documentElement;
+      if (!document.fullscreenElement) root.requestFullscreen?.();
+      else document.exitFullscreen?.();
+    }
+
+    document.querySelector('#fullscreen').addEventListener('click', toggleFullscreen);
+
+    const feedbackText = {
+      countess: {
+        correct: 'ถูกต้อง: Countess ต้องถูกเล่นถ้าอีกใบในมือคือ King หรือ Prince แม้เราอยากใช้ Prince ก็ตาม',
+        wrong: 'ยังไม่ใช่: จุดสำคัญคือ Countess มีกฎบังคับเมื่ออยู่คู่ King หรือ Prince'
+      },
+      guard: {
+        correct: 'ถูกต้อง: Guard ทายได้แทบทุกใบ ยกเว้น Guard เอง การรู้การ์ดที่ออกแล้วช่วยให้ทายแม่นขึ้น',
+        wrong: 'ยังไม่ใช่: Guard ห้ามทาย Guard แต่ไม่ได้บังคับว่าเราต้องเคยเห็นมือเขาก่อน'
+      },
+      princess: {
+        correct: 'ถูกต้อง: Princess ตกรอบทันทีเมื่อถูกเล่นหรือถูกทิ้ง รวมถึงถูก Prince บังคับทิ้ง',
+        wrong: 'ยังไม่ใช่: Princess เป็นใบที่อันตรายที่สุดเมื่อถูกทิ้ง ไม่ว่าทิ้งเองหรือถูกบังคับ'
+      },
+      decision: {
+        correct: 'ถูกต้อง: Handmaid ช่วยป้องกันเรา ขณะถือ Princess ซึ่งเป็นเลขสูงสุดแต่เสี่ยงมาก',
+        wrong: 'ยังไม่ใช่: Princess ไม่ควรถูกเล่นหรือทิ้ง เพราะจะทำให้ตกรอบทันที'
+      },
+      exit: {
+        correct: 'ถูกต้อง: นี่คือแกนของเกม จั่ว 1 เล่น 1 แล้วใช้ข้อมูลเพื่ออยู่รอดหรือกำจัดคนอื่น',
+        wrong: 'ยังไม่ใช่: กลับไปจำ 3 เรื่องหลักก่อนเริ่มเล่นจริง คือ Guard, Countess, Princess'
+      }
+    };
+
+    document.querySelectorAll('.choice').forEach((button) => {
+      button.addEventListener('click', () => {
+        const q = button.dataset.q;
+        const isCorrect = button.dataset.a === 'correct';
+        document.querySelectorAll(`.choice[data-q="${q}"]`).forEach((other) => {
+          other.classList.remove('correct', 'wrong');
+        });
+        button.classList.add(isCorrect ? 'correct' : 'wrong');
+        document.querySelector(`#${q}-feedback`).textContent = feedbackText[q][isCorrect ? 'correct' : 'wrong'];
+      });
+    });
+
+    showSlide(0);
+  </script>
+</body>
+</html>
