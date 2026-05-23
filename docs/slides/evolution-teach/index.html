@@ -1,0 +1,991 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Evolution Teach-to-Play Interactive Slides</title>
+  <style>
+    :root {
+      --leaf: #2f7d5b;
+      --leaf-dark: #1f513d;
+      --sky: #2e7e9a;
+      --water: #3c9db0;
+      --clay: #b85d3b;
+      --sun: #d9a441;
+      --sand: #fff1ce;
+      --paper: #fff9ea;
+      --ink: #1f1b16;
+      --muted: #6b5d4c;
+      --line: #d6bb7a;
+      --meat: #a73638;
+      --violet: #6b4d94;
+      --night: #20313a;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      background:
+        radial-gradient(circle at 12% 10%, rgba(217, 164, 65, .24), transparent 28%),
+        radial-gradient(circle at 86% 16%, rgba(60, 157, 176, .2), transparent 30%),
+        linear-gradient(135deg, #18342a, #1f513d 46%, #704029);
+      color: var(--ink);
+      font-family: Arial, "Noto Sans Thai", sans-serif;
+      margin: 0;
+      min-height: 100vh;
+    }
+
+    button, input { font: inherit; }
+
+    .deck {
+      background:
+        linear-gradient(135deg, rgba(255, 241, 206, .99), rgba(255, 249, 234, .98)),
+        radial-gradient(circle at 92% 82%, rgba(47, 125, 91, .14), transparent 32%);
+      min-height: 100vh;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .deck::before {
+      border: 2px solid rgba(47, 125, 91, .18);
+      content: "";
+      inset: clamp(14px, 2vw, 28px);
+      pointer-events: none;
+      position: absolute;
+      z-index: 1;
+    }
+
+    .progress {
+      background: linear-gradient(90deg, var(--leaf), var(--water), var(--sun), var(--meat));
+      height: 8px;
+      left: 0;
+      position: absolute;
+      top: 0;
+      transition: width 160ms ease;
+      z-index: 5;
+    }
+
+    .meta {
+      color: var(--muted);
+      display: flex;
+      font-size: clamp(11px, 1vw, 14px);
+      font-weight: 900;
+      justify-content: space-between;
+      left: clamp(24px, 4vw, 70px);
+      position: absolute;
+      right: clamp(24px, 4vw, 70px);
+      top: clamp(18px, 2.2vw, 32px);
+      z-index: 6;
+    }
+
+    .slide {
+      display: none;
+      min-height: 100vh;
+      padding: clamp(72px, 8vw, 108px) clamp(40px, 7vw, 116px) clamp(80px, 7vw, 108px);
+      position: relative;
+      z-index: 2;
+    }
+
+    .slide.active { display: grid; }
+
+    h1, h2, h3, p { margin: 0; }
+
+    h1 {
+      color: var(--leaf-dark);
+      font-size: clamp(52px, 8vw, 112px);
+      line-height: .96;
+      max-width: 930px;
+    }
+
+    h2 {
+      color: var(--leaf-dark);
+      font-size: clamp(34px, 5vw, 68px);
+      line-height: 1.04;
+    }
+
+    h3 {
+      color: var(--night);
+      font-size: clamp(20px, 2.1vw, 31px);
+      line-height: 1.15;
+    }
+
+    p, li {
+      font-size: clamp(16px, 1.62vw, 24px);
+      line-height: 1.42;
+    }
+
+    ul {
+      display: grid;
+      gap: 12px;
+      margin: 0;
+      padding-left: 1.2em;
+    }
+
+    .kicker {
+      color: var(--sky);
+      font-size: clamp(15px, 1.35vw, 20px);
+      font-weight: 900;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+    }
+
+    .title-grid,
+    .two-col {
+      align-items: center;
+      display: grid;
+      gap: clamp(24px, 4vw, 58px);
+      grid-template-columns: minmax(0, 1fr) minmax(330px, .95fr);
+    }
+
+    .stack {
+      display: grid;
+      gap: clamp(16px, 2vw, 26px);
+    }
+
+    .panel {
+      background: rgba(255, 249, 234, .74);
+      border: 1px solid rgba(214, 187, 122, .86);
+      border-radius: 8px;
+      box-shadow: 0 24px 58px rgba(32, 49, 58, .12);
+      padding: clamp(18px, 2.2vw, 30px);
+    }
+
+    .note {
+      background: rgba(60, 157, 176, .1);
+      border-left: 8px solid var(--water);
+      border-radius: 8px;
+      padding: 16px 18px;
+    }
+
+    .warning {
+      background: rgba(167, 54, 56, .1);
+      border-left-color: var(--meat);
+    }
+
+    .small {
+      color: var(--muted);
+      font-size: clamp(13px, 1.12vw, 17px);
+      line-height: 1.4;
+    }
+
+    .ecosystem {
+      aspect-ratio: 1.16;
+      background:
+        radial-gradient(circle at 44% 36%, rgba(217, 164, 65, .26), transparent 22%),
+        linear-gradient(180deg, rgba(60, 157, 176, .24), rgba(47, 125, 91, .22)),
+        var(--sand);
+      border: 2px solid var(--line);
+      border-radius: 8px;
+      box-shadow: 0 28px 70px rgba(32, 49, 58, .18);
+      overflow: hidden;
+      padding: 18px;
+      position: relative;
+    }
+
+    .waterhole {
+      background: radial-gradient(circle, #88d0da, var(--water));
+      border: 7px solid rgba(255, 249, 234, .85);
+      border-radius: 50%;
+      box-shadow: inset 0 12px 28px rgba(32, 49, 58, .18);
+      height: 37%;
+      left: 50%;
+      position: absolute;
+      top: 48%;
+      transform: translate(-50%, -50%);
+      width: 43%;
+    }
+
+    .animal {
+      align-items: center;
+      background: var(--leaf);
+      border: 4px solid var(--paper);
+      border-radius: 999px;
+      color: white;
+      display: grid;
+      font-weight: 900;
+      height: 86px;
+      justify-content: center;
+      position: absolute;
+      width: 86px;
+    }
+
+    .animal::after {
+      background: var(--sun);
+      border-radius: 999px;
+      content: "";
+      height: 16px;
+      position: absolute;
+      right: 13px;
+      top: 18px;
+      width: 16px;
+    }
+
+    .animal.predator {
+      background: var(--meat);
+      height: 100px;
+      width: 100px;
+    }
+
+    .a1 { left: 10%; top: 18%; }
+    .a2 { right: 12%; top: 20%; }
+    .a3 { left: 16%; bottom: 14%; }
+    .a4 { right: 16%; bottom: 12%; }
+
+    .species-board {
+      background: var(--paper);
+      border: 2px solid var(--line);
+      border-radius: 8px;
+      display: grid;
+      gap: 14px;
+      padding: 22px;
+    }
+
+    .meters {
+      display: grid;
+      gap: 14px;
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .meter {
+      background: rgba(47, 125, 91, .1);
+      border-radius: 8px;
+      display: grid;
+      gap: 8px;
+      padding: 16px;
+    }
+
+    .meter strong {
+      color: var(--leaf-dark);
+      font-size: clamp(26px, 3vw, 46px);
+      line-height: .95;
+    }
+
+    .trait-slots {
+      display: grid;
+      gap: 10px;
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .trait-slot {
+      background: rgba(255, 241, 206, .84);
+      border: 1px dashed rgba(31, 81, 61, .42);
+      border-radius: 8px;
+      min-height: 88px;
+      padding: 12px;
+      text-align: center;
+    }
+
+    .flow {
+      display: grid;
+      gap: 14px;
+      grid-template-columns: repeat(5, 1fr);
+    }
+
+    .flow-step {
+      background: rgba(255, 249, 234, .78);
+      border: 1px solid rgba(214, 187, 122, .82);
+      border-radius: 8px;
+      display: grid;
+      gap: 10px;
+      min-height: 178px;
+      padding: 18px;
+    }
+
+    .flow-step b {
+      color: var(--clay);
+      font-size: clamp(32px, 3.5vw, 56px);
+      line-height: .9;
+    }
+
+    .card-use-grid,
+    .combo-grid,
+    .score-grid {
+      display: grid;
+      gap: 14px;
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .mini-card {
+      background: var(--paper);
+      border: 1px solid rgba(214, 187, 122, .86);
+      border-radius: 8px;
+      display: grid;
+      gap: 12px;
+      min-height: 190px;
+      padding: 18px;
+    }
+
+    .mini-card strong {
+      color: var(--leaf-dark);
+      font-size: clamp(22px, 2.3vw, 34px);
+      line-height: 1.08;
+    }
+
+    .badge {
+      align-items: center;
+      background: var(--leaf);
+      border-radius: 999px;
+      color: white;
+      display: inline-grid;
+      font-weight: 900;
+      height: 44px;
+      justify-content: center;
+      width: 44px;
+    }
+
+    .badge.meat { background: var(--meat); }
+    .badge.sun { background: var(--sun); color: #2c2112; }
+    .badge.sky { background: var(--sky); }
+
+    .food-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+    }
+
+    .food {
+      align-items: center;
+      background: var(--leaf);
+      border-radius: 999px;
+      color: white;
+      display: grid;
+      font-weight: 900;
+      height: 42px;
+      justify-content: center;
+      width: 42px;
+    }
+
+    .food.meat { background: var(--meat); }
+
+    .quiz {
+      display: grid;
+      gap: 16px;
+    }
+
+    .choices {
+      display: grid;
+      gap: 12px;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .choice {
+      background: #fffaf0;
+      border: 2px solid rgba(32, 49, 58, .18);
+      border-radius: 8px;
+      color: var(--ink);
+      cursor: pointer;
+      font-weight: 900;
+      min-height: 64px;
+      padding: 14px 16px;
+      text-align: left;
+    }
+
+    .choice:hover,
+    .choice:focus-visible {
+      border-color: var(--sky);
+      outline: 3px solid rgba(60, 157, 176, .18);
+    }
+
+    .choice.correct {
+      background: rgba(47, 125, 91, .14);
+      border-color: var(--leaf);
+    }
+
+    .choice.wrong {
+      background: rgba(167, 54, 56, .14);
+      border-color: var(--meat);
+    }
+
+    .feedback {
+      background: rgba(255, 249, 234, .74);
+      border: 1px dashed rgba(32, 49, 58, .35);
+      border-radius: 8px;
+      color: var(--night);
+      font-size: clamp(16px, 1.45vw, 22px);
+      font-weight: 800;
+      min-height: 58px;
+      padding: 14px 16px;
+    }
+
+    .dictionary {
+      display: grid;
+      gap: 14px;
+      grid-template-rows: auto minmax(0, 1fr);
+      max-height: calc(100vh - 210px);
+    }
+
+    .dict-tools {
+      align-items: center;
+      display: grid;
+      gap: 12px;
+      grid-template-columns: minmax(220px, 1fr) auto;
+    }
+
+    .search {
+      background: #fffaf0;
+      border: 1px solid rgba(32, 49, 58, .26);
+      border-radius: 999px;
+      color: var(--ink);
+      font-size: 17px;
+      font-weight: 800;
+      padding: 12px 16px;
+      width: 100%;
+    }
+
+    .filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .filter {
+      background: rgba(255, 249, 234, .86);
+      border: 1px solid rgba(32, 49, 58, .22);
+      border-radius: 999px;
+      color: var(--night);
+      cursor: pointer;
+      font-weight: 900;
+      padding: 10px 12px;
+    }
+
+    .filter.active {
+      background: var(--leaf);
+      color: white;
+    }
+
+    .trait-grid {
+      display: grid;
+      gap: 10px;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      overflow: auto;
+      padding: 0 4px 76px 0;
+    }
+
+    .trait-card {
+      background: var(--paper);
+      border: 1px solid rgba(214, 187, 122, .86);
+      border-radius: 8px;
+      display: grid;
+      gap: 8px;
+      min-height: 174px;
+      padding: 14px;
+    }
+
+    .trait-card[data-type="defense"] { border-top: 7px solid var(--sky); }
+    .trait-card[data-type="feeding"] { border-top: 7px solid var(--leaf); }
+    .trait-card[data-type="attack"] { border-top: 7px solid var(--meat); }
+    .trait-card[data-type="combo"] { border-top: 7px solid var(--sun); }
+
+    .trait-card h3 {
+      font-size: 20px;
+    }
+
+    .trait-card p {
+      font-size: 15px;
+      line-height: 1.35;
+    }
+
+    .type-label {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 900;
+      text-transform: uppercase;
+    }
+
+    .controls {
+      align-items: center;
+      bottom: clamp(18px, 2.5vw, 34px);
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      left: 50%;
+      position: absolute;
+      transform: translateX(-50%);
+      z-index: 8;
+    }
+
+    .nav {
+      background: var(--leaf-dark);
+      border: 0;
+      border-radius: 999px;
+      color: var(--paper);
+      cursor: pointer;
+      font-weight: 900;
+      min-width: 46px;
+      padding: 12px 16px;
+    }
+
+    .nav.secondary {
+      background: #fffaf0;
+      border: 1px solid rgba(32, 49, 58, .28);
+      color: var(--leaf-dark);
+    }
+
+    a { color: var(--sky); font-weight: 900; }
+
+    @media (max-width: 1040px) {
+      .title-grid,
+      .two-col {
+        grid-template-columns: 1fr;
+      }
+
+      .flow,
+      .card-use-grid,
+      .combo-grid,
+      .score-grid,
+      .choices {
+        grid-template-columns: 1fr;
+      }
+
+      .trait-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .dict-tools {
+        grid-template-columns: 1fr;
+      }
+
+      .slide {
+        min-height: 100svh;
+        overflow-y: auto;
+        padding-inline: 24px;
+      }
+
+      .dictionary {
+        max-height: none;
+      }
+
+      .trait-grid {
+        overflow: visible;
+      }
+
+      .controls {
+        background: rgba(255, 241, 206, .9);
+        border-radius: 999px;
+        padding: 6px;
+      }
+    }
+
+    @media (max-width: 580px) {
+      .trait-grid,
+      .meters,
+      .trait-slots {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="deck">
+    <div class="progress" id="progress"></div>
+    <div class="meta">
+      <span>Evolution</span>
+      <span id="counter">1/16</span>
+      <span>Teach-to-play + Thai Trait Guide</span>
+    </div>
+
+    <section class="slide active">
+      <div class="title-grid">
+        <div class="stack">
+          <p class="kicker">adapt • feed • survive</p>
+          <h1>สอนเล่น Evolution</h1>
+          <p>เกมสร้างสายพันธุ์ให้รอดในระบบนิเวศที่อาหารจำกัด มีผู้ล่า และทุก species ต้องปรับตัวตามสถานการณ์</p>
+          <div class="note"><p><strong>เป้าหมายคาบ:</strong> ผู้เล่นใหม่เข้าใจ species board, การใช้การ์ด, การกินอาหาร, Carnivore และเปิดดูคำแปล trait ได้ระหว่างเล่น</p></div>
+        </div>
+        <div class="ecosystem" aria-label="ระบบนิเวศจำลองของ Evolution">
+          <div class="waterhole"></div>
+          <div class="animal a1">POP</div>
+          <div class="animal predator a2">CAR</div>
+          <div class="animal a3">FOOD</div>
+          <div class="animal a4">BODY</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="two-col">
+        <div class="stack">
+          <p class="kicker">core idea</p>
+          <h2>ชนะด้วยการกินและอยู่รอด</h2>
+          <ul>
+            <li>สร้าง species แล้วเพิ่มความสามารถด้วย trait cards</li>
+            <li>แย่งอาหารจาก Watering Hole หรือเปลี่ยนเป็น Carnivore เพื่อล่า</li>
+            <li>species ที่กินไม่พอจะเสีย Population และอาจสูญพันธุ์</li>
+            <li>คะแนนมาจากอาหารที่กิน, Population ที่รอด, และ Trait ที่ยังอยู่</li>
+          </ul>
+        </div>
+        <div class="panel">
+          <h3>ประโยคจำทั้งเกม</h3>
+          <p>สร้างสายพันธุ์ → ใส่ความสามารถ → แย่งอาหาร → เอาตัวรอดจากผู้ล่า</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="two-col">
+        <div class="stack">
+          <p class="kicker">species board</p>
+          <h2>หนึ่ง species มี 3 ส่วน</h2>
+          <p>ก่อนสอน trait ต้องให้ทุกคนอ่าน species board เป็นก่อน เพราะทุกการตัดสินใจวนอยู่กับ 3 ส่วนนี้</p>
+        </div>
+        <div class="species-board">
+          <h3>Species Board</h3>
+          <div class="meters">
+            <div class="meter"><strong>Population</strong><p>จำนวนตัวใน species นี้ และจำนวนอาหารที่ต้องกินให้เต็ม</p></div>
+            <div class="meter"><strong>Body Size</strong><p>ขนาดตัว ใช้เทียบเวลาโดนล่าหรือเวลาเป็น Carnivore</p></div>
+          </div>
+          <div class="trait-slots">
+            <div class="trait-slot"><strong>Trait 1</strong><p class="small">กินเก่ง</p></div>
+            <div class="trait-slot"><strong>Trait 2</strong><p class="small">ป้องกัน</p></div>
+            <div class="trait-slot"><strong>Trait 3</strong><p class="small">combo</p></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="stack">
+        <p class="kicker">round structure</p>
+        <h2>หนึ่งรอบมี 5 ขั้น</h2>
+        <div class="flow">
+          <div class="flow-step"><b>1</b><h3>Deal</h3><p>ได้ 3 ใบ + 1 ใบต่อ species</p></div>
+          <div class="flow-step"><b>2</b><h3>Select Food</h3><p>คว่ำการ์ด 1 ใบใส่ Watering Hole</p></div>
+          <div class="flow-step"><b>3</b><h3>Play Cards</h3><p>สร้าง/โต/ใส่ trait</p></div>
+          <div class="flow-step"><b>4</b><h3>Reveal Food</h3><p>เปิดอาหารและ trigger บาง trait</p></div>
+          <div class="flow-step"><b>5</b><h3>Feeding</h3><p>ผลัดกันให้อาหารหรือล่า</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="stack">
+        <p class="kicker">card economy</p>
+        <h2>การ์ด 1 ใบ ใช้ได้ 3 แบบ</h2>
+        <div class="card-use-grid">
+          <div class="mini-card"><span class="badge">T</span><strong>ใส่ Trait</strong><p>วางเป็นความสามารถให้ species สูงสุด 3 trait และห้ามซ้ำชื่อเดียวกันใน species เดียว</p></div>
+          <div class="mini-card"><span class="badge sun">+</span><strong>เพิ่มค่า</strong><p>ทิ้งการ์ดเพื่อเพิ่ม Population หรือ Body Size อย่างละไม่เกิน 6</p></div>
+          <div class="mini-card"><span class="badge sky">N</span><strong>สร้าง Species</strong><p>ทิ้งการ์ดเพื่อสร้าง species ใหม่ที่ปลายแถว เริ่ม Population 1 และ Body Size 1</p></div>
+        </div>
+        <div class="note"><p>มือใหม่ควรคิดว่า “การ์ดทุกใบคือทรัพยากร” จะใช้เป็นความสามารถ หรือทิ้งเพื่อทำให้ species โตขึ้นก็ได้</p></div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="two-col">
+        <div class="stack">
+          <p class="kicker">watering hole</p>
+          <h2>อาหารพืชคือของกลางที่ทุกคนแย่งกัน</h2>
+          <ul>
+            <li>ทุกคนคว่ำการ์ดอาหาร 1 ใบเพื่อกำหนดจำนวนอาหารในรอบนั้น</li>
+            <li>Non-Carnivore กินจาก Watering Hole ทีละ 1 เว้นแต่ trait ช่วยเพิ่ม</li>
+            <li>species กินเกิน Population ไม่ได้ ยกเว้นบาง trait เช่น Fat Tissue</li>
+            <li>อาหารที่กินแล้วถูกเก็บเป็นคะแนนตอนจบรอบ</li>
+          </ul>
+        </div>
+        <div class="panel stack">
+          <h3>ภาพจำ</h3>
+          <div class="food-row">
+            <span class="food">P</span><span class="food">P</span><span class="food">P</span><span class="food">P</span><span class="food">P</span>
+          </div>
+          <p>ถ้าอาหารพืชน้อย species ที่กินช้าอาจอด</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="two-col">
+        <div class="stack">
+          <p class="kicker">feeding</p>
+          <h2>Feeding: ผลัดกันให้อาหารทีละ species</h2>
+          <ul>
+            <li>ถึงตาเรา เลือก species ที่ยังหิวและกินได้</li>
+            <li>Non-Carnivore เอาอาหารพืชจาก Watering Hole</li>
+            <li>บาง trait เช่น Foraging, Cooperation, Long Neck ช่วยให้กินเร็วขึ้น</li>
+            <li>ถ้าไม่มีอาหารหรือกินไม่ได้ species นั้นจะรอจนจบ Feeding</li>
+          </ul>
+        </div>
+        <div class="panel quiz">
+          <h3>Quick check</h3>
+          <p>Species มี Population 4 ต้องกินอาหารกี่หน่วยถึงจะเต็ม?</p>
+          <div class="choices">
+            <button class="choice" data-q="pop" data-a="wrong">1</button>
+            <button class="choice" data-q="pop" data-a="wrong">3</button>
+            <button class="choice" data-q="pop" data-a="correct">4</button>
+            <button class="choice" data-q="pop" data-a="wrong">เท่ากับ Body Size</button>
+          </div>
+          <div class="feedback" id="pop-feedback">เลือกคำตอบเพื่อดู feedback</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="two-col">
+        <div class="stack">
+          <p class="kicker">carnivore</p>
+          <h2>Carnivore ไม่กินพืช ต้องล่า</h2>
+          <ul>
+            <li>Carnivore โจมตี species อื่นหรือของตัวเองได้</li>
+            <li>ต้องหิว และ Body Size ต้องมากกว่าเป้าหมาย</li>
+            <li>ต้องมี trait ที่เอาชนะ defensive trait ของเป้าหมายได้</li>
+            <li>โจมตีสำเร็จ: เป้าหมายลด Population 1 และ Carnivore ได้เนื้อตาม Body Size ของเหยื่อ</li>
+          </ul>
+        </div>
+        <div class="panel stack">
+          <h3>ตัวอย่าง</h3>
+          <p>Carnivore Body Size 4 โจมตีเหยื่อ Body Size 2 ได้ ถ้าไม่มี trait ป้องกันที่ขวางอยู่</p>
+          <div class="food-row"><span class="food meat">M</span><span class="food meat">M</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="quiz panel">
+        <p class="kicker">quick check</p>
+        <h2>Carnivore กินอาหารพืชจาก Watering Hole ได้ไหม?</h2>
+        <div class="choices">
+          <button class="choice" data-q="carnivore" data-a="wrong">ได้ ถ้ามี Foraging</button>
+          <button class="choice" data-q="carnivore" data-a="wrong">ได้ ถ้า Watering Hole เหลืออาหารเยอะ</button>
+          <button class="choice" data-q="carnivore" data-a="correct">ไม่ได้ ต้องกินจากการโจมตี</button>
+          <button class="choice" data-q="carnivore" data-a="wrong">ได้เฉพาะรอบแรก</button>
+        </div>
+        <div class="feedback" id="carnivore-feedback">เลือกคำตอบเพื่อดู feedback</div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="two-col">
+        <div class="stack">
+          <p class="kicker">starvation</p>
+          <h2>กินไม่พอ = Population ลด</h2>
+          <p>จบ Feeding แล้ว ถ้า species มีอาหารน้อยกว่า Population ส่วนที่ไม่ได้กินจะหายไป</p>
+          <div class="note warning"><p>ถ้า Population ลดเหลือ 0 species สูญพันธุ์ trait ถูกทิ้ง แต่เจ้าของได้การ์ดชดเชยตามจำนวน trait ที่หายไป</p></div>
+        </div>
+        <div class="panel quiz">
+          <h3>Quick check</h3>
+          <p>Population 5 แต่กินได้ 3 อาหาร จะเหลือ Population เท่าไร?</p>
+          <div class="choices">
+            <button class="choice" data-q="starve" data-a="wrong">5</button>
+            <button class="choice" data-q="starve" data-a="correct">3</button>
+            <button class="choice" data-q="starve" data-a="wrong">2</button>
+            <button class="choice" data-q="starve" data-a="wrong">0 ทันที</button>
+          </div>
+          <div class="feedback" id="starve-feedback">เลือกคำตอบเพื่อดู feedback</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="stack">
+        <p class="kicker">scoring</p>
+        <h2>นับคะแนนจาก 3 อย่าง</h2>
+        <div class="score-grid">
+          <div class="mini-card"><span class="badge">1</span><strong>อาหารที่กิน</strong><p>อาหารทุกชิ้นที่เข้าถุงคะแนนระหว่างเกม = คะแนนหลัก</p></div>
+          <div class="mini-card"><span class="badge sky">2</span><strong>Population ที่รอด</strong><p>species ที่ยังอยู่ตอนจบให้คะแนนตาม Population</p></div>
+          <div class="mini-card"><span class="badge sun">3</span><strong>Trait ที่รอด</strong><p>Trait cards บน species ที่ยังไม่สูญพันธุ์ให้คะแนนเพิ่ม</p></div>
+        </div>
+        <div class="note"><p>แปลเป็นภาษาคนเล่น: กินให้ได้เยอะ แต่ต้องไม่ทิ้งให้ species สำคัญตายก่อนจบเกม</p></div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="stack">
+        <p class="kicker">first game strategy</p>
+        <h2>แนวคิดเริ่มเล่นสำหรับมือใหม่</h2>
+        <div class="combo-grid">
+          <div class="mini-card"><span class="badge">F</span><strong>หาอาหารให้เร็ว</strong><p>Long Neck, Foraging, Cooperation ช่วยให้ species อิ่มก่อนคนอื่น</p></div>
+          <div class="mini-card"><span class="badge sky">D</span><strong>ป้องกันให้ถูกภัย</strong><p>ถ้ามี Carnivore ในเกม ให้คิดเรื่อง Body Size และ defensive trait</p></div>
+          <div class="mini-card"><span class="badge meat">C</span><strong>Carnivore ต้องมีแผน</strong><p>ถ้าจะล่า ต้องเพิ่ม Body Size หรือมี Pack Hunting/Intelligence เพื่อผ่านการป้องกัน</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="stack">
+        <p class="kicker">combo examples</p>
+        <h2>Combo ที่ควรเห็นก่อนเล่นจริง</h2>
+        <div class="combo-grid">
+          <div class="mini-card"><strong>Long Neck + Cooperation</strong><p>ได้อาหารฟรีจาก Food Bank แล้วส่งอาหารให้ species ข้างขวา</p></div>
+          <div class="mini-card"><strong>Foraging + Cooperation</strong><p>กินพืชเร็วและช่วย species ถัดไปกินไปพร้อมกัน</p></div>
+          <div class="mini-card"><strong>Carnivore + Pack Hunting</strong><p>ล่า species ที่ตัวใหญ่กว่าเดิมได้ เพราะนับพลังโจมตีสูงขึ้น</p></div>
+          <div class="mini-card"><strong>Warning Call + Symbiosis</strong><p>สร้างแนวป้องกันให้ species ข้าง ๆ และให้ตัวเล็กพึ่งตัวใหญ่</p></div>
+          <div class="mini-card"><strong>Fat Tissue + Burrowing</strong><p>กินเต็ม เก็บไขมัน และเมื่ออิ่มแล้วหลบผู้ล่าได้</p></div>
+          <div class="mini-card"><strong>Scavenger + Carnivore บนโต๊ะ</strong><p>เมื่อมีการล่าสำเร็จ Scavenger ได้อาหารเพิ่มโดยไม่ต้องแย่งพืช</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" data-slug="traits">
+      <div class="dictionary">
+        <div class="stack">
+          <p class="kicker">Thai trait guide</p>
+          <h2>พจนานุกรมการ์ดความสามารถ</h2>
+          <div class="dict-tools">
+            <input class="search" id="trait-search" type="search" placeholder="ค้นชื่อการ์ด เช่น Carnivore, คอยาว, ป้องกัน..." />
+            <div class="filters" aria-label="ตัวกรอง trait">
+              <button class="filter active" data-filter="all">ทั้งหมด</button>
+              <button class="filter" data-filter="feeding">หาอาหาร</button>
+              <button class="filter" data-filter="defense">ป้องกัน</button>
+              <button class="filter" data-filter="attack">ล่า</button>
+              <button class="filter" data-filter="combo">Combo</button>
+            </div>
+          </div>
+        </div>
+        <div class="trait-grid" id="trait-grid">
+          <article class="trait-card" data-type="attack" data-keywords="ambush ซุ่มโจมตี warning call"><span class="type-label">ล่า</span><h3>Ambush | ซุ่มโจมตี</h3><p>Carnivore โจมตี species ที่ได้รับการเตือนภัยจาก Warning Call ได้</p></article>
+          <article class="trait-card" data-type="defense" data-keywords="burrowing ขุดโพรง อิ่ม"><span class="type-label">ป้องกัน</span><h3>Burrowing | ขุดโพรง</h3><p>ถ้า species นี้กินอาหารครบแล้ว Carnivore โจมตีไม่ได้</p></article>
+          <article class="trait-card" data-type="attack" data-keywords="carnivore สัตว์กินเนื้อ ล่า meat"><span class="type-label">ล่า</span><h3>Carnivore | สัตว์กินเนื้อ</h3><p>กินพืชไม่ได้ ต้องโจมตี species อื่นเพื่อกินเนื้อ</p></article>
+          <article class="trait-card" data-type="defense" data-keywords="climbing ปีนป่าย"><span class="type-label">ป้องกัน</span><h3>Climbing | ปีนป่าย</h3><p>ถูกโจมตีได้เฉพาะ Carnivore ที่มี Climbing เหมือนกัน</p></article>
+          <article class="trait-card" data-type="feeding" data-keywords="cooperation ร่วมมือ ขวา"><span class="type-label">หาอาหาร</span><h3>Cooperation | ร่วมมือ</h3><p>เมื่อ species นี้ได้อาหาร species ทางขวาได้อาหารจากแหล่งเดียวกันเพิ่ม 1</p></article>
+          <article class="trait-card" data-type="defense" data-keywords="defensive herding รวมฝูง population"><span class="type-label">ป้องกัน</span><h3>Defensive Herding | รวมฝูงป้องกัน</h3><p>Carnivore ต้องมี Population มากกว่า จึงโจมตี species นี้ได้</p></article>
+          <article class="trait-card" data-type="combo" data-keywords="fat tissue สะสมไขมัน เก็บอาหาร"><span class="type-label">Combo</span><h3>Fat Tissue | สะสมไขมัน</h3><p>เมื่อกินเต็มแล้ว เก็บอาหารส่วนเกินไว้บนการ์ดเพื่อใช้รอบถัดไปได้ตาม Body Size</p></article>
+          <article class="trait-card" data-type="combo" data-keywords="fertile ขยายพันธุ์ population"><span class="type-label">Combo</span><h3>Fertile | ขยายพันธุ์ไว</h3><p>ตอนเริ่ม Feeding เพิ่ม Population ของ species นี้ 1</p></article>
+          <article class="trait-card" data-type="feeding" data-keywords="foraging หาอาหารเก่ง plant"><span class="type-label">หาอาหาร</span><h3>Foraging | หาอาหารเก่ง</h3><p>เวลากินอาหารพืชจาก Watering Hole ได้ 2 แทน 1 ถ้ายังไม่อิ่ม</p></article>
+          <article class="trait-card" data-type="defense" data-keywords="hard shell เปลือกแข็ง body size"><span class="type-label">ป้องกัน</span><h3>Hard Shell | เปลือกแข็ง</h3><p>นับ Body Size สูงขึ้นเวลา Carnivore เช็คว่าจะโจมตีได้ไหม</p></article>
+          <article class="trait-card" data-type="defense" data-keywords="horns เขา ลด population"><span class="type-label">ป้องกัน</span><h3>Horns | เขา</h3><p>Carnivore ที่โจมตี species นี้ต้องเสีย Population 1 ก่อนกิน</p></article>
+          <article class="trait-card" data-type="combo" data-keywords="intelligence ฉลาด discard card"><span class="type-label">Combo</span><h3>Intelligence | ฉลาด</h3><p>ทิ้งการ์ดเพื่อกินพืชเพิ่ม หรือถ้าเป็น Carnivore ใช้ข้าม trait ป้องกันบางอย่างในการโจมตี</p></article>
+          <article class="trait-card" data-type="feeding" data-keywords="long neck คอยาว food bank"><span class="type-label">หาอาหาร</span><h3>Long Neck | คอยาว</h3><p>ตอนเปิดอาหาร ได้อาหารพืชจาก Food Bank ทันที ไม่ต้องแย่งจาก Watering Hole</p></article>
+          <article class="trait-card" data-type="attack" data-keywords="pack hunting ล่าเป็นฝูง body size"><span class="type-label">ล่า</span><h3>Pack Hunting | ล่าเป็นฝูง</h3><p>Carnivore นับตัวเองใหญ่ขึ้นเวลาเช็คว่าจะโจมตี species อื่นได้ไหม</p></article>
+          <article class="trait-card" data-type="feeding" data-keywords="scavenger กินซาก meat carnivore"><span class="type-label">หาอาหาร</span><h3>Scavenger | กินซาก</h3><p>เมื่อ Carnivore โจมตีสำเร็จ species นี้ได้อาหารเนื้อเพิ่ม</p></article>
+          <article class="trait-card" data-type="defense" data-keywords="symbiosis พึ่งพาอาศัย ขวา body size"><span class="type-label">ป้องกัน</span><h3>Symbiosis | พึ่งพาอาศัย</h3><p>ถ้ามี species ทางขวาที่ Body Size ใหญ่กว่า species นี้จะถูกโจมตีไม่ได้</p></article>
+          <article class="trait-card" data-type="defense" data-keywords="warning call เสียงเตือนภัย ข้างๆ ambush"><span class="type-label">ป้องกัน</span><h3>Warning Call | เสียงเตือนภัย</h3><p>ป้องกัน species ข้าง ๆ จาก Carnivore ยกเว้นผู้ล่ามี Ambush</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="quiz panel">
+        <p class="kicker">pre-play quiz</p>
+        <h2>ถ้า species มี Population 3 กินได้ 3 แล้วมี Fat Tissue จะกินเพิ่มเพื่อเก็บไขมันได้ไหม?</h2>
+        <div class="choices">
+          <button class="choice" data-q="fat" data-a="correct">ได้ ถ้ายังมีพื้นที่เก็บตาม Body Size</button>
+          <button class="choice" data-q="fat" data-a="wrong">ไม่ได้ เพราะอิ่มแล้วห้ามกินทุกกรณี</button>
+          <button class="choice" data-q="fat" data-a="wrong">ได้เฉพาะ Carnivore เท่านั้น</button>
+          <button class="choice" data-q="fat" data-a="wrong">ได้ แต่ไม่นับผลรอบหน้า</button>
+        </div>
+        <div class="feedback" id="fat-feedback">เลือกคำตอบเพื่อดู feedback</div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="two-col">
+        <div class="stack">
+          <p class="kicker">ready to play</p>
+          <h2>Evolution ใน 6 ประโยค</h2>
+          <ul>
+            <li>แต่ละ species มี Population, Body Size และ Trait</li>
+            <li>การ์ดใช้ใส่ trait หรือทิ้งเพื่อเพิ่มค่า/สร้าง species ได้</li>
+            <li>อาหารพืชจาก Watering Hole มีจำกัดและต้องแย่งกัน</li>
+            <li>Carnivore กินพืชไม่ได้ ต้องล่า species อื่น</li>
+            <li>กินไม่พอ Population ลด และอาจสูญพันธุ์</li>
+            <li>ชนะด้วยอาหารที่กิน + Population ที่รอด + Trait ที่ยังอยู่</li>
+          </ul>
+        </div>
+        <div class="panel">
+          <h3>อ้างอิงกติกา</h3>
+          <p class="small">สไลด์นี้ใช้ภาพประกอบจำลองเพื่อการสอน ไม่ใช้ artwork จากเกมจริง และแปล trait แบบถอดความเพื่อใช้ในชั้นเรียน</p>
+          <p class="small"><a href="https://www.northstargames.com/products/evolution">NorthStar: Evolution</a></p>
+          <p class="small"><a href="https://evolutiondigitalboardgame.com/game-rules/">Evolution Digital: Game Rules</a></p>
+          <p class="small"><a href="https://cdn.1j1ju.com/medias/b2/96/cd-evolution-rulebook.pdf">Evolution Rulebook PDF</a></p>
+          <p class="small"><a href="https://www.ultraboardgames.com/evolution/trait-cards.php">UltraBoardGames: Trait Cards</a></p>
+        </div>
+      </div>
+    </section>
+
+    <div class="controls">
+      <button class="nav secondary" id="prev" aria-label="Previous slide">‹</button>
+      <button class="nav" id="fullscreen">เต็มจอ</button>
+      <button class="nav secondary" id="next" aria-label="Next slide">›</button>
+    </div>
+  </main>
+
+  <script>
+    const slides = Array.from(document.querySelectorAll('.slide'));
+    const progress = document.querySelector('#progress');
+    const counter = document.querySelector('#counter');
+    let index = 0;
+
+    function showSlide(nextIndex) {
+      index = Math.max(0, Math.min(slides.length - 1, nextIndex));
+      slides.forEach((slide, i) => slide.classList.toggle('active', i === index));
+      counter.textContent = `${index + 1}/${slides.length}`;
+      progress.style.width = `${((index + 1) / slides.length) * 100}%`;
+    }
+
+    function toggleFullscreen() {
+      const root = document.documentElement;
+      if (!document.fullscreenElement) root.requestFullscreen?.();
+      else document.exitFullscreen?.();
+    }
+
+    document.querySelector('#next').addEventListener('click', () => showSlide(index + 1));
+    document.querySelector('#prev').addEventListener('click', () => showSlide(index - 1));
+    document.querySelector('#fullscreen').addEventListener('click', toggleFullscreen);
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'ArrowRight' || event.key === 'PageDown' || event.key === ' ') showSlide(index + 1);
+      if (event.key === 'ArrowLeft' || event.key === 'PageUp') showSlide(index - 1);
+      if (event.key.toLowerCase() === 'f') toggleFullscreen();
+    });
+
+    const feedbackText = {
+      pop: {
+        correct: 'ถูกต้อง: Population คือจำนวนอาหารที่ species ต้องกินให้เต็ม',
+        wrong: 'ยังไม่ใช่: ดูที่ Population ไม่ใช่ Body Size'
+      },
+      carnivore: {
+        correct: 'ถูกต้อง: Carnivore ต้องกินจากการโจมตี species อื่น ไม่กินอาหารพืชจาก Watering Hole',
+        wrong: 'ยังไม่ใช่: Carnivore ไม่กินพืช แม้มี trait ที่ช่วยกินพืชกับ species ปกติ'
+      },
+      starve: {
+        correct: 'ถูกต้อง: กินได้ 3 จึงเหลือ Population 3 ส่วนที่อดหายไป 2',
+        wrong: 'ยังไม่ใช่: จบรอบ Population จะลดลงให้เท่ากับจำนวนอาหารที่กินได้'
+      },
+      fat: {
+        correct: 'ถูกต้อง: Fat Tissue เปิดทางให้เก็บอาหารส่วนเกินบน trait ได้ตาม Body Size',
+        wrong: 'ยังไม่ใช่: Fat Tissue คือข้อยกเว้นสำคัญของการกินเกิน Population เพื่อเก็บไว้รอบหน้า'
+      }
+    };
+
+    document.querySelectorAll('.choice').forEach((button) => {
+      button.addEventListener('click', () => {
+        const q = button.dataset.q;
+        const isCorrect = button.dataset.a === 'correct';
+        document.querySelectorAll(`.choice[data-q="${q}"]`).forEach((other) => {
+          other.classList.remove('correct', 'wrong');
+        });
+        button.classList.add(isCorrect ? 'correct' : 'wrong');
+        document.querySelector(`#${q}-feedback`).textContent = feedbackText[q][isCorrect ? 'correct' : 'wrong'];
+      });
+    });
+
+    const traitSearch = document.querySelector('#trait-search');
+    const traitCards = Array.from(document.querySelectorAll('.trait-card'));
+    let activeFilter = 'all';
+
+    function applyTraitFilter() {
+      const query = (traitSearch.value || '').trim().toLowerCase();
+      traitCards.forEach((card) => {
+        const typeMatch = activeFilter === 'all' || card.dataset.type === activeFilter;
+        const text = `${card.textContent} ${card.dataset.keywords}`.toLowerCase();
+        const queryMatch = !query || text.includes(query);
+        card.style.display = typeMatch && queryMatch ? 'grid' : 'none';
+      });
+    }
+
+    document.querySelectorAll('.filter').forEach((button) => {
+      button.addEventListener('click', () => {
+        document.querySelectorAll('.filter').forEach((filter) => filter.classList.remove('active'));
+        button.classList.add('active');
+        activeFilter = button.dataset.filter;
+        applyTraitFilter();
+      });
+    });
+
+    traitSearch.addEventListener('input', applyTraitFilter);
+    const initialHash = decodeURIComponent(location.hash.replace('#', ''));
+    const initialIndex = slides.findIndex((slide) => slide.dataset.slug === initialHash);
+    showSlide(initialIndex >= 0 ? initialIndex : 0);
+  </script>
+</body>
+</html>
