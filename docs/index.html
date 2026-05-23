@@ -3,7 +3,6 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta http-equiv="refresh" content="0; url=slides/week1/" />
   <title>SMA2106 Board Game Course</title>
   <style>
     :root {
@@ -11,6 +10,7 @@
       --ink: #22201c;
       --teal: #0f6f72;
       --coral: #ec6a5c;
+      --gold: #d9a441;
       --line: #eadcc4;
     }
 
@@ -34,8 +34,8 @@
 
     main {
       display: grid;
-      gap: 18px;
-      max-width: 760px;
+      gap: 24px;
+      max-width: 980px;
     }
 
     p {
@@ -60,7 +60,39 @@
       justify-content: center;
       padding: 12px 18px;
       text-decoration: none;
-      width: fit-content;
+    }
+
+    .lesson-grid {
+      display: grid;
+      gap: 16px;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .lesson-card {
+      background: rgba(255,255,255,.82);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      box-shadow: 0 18px 44px rgba(15, 111, 114, .12);
+      display: grid;
+      gap: 12px;
+      padding: 22px;
+    }
+
+    .lesson-card strong {
+      color: var(--teal);
+      font-size: 26px;
+      line-height: 1.1;
+    }
+
+    .lesson-card:first-child a {
+      background: var(--gold);
+      color: #2c2112;
+    }
+
+    @media (max-width: 720px) {
+      .lesson-grid {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
@@ -68,8 +100,19 @@
   <main>
     <p>SMA2106 Board Game Course</p>
     <h1>Interactive Slide Lesson</h1>
-    <p>กำลังเปิด Week 1 หากไม่เปลี่ยนหน้าอัตโนมัติ ให้กดปุ่มด้านล่าง</p>
-    <a href="slides/week1/">เปิด Week 1</a>
+    <p>เลือกสไลด์ที่ต้องการเปิดสอนในห้องเรียน</p>
+    <section class="lesson-grid">
+      <article class="lesson-card">
+        <strong>สอนเล่น Splendor</strong>
+        <p>สไลด์ teach-to-play พร้อมผังโต๊ะ การ์ดจำลอง simulator และ quick check</p>
+        <a href="slides/splendor-teach/">เปิดสไลด์สอนเล่น</a>
+      </article>
+      <article class="lesson-card">
+        <strong>Week 1: Strategic Thinking</strong>
+        <p>สไลด์บทนำรายวิชา ใช้ Splendor และ Chess เป็นฐานเชื่อมสู่กลยุทธ์</p>
+        <a href="slides/week1/">เปิด Week 1</a>
+      </article>
+    </section>
   </main>
 </body>
 </html>

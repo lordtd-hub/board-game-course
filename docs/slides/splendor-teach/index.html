@@ -1,0 +1,702 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Splendor Teach-to-Play Interactive Slides</title>
+  <style>
+    :root {
+      --velvet: #241616;
+      --wood: #5b321e;
+      --paper: #fff8eb;
+      --ink: #241f19;
+      --muted: #7a6b58;
+      --gold: #d9a441;
+      --ruby: #c83d3a;
+      --emerald: #1f9c68;
+      --sapphire: #2366b8;
+      --onyx: #22242a;
+      --diamond: #f8f0df;
+      --line: #e4cfaa;
+      --teal: #117a76;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background:
+        radial-gradient(circle at 15% 10%, rgba(217, 164, 65, .22), transparent 30%),
+        radial-gradient(circle at 86% 16%, rgba(31, 156, 104, .14), transparent 28%),
+        linear-gradient(135deg, #201211, #3b201a 50%, #0f3433);
+      color: var(--ink);
+      font-family: Arial, "Noto Sans Thai", sans-serif;
+      min-height: 100vh;
+    }
+
+    button, input { font: inherit; }
+
+    .deck {
+      display: grid;
+      min-height: 100vh;
+    }
+
+    .frame {
+      background:
+        linear-gradient(135deg, rgba(255, 248, 235, .99), rgba(255, 252, 244, .985)),
+        repeating-linear-gradient(90deg, rgba(91, 50, 30, .035), rgba(91, 50, 30, .035) 2px, transparent 2px, transparent 26px);
+      height: 100vh;
+      overflow: hidden;
+      position: relative;
+      width: 100vw;
+    }
+
+    .progress {
+      background: linear-gradient(90deg, var(--emerald), var(--gold), var(--ruby));
+      height: 8px;
+      left: 0;
+      position: absolute;
+      top: 0;
+      transition: width 160ms ease;
+      z-index: 3;
+    }
+
+    .meta {
+      color: var(--muted);
+      display: flex;
+      font-size: clamp(11px, 1.2vw, 14px);
+      font-weight: 800;
+      justify-content: space-between;
+      left: clamp(28px, 4vw, 72px);
+      position: absolute;
+      right: clamp(28px, 4vw, 72px);
+      top: clamp(18px, 2.4vw, 34px);
+      z-index: 3;
+    }
+
+    .slide {
+      display: grid;
+      height: 100%;
+      padding: clamp(72px, 8vw, 118px) clamp(56px, 8vw, 132px) clamp(72px, 7vw, 108px);
+      place-items: stretch;
+    }
+
+    .layout {
+      align-content: center;
+      display: grid;
+      gap: clamp(18px, 2.4vw, 30px);
+      height: 100%;
+    }
+
+    .split {
+      align-items: center;
+      grid-template-columns: minmax(0, 1fr) minmax(440px, .95fr);
+    }
+
+    .eyebrow {
+      color: var(--teal);
+      font-size: clamp(15px, 1.55vw, 22px);
+      font-weight: 900;
+      letter-spacing: 0;
+      margin: 0;
+      text-transform: uppercase;
+    }
+
+    h1, h2 {
+      letter-spacing: 0;
+      line-height: 1.05;
+      margin: 0;
+    }
+
+    h1 { font-size: clamp(52px, 7.3vw, 104px); max-width: 1250px; }
+    h2 { font-size: clamp(36px, 5.6vw, 72px); max-width: 1180px; }
+
+    p, li, span {
+      font-size: clamp(18px, 2vw, 28px);
+      line-height: 1.35;
+    }
+
+    p { margin: 0; }
+
+    .prompt {
+      color: var(--muted);
+      font-weight: 800;
+    }
+
+    .controls {
+      align-items: center;
+      background: rgba(36, 22, 22, .14);
+      border-radius: 999px;
+      bottom: 16px;
+      display: flex;
+      gap: 10px;
+      left: 50%;
+      opacity: .25;
+      padding: 8px;
+      position: fixed;
+      transform: translateX(-50%);
+      transition: opacity 160ms ease;
+      z-index: 10;
+    }
+
+    .controls:hover, .controls:focus-within { opacity: 1; }
+
+    button, .link-button {
+      align-items: center;
+      background: var(--teal);
+      border: 1px solid var(--teal);
+      border-radius: 8px;
+      color: white;
+      cursor: pointer;
+      display: inline-flex;
+      font-weight: 900;
+      justify-content: center;
+      min-height: 40px;
+      padding: 9px 15px;
+      text-decoration: none;
+    }
+
+    button.secondary {
+      background: white;
+      border-color: var(--line);
+      color: var(--ink);
+    }
+
+    button.active {
+      background: var(--ruby);
+      border-color: var(--ruby);
+      color: white;
+    }
+
+    button:disabled {
+      cursor: not-allowed;
+      opacity: .48;
+    }
+
+    .controls span {
+      color: rgba(255,255,255,.9);
+      font-size: 13px;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .table-scene {
+      background:
+        radial-gradient(circle at 30% 20%, rgba(255,255,255,.16), transparent 14%),
+        linear-gradient(135deg, #173f38, #102b29);
+      border: 14px solid var(--wood);
+      border-radius: 18px;
+      box-shadow: 0 26px 70px rgba(36, 22, 22, .24);
+      display: grid;
+      gap: 16px;
+      min-height: 500px;
+      padding: 26px;
+    }
+
+    .market {
+      display: grid;
+      gap: 12px;
+    }
+
+    .market-row {
+      align-items: center;
+      display: grid;
+      gap: 12px;
+      grid-template-columns: 72px repeat(4, 1fr);
+    }
+
+    .level-badge {
+      color: #ffe7aa;
+      font-size: 18px;
+      font-weight: 900;
+      text-align: center;
+    }
+
+    .dev-card, .noble-card, .mini-card, .feedback {
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      box-shadow: 0 16px 36px rgba(36, 22, 22, .12);
+      display: grid;
+      gap: 10px;
+      padding: 14px;
+    }
+
+    .dev-card {
+      min-height: 126px;
+    }
+
+    .dev-top {
+      align-items: center;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .score {
+      color: var(--gold);
+      font-size: 32px;
+      font-weight: 900;
+      line-height: 1;
+    }
+
+    .bonus {
+      border-radius: 50%;
+      height: 28px;
+      width: 28px;
+    }
+
+    .ruby { background: var(--ruby); }
+    .emerald { background: var(--emerald); }
+    .sapphire { background: var(--sapphire); }
+    .onyx { background: var(--onyx); }
+    .diamond { background: var(--diamond); border: 1px solid #d9cbb3; }
+    .gold { background: var(--gold); }
+
+    .cost {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .gem {
+      align-items: center;
+      border: 2px solid rgba(255,255,255,.72);
+      border-radius: 50%;
+      box-shadow: inset 0 2px 4px rgba(255,255,255,.42), 0 3px 7px rgba(0,0,0,.18);
+      color: white;
+      display: inline-flex;
+      font-size: 14px;
+      font-weight: 900;
+      height: 34px;
+      justify-content: center;
+      width: 34px;
+    }
+
+    .gem.diamond { color: #4a4031; }
+
+    .token-bank {
+      align-items: center;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+    }
+
+    .token-bank .gem { height: 48px; width: 48px; }
+
+    .flow {
+      display: grid;
+      gap: 16px;
+      grid-template-columns: repeat(4, 1fr);
+    }
+
+    .flow > div, .answer-card {
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      display: grid;
+      gap: 8px;
+      min-height: 152px;
+      padding: 20px;
+    }
+
+    .flow strong, .answer-card strong {
+      color: var(--ruby);
+      font-size: clamp(24px, 3vw, 42px);
+      line-height: 1.02;
+    }
+
+    .choice-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .quiz-grid, .three-grid, .two-grid {
+      display: grid;
+      gap: 16px;
+    }
+
+    .quiz-grid { grid-template-columns: repeat(2, 1fr); }
+    .three-grid { grid-template-columns: repeat(3, 1fr); }
+    .two-grid { grid-template-columns: repeat(2, 1fr); }
+
+    .answer-card {
+      min-height: 180px;
+      text-align: left;
+    }
+
+    .answer-card.correct {
+      border-color: rgba(31, 156, 104, .55);
+      box-shadow: 0 18px 48px rgba(31, 156, 104, .14);
+    }
+
+    .feedback {
+      border: 2px solid #b8ded8;
+      justify-self: start;
+      max-width: 980px;
+    }
+
+    .feedback strong {
+      color: var(--teal);
+      font-size: clamp(22px, 2.4vw, 36px);
+    }
+
+    .card-anatomy {
+      align-items: center;
+      display: grid;
+      gap: 28px;
+      grid-template-columns: 360px 1fr;
+    }
+
+    .big-card {
+      background: linear-gradient(180deg, white, #fff3df);
+      border: 2px solid var(--line);
+      border-radius: 18px;
+      box-shadow: 0 28px 70px rgba(36, 22, 22, .2);
+      display: grid;
+      gap: 22px;
+      min-height: 500px;
+      padding: 28px;
+    }
+
+    .big-card .score { font-size: 72px; }
+    .big-card .bonus { height: 54px; width: 54px; }
+    .big-card .gem { height: 46px; width: 46px; }
+
+    .label-list {
+      display: grid;
+      gap: 14px;
+      margin: 0;
+      padding-left: 1.2em;
+    }
+
+    .calc {
+      align-items: start;
+      display: grid;
+      gap: 18px;
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .counter-row {
+      align-items: center;
+      display: flex;
+      gap: 10px;
+      justify-content: space-between;
+    }
+
+    .counter-row span {
+      font-weight: 900;
+    }
+
+    .count-controls {
+      display: flex;
+      gap: 6px;
+    }
+
+    .count-controls button {
+      height: 38px;
+      min-height: 38px;
+      padding: 0;
+      width: 38px;
+    }
+
+    .noble-card {
+      align-content: center;
+      min-height: 220px;
+      text-align: center;
+    }
+
+    .noble-card strong {
+      color: var(--gold);
+      font-size: 64px;
+      line-height: 1;
+    }
+
+    .check-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .check-list button {
+      justify-content: flex-start;
+      text-align: left;
+    }
+
+    .video-card {
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      box-shadow: 0 20px 60px rgba(15, 63, 66, 0.14);
+      display: grid;
+      gap: 12px;
+      padding: 14px;
+    }
+
+    .video-frame {
+      aspect-ratio: 16 / 9;
+      background: #111;
+      border-radius: 8px;
+      overflow: hidden;
+      width: 100%;
+    }
+
+    .video-frame iframe {
+      border: 0;
+      height: 100%;
+      width: 100%;
+    }
+
+    .video-card a {
+      color: var(--teal);
+      font-size: clamp(14px, 1.35vw, 18px);
+      font-weight: 900;
+      text-decoration: none;
+    }
+
+    .notes {
+      background: #fff8dd;
+      border: 1px solid #ead388;
+      border-radius: 8px;
+      bottom: 24px;
+      color: #5c4313;
+      font-size: clamp(14px, 1.3vw, 18px);
+      font-weight: 800;
+      left: 34px;
+      line-height: 1.4;
+      padding: 10px 12px;
+      position: absolute;
+      right: 34px;
+      z-index: 4;
+    }
+
+    .small {
+      color: var(--muted);
+      font-size: clamp(14px, 1.4vw, 18px);
+      font-weight: 800;
+    }
+
+    @media (max-width: 760px) {
+      .frame { overflow-y: auto; }
+      .slide { padding: 58px 20px 52px; }
+      .split, .flow, .quiz-grid, .three-grid, .two-grid, .card-anatomy, .calc {
+        grid-template-columns: 1fr;
+      }
+      .market-row {
+        grid-template-columns: 1fr 1fr;
+      }
+      .controls {
+        left: 8px;
+        right: 8px;
+        transform: none;
+      }
+      .controls span { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <main class="deck">
+    <section class="frame">
+      <div class="progress" id="progress"></div>
+      <div class="meta">
+        <span>Splendor Teach-to-Play</span>
+        <span id="count">1/12</span>
+        <span id="minutes">5 นาที</span>
+        <span>รวม 65 นาที + เล่นจริง</span>
+      </div>
+      <div class="slide" id="slide"></div>
+      <aside class="notes" id="notes" hidden></aside>
+    </section>
+    <nav class="controls">
+      <button class="secondary" id="back">Back</button>
+      <button class="secondary" id="noteToggle">Notes</button>
+      <button class="secondary" id="full">Full screen</button>
+      <span id="elapsed">0 นาที / 65 นาที</span>
+      <button id="next">Next</button>
+    </nav>
+  </main>
+
+  <script>
+    const slides = [
+      { id: "title", minutes: 5, html: titleSlide },
+      { id: "setup", minutes: 6, html: setupSlide },
+      { id: "anatomy", minutes: 6, html: anatomySlide },
+      { id: "goal", minutes: 4, html: goalSlide },
+      { id: "actions", minutes: 8, html: actionsSlide },
+      { id: "take", minutes: 6, html: takeTokenSlide },
+      { id: "buy", minutes: 8, html: buySlide },
+      { id: "reserve", minutes: 5, html: reserveSlide },
+      { id: "noble", minutes: 6, html: nobleSlide },
+      { id: "quiz", minutes: 6, html: quizSlide },
+      { id: "video", minutes: 5, html: videoSlide },
+      { id: "play", minutes: 0, html: playSlide }
+    ];
+
+    const notes = {
+      title: "เป้าหมายคือให้ผู้เรียนเริ่มเล่นได้ในคาบ ไม่ใช่จำ rulebook ทั้งเล่ม",
+      setup: "ชี้บนโต๊ะจริงไปพร้อมกับสไลด์: แถวการ์ด 3 ระดับ, noble, token bank",
+      anatomy: "จับการ์ดจริง 1 ใบขึ้นมาเทียบกับสไลด์",
+      actions: "หลังสไลด์นี้ให้ผู้เรียนลองบอก action ที่ตัวเองอยากทำ 1 อย่าง",
+      buy: "เน้นว่าโบนัสคือส่วนลดถาวร ไม่ใช่ token ที่ใช้แล้วหมด",
+      noble: "ย้ำว่า noble ดูจากโบนัสบนการ์ด ไม่ใช่ token ในมือ",
+      quiz: "ใช้เป็น checkpoint ก่อนปล่อยเล่นจริง"
+    };
+
+    const totalMinutes = slides.reduce((sum, slide) => sum + slide.minutes, 0);
+    let index = 0;
+    let showNotes = false;
+    let actionChoice = "";
+    let tokenChoice = "";
+    let reserveChoice = "";
+    let quizChoice = "";
+    const bonuses = { sapphire: 1, emerald: 0, ruby: 0, onyx: 0, diamond: 0 };
+
+    function gem(color, text = "") {
+      return `<span class="gem ${color}">${text}</span>`;
+    }
+
+    function card({ score = 0, bonus = "emerald", cost = [] }) {
+      return `<div class="dev-card"><div class="dev-top"><strong class="score">${score || ""}</strong><span class="bonus ${bonus}"></span></div><div class="cost">${cost.map(([c, n]) => gem(c, n)).join("")}</div></div>`;
+    }
+
+    function minutesLabel(total) {
+      return total >= 60 ? `${Math.floor(total / 60)} ชม. ${total % 60} นาที` : `${total} นาที`;
+    }
+
+    function render() {
+      const current = slides[index];
+      document.getElementById("progress").style.width = `${((index + 1) / slides.length) * 100}%`;
+      document.getElementById("count").textContent = `${index + 1}/${slides.length}`;
+      document.getElementById("minutes").textContent = current.minutes ? minutesLabel(current.minutes) : "เริ่มเล่น";
+      document.getElementById("elapsed").textContent = `${minutesLabel(slides.slice(0, index).reduce((sum, slide) => sum + slide.minutes, 0))} / ${minutesLabel(totalMinutes)}`;
+      document.getElementById("back").disabled = index === 0;
+      document.getElementById("next").disabled = index === slides.length - 1;
+      document.getElementById("slide").innerHTML = current.html();
+      const noteBox = document.getElementById("notes");
+      noteBox.hidden = !showNotes;
+      noteBox.textContent = notes[current.id] || "ให้ผู้เรียนตอบก่อนค่อยเฉลย อย่าอ่านสไลด์แทนการเล่นจริง";
+      bindEvents();
+    }
+
+    function bindEvents() {
+      document.querySelectorAll("[data-action]").forEach((button) => {
+        button.addEventListener("click", () => {
+          actionChoice = button.dataset.action;
+          render();
+        });
+      });
+      document.querySelectorAll("[data-token]").forEach((button) => {
+        button.addEventListener("click", () => {
+          tokenChoice = button.dataset.token;
+          render();
+        });
+      });
+      document.querySelectorAll("[data-reserve]").forEach((button) => {
+        button.addEventListener("click", () => {
+          reserveChoice = button.dataset.reserve;
+          render();
+        });
+      });
+      document.querySelectorAll("[data-quiz]").forEach((button) => {
+        button.addEventListener("click", () => {
+          quizChoice = button.dataset.quiz;
+          render();
+        });
+      });
+      document.querySelectorAll("[data-bonus]").forEach((button) => {
+        button.addEventListener("click", () => {
+          bonuses[button.dataset.bonus] = Math.max(0, bonuses[button.dataset.bonus] + Number(button.dataset.delta));
+          render();
+        });
+      });
+    }
+
+    function titleSlide() {
+      return `<div class="layout split"><div><p class="eyebrow">Teach to Play</p><h1>เล่น Splendor ให้เป็นใน 15 นาทีแรก</h1><p class="prompt">เข้าใจเป้าหมาย อ่านการ์ดเป็น เลือก action ได้ แล้วเริ่มเล่นจริง</p></div><div class="table-scene"><div class="token-bank">${gem("emerald")} ${gem("sapphire")} ${gem("ruby")} ${gem("onyx")} ${gem("diamond")} ${gem("gold")}</div><div class="market"><div class="market-row"><span class="level-badge">III</span>${card({score:4,bonus:"ruby",cost:[["ruby",3],["onyx",3],["diamond",3]]})}${card({score:5,bonus:"sapphire",cost:[["sapphire",7]]})}${card({score:4,bonus:"emerald",cost:[["emerald",3],["diamond",6]]})}${card({score:3,bonus:"onyx",cost:[["onyx",5],["ruby",3]]})}</div><div class="market-row"><span class="level-badge">II</span>${card({score:2,bonus:"diamond",cost:[["sapphire",3],["emerald",2]]})}${card({score:1,bonus:"emerald",cost:[["emerald",2],["ruby",2],["onyx",3]]})}${card({score:2,bonus:"onyx",cost:[["diamond",5]]})}${card({score:1,bonus:"ruby",cost:[["ruby",2],["sapphire",3]]})}</div><div class="market-row"><span class="level-badge">I</span>${card({bonus:"sapphire",cost:[["sapphire",1],["emerald",1],["ruby",1]]})}${card({bonus:"ruby",cost:[["diamond",2],["onyx",1]]})}${card({bonus:"emerald",cost:[["emerald",2]]})}${card({bonus:"diamond",cost:[["ruby",1],["onyx",1],["diamond",1]]})}</div></div></div></div>`;
+    }
+
+    function setupSlide() {
+      return `<div class="layout"><p class="eyebrow">Setup Map</p><h2>บนโต๊ะมี 4 พื้นที่ที่ต้องมองออก</h2><div class="flow"><div><strong>1</strong><span>การ์ด 3 ระดับ หงายระดับละ 4 ใบ</span></div><div><strong>2</strong><span>กอง token 5 สี + gold joker</span></div><div><strong>3</strong><span>Noble tiles เท่ากับจำนวนผู้เล่น + 1</span></div><div><strong>4</strong><span>พื้นที่ส่วนตัวของแต่ละคน: token, การ์ดซื้อแล้ว, การ์ดจอง</span></div></div><p class="prompt">สิ่งที่ต้องเห็นเสมอ: คะแนนและโบนัสบนการ์ดที่ซื้อแล้ว</p></div>`;
+    }
+
+    function anatomySlide() {
+      return `<div class="layout card-anatomy"><div class="big-card"><div class="dev-top"><strong class="score">2</strong><span class="bonus sapphire"></span></div><div class="cost">${gem("sapphire",3)}${gem("emerald",2)}${gem("diamond",1)}</div><p class="small">ตัวอย่างการ์ดพัฒนา</p></div><div><p class="eyebrow">Read the card</p><h2>อ่านการ์ดเป็น เกมจะง่ายทันที</h2><ol class="label-list"><li><strong>มุมซ้ายบน:</strong> คะแนน prestige ที่ได้เมื่อซื้อ</li><li><strong>มุมขวาบน:</strong> โบนัสถาวรที่ลดราคาการ์ดในอนาคต</li><li><strong>ด้านล่าง:</strong> token ที่ต้องจ่ายหลังหักส่วนลดแล้ว</li></ol></div></div>`;
+    }
+
+    function goalSlide() {
+      return `<div class="layout split"><div><p class="eyebrow">Goal</p><h2>เป้าหมายคือ 15 คะแนน แต่เส้นทางมีหลายแบบ</h2><p class="prompt">แต้มมาจากการ์ดและ noble การเล่นที่ดีคือทำให้ทุกตาสร้างทางไปสู่แต้ม</p></div><div class="three-grid"><div class="answer-card"><strong>Race</strong><span>รีบซื้อการ์ดมีแต้ม</span></div><div class="answer-card"><strong>Engine</strong><span>ซื้อการ์ดถูกเพื่อสร้างส่วนลด</span></div><div class="answer-card"><strong>Noble</strong><span>สะสมสีให้ noble มาเอง</span></div></div></div>`;
+    }
+
+    function actionsSlide() {
+      const feedback = {
+        three: ["หยิบ 3 สีต่างกัน", "ดีเมื่อยังเปิดทางหลายแผน และต้องการ flexibility"],
+        two: ["หยิบ 2 สีเดียวกัน", "ทำได้เฉพาะถ้ากองสีนั้นมีอย่างน้อย 4 เม็ดก่อนหยิบ"],
+        reserve: ["จองการ์ด", "ได้ gold ถ้ามี เหมาะกับการเก็บการ์ดสำคัญหรือกันคู่แข่ง"],
+        buy: ["ซื้อการ์ด", "จ่าย token หลังหักโบนัส แล้วการ์ดกลายเป็นส่วนลดถาวร"]
+      }[actionChoice];
+      return `<div class="layout"><p class="eyebrow">One Turn = One Action</p><h2>ใน 1 ตา คุณเลือกได้ 1 อย่าง</h2><div class="choice-row"><button class="${actionChoice==="three"?"active":"secondary"}" data-action="three">หยิบ 3 สีต่างกัน</button><button class="${actionChoice==="two"?"active":"secondary"}" data-action="two">หยิบ 2 สีเดียวกัน</button><button class="${actionChoice==="reserve"?"active":"secondary"}" data-action="reserve">จองการ์ด + gold</button><button class="${actionChoice==="buy"?"active":"secondary"}" data-action="buy">ซื้อการ์ด</button></div>${feedback ? `<div class="feedback"><strong>${feedback[0]}</strong><p>${feedback[1]}</p></div>` : `<p class="prompt">ลองกด action หนึ่งอย่าง แล้วดูว่าเมื่อไรควรเลือก action นั้น</p>`}</div>`;
+    }
+
+    function takeTokenSlide() {
+      const feedback = {
+        ok3: ["ถูกต้อง", "หยิบ 3 สีต่างกันได้ เป็น action ที่เปิดทางกว้าง"],
+        ok2: ["ถูกต้องแบบมีเงื่อนไข", "หยิบ 2 สีเดียวกันได้ ถ้าก่อนหยิบมีสีนั้นเหลืออย่างน้อย 4 เม็ด"],
+        bad2: ["ยังไม่ถูก", "ถ้ากองสีนั้นเหลือแค่ 3 ก่อนหยิบ จะหยิบ 2 สีเดียวกันไม่ได้"],
+        over: ["ต้องระวัง", "จบตาห้ามมี token เกิน 10 เม็ด ถ้าเกินต้องคืน"]
+      }[tokenChoice];
+      return `<div class="layout split"><div><p class="eyebrow">Token Check</p><h2>สถานการณ์ไหนหยิบ token ได้ถูกกฎ</h2><div class="choice-row"><button class="${tokenChoice==="ok3"?"active":"secondary"}" data-token="ok3">หยิบ เขียว-น้ำเงิน-แดง</button><button class="${tokenChoice==="ok2"?"active":"secondary"}" data-token="ok2">หยิบ เขียว 2 เม็ด จากกองที่มี 4</button><button class="${tokenChoice==="bad2"?"active":"secondary"}" data-token="bad2">หยิบ แดง 2 เม็ด จากกองที่มี 3</button><button class="${tokenChoice==="over"?"active":"secondary"}" data-token="over">จบตาแล้วมี token 11 เม็ด</button></div>${feedback ? `<div class="feedback"><strong>${feedback[0]}</strong><p>${feedback[1]}</p></div>` : `<p class="prompt">เลือกหนึ่งสถานการณ์เพื่อเช็กความเข้าใจ</p>`}</div><div class="table-scene"><div class="token-bank">${gem("emerald","4")}${gem("sapphire","5")}${gem("ruby","3")}${gem("onyx","6")}${gem("diamond","4")}${gem("gold","5")}</div></div></div>`;
+    }
+
+    function buySlide() {
+      const need = { sapphire: 3, emerald: 2, diamond: 1 };
+      const pay = Object.fromEntries(Object.entries(need).map(([color, amount]) => [color, Math.max(0, amount - (bonuses[color] || 0))]));
+      const totalPay = Object.values(pay).reduce((sum, value) => sum + value, 0);
+      return `<div class="layout calc"><div><p class="eyebrow">Buy Simulator</p><h2>โบนัสถาวรทำให้การ์ดถูกลง</h2><div class="big-card"><div class="dev-top"><strong class="score">2</strong><span class="bonus sapphire"></span></div><div class="cost">${gem("sapphire",3)}${gem("emerald",2)}${gem("diamond",1)}</div></div></div><div><div class="mini-card"><p class="prompt">ปรับจำนวนโบนัสที่มี แล้วดู token ที่ต้องจ่ายจริง</p>${Object.keys(bonuses).map((color) => `<div class="counter-row"><span>${gem(color)} โบนัส ${bonuses[color]}</span><div class="count-controls"><button data-bonus="${color}" data-delta="-1">-</button><button data-bonus="${color}" data-delta="1">+</button></div></div>`).join("")}</div><div class="feedback"><strong>ต้องจ่ายจริง ${totalPay} token</strong><p>${gem("sapphire", pay.sapphire)} ${gem("emerald", pay.emerald)} ${gem("diamond", pay.diamond)} ถ้าโบนัสครบพอ บางใบซื้อได้ฟรี</p></div></div></div>`;
+    }
+
+    function reserveSlide() {
+      const feedback = {
+        gold: ["ได้ gold ถ้ามีเหลือ", "Gold เป็น joker ใช้แทนสีใดก็ได้ตอนซื้อการ์ด"],
+        limit: ["ถือการ์ดจองได้สูงสุด 3 ใบ", "จองแล้วทิ้งไม่ได้ ต้องซื้อจากมือในตาหลัง"],
+        block: ["ใช้กันคู่แข่งได้", "ถ้าคู่แข่งกำลังจะซื้อใบสำคัญ การจองคือ tactical move ที่แรงมาก"]
+      }[reserveChoice];
+      return `<div class="layout split"><div><p class="eyebrow">Reserve</p><h2>จองการ์ดคือ action ที่มีพลังมากกว่าที่คิด</h2><div class="choice-row"><button class="${reserveChoice==="gold"?"active":"secondary"}" data-reserve="gold">ได้ gold?</button><button class="${reserveChoice==="limit"?"active":"secondary"}" data-reserve="limit">จองได้กี่ใบ?</button><button class="${reserveChoice==="block"?"active":"secondary"}" data-reserve="block">ใช้บล็อกได้ไหม?</button></div>${feedback ? `<div class="feedback"><strong>${feedback[0]}</strong><p>${feedback[1]}</p></div>` : `<p class="prompt">กดดู 3 เหตุผลที่ควรจองการ์ด</p>`}</div><div class="two-grid">${card({score:4,bonus:"ruby",cost:[["ruby",3],["onyx",3],["diamond",3]]})}<div class="noble-card"><strong>${gem("gold")}</strong><span>รับ gold ถ้ามีเหลือ</span></div></div></div>`;
+    }
+
+    function nobleSlide() {
+      return `<div class="layout split"><div><p class="eyebrow">Nobles</p><h2>Noble ดูจากโบนัส ไม่ใช่ token ในมือ</h2><p class="prompt">ท้ายตา ถ้าโบนัสสีตรงตาม noble ต้องการ noble จะมาเอง ได้ 3 คะแนน และไม่ใช้ action</p></div><div class="two-grid"><div class="noble-card"><strong>3</strong><div class="cost">${gem("emerald",3)}${gem("sapphire",3)}${gem("ruby",3)}</div><span>ต้องมีโบนัสสีละ 3</span></div><div class="answer-card correct"><strong>ตัวอย่าง</strong><span>มีการ์ดเขียว 3 ใบ น้ำเงิน 3 ใบ แดง 3 ใบ = noble มา แม้ token ในมือจะไม่มีเลย</span></div></div></div>`;
+    }
+
+    function quizSlide() {
+      const feedback = {
+        a: ["ยังไม่ใช่", "Gold ไม่ได้หยิบจากกองตามใจ ต้องได้จากการจองการ์ดเท่านั้น"],
+        b: ["ถูกต้อง", "ซื้อการ์ดแล้วโบนัสอยู่ถาวร ช่วยลดราคาการ์ดในอนาคต"],
+        c: ["ยังไม่ใช่", "Noble ใช้โบนัสบนการ์ด ไม่ใช่ token ในมือ"],
+        d: ["ยังไม่ใช่", "จบตาห้ามมี token เกิน 10 เม็ด"]
+      }[quizChoice];
+      return `<div class="layout"><p class="eyebrow">Quick Check</p><h2>ข้อใดถูกต้องที่สุดก่อนเริ่มเล่นจริง</h2><div class="quiz-grid"><button class="answer-card ${quizChoice==="a"?"active":""}" data-quiz="a"><strong>A</strong><span>หยิบ gold ได้ทุกครั้งที่อยากได้ joker</span></button><button class="answer-card ${quizChoice==="b"?"active correct":""}" data-quiz="b"><strong>B</strong><span>ซื้อการ์ดแล้วได้โบนัสถาวรสำหรับลดราคาการ์ดถัดไป</span></button><button class="answer-card ${quizChoice==="c"?"active":""}" data-quiz="c"><strong>C</strong><span>Noble มาเมื่อมี token สีตรงตามที่ noble ต้องการ</span></button><button class="answer-card ${quizChoice==="d"?"active":""}" data-quiz="d"><strong>D</strong><span>ถือ token กี่เม็ดก็ได้ถ้ายังซื้อการ์ดไม่ได้</span></button></div>${feedback ? `<div class="feedback"><strong>${feedback[0]}</strong><p>${feedback[1]}</p></div>` : `<p class="prompt">ให้ผู้เรียนตอบก่อนปล่อยเล่นจริง</p>`}</div>`;
+    }
+
+    function videoSlide() {
+      return `<div class="layout split"><div><p class="eyebrow">Video Support</p><h2>ใช้คลิปไทยช่วยสรุปกติกา แล้วหยุดให้ลองจับของจริง</h2><p class="prompt">แนะนำให้เปิดเฉพาะช่วงกติกาหลัก แล้ว pause ทุกครั้งที่มี action สำคัญ</p></div><div class="video-card"><div class="video-frame"><iframe src="https://www.youtube.com/embed/Mc8-4zA-nDw" title="วิธีเล่น Splendor โดย Wanderer" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></div><a href="https://www.youtube.com/watch?v=Mc8-4zA-nDw" target="_blank" rel="noreferrer">เปิดบน YouTube ถ้าคลิปไม่โหลด</a></div></div>`;
+    }
+
+    function playSlide() {
+      return `<div class="layout"><p class="eyebrow">Start Playing</p><h2>เริ่มเล่นจริง: 3 ตาแรกต้องพูดเหตุผลก่อนจบตา</h2><div class="flow"><div><strong>ดู</strong><span>การ์ดที่ซื้อได้และการ์ดที่อยากไปต่อ</span></div><div><strong>เลือก</strong><span>หนึ่ง action จาก 4 อย่าง</span></div><div><strong>อธิบาย</strong><span>ตานี้แก้ปัญหาอะไร</span></div><div><strong>บันทึก</strong><span>Observer จด decision สำคัญ</span></div></div><a class="link-button" href="../week1/">กลับไปสไลด์ Week 1</a></div>`;
+    }
+
+    document.getElementById("next").addEventListener("click", () => { index = Math.min(index + 1, slides.length - 1); showNotes = false; render(); });
+    document.getElementById("back").addEventListener("click", () => { index = Math.max(index - 1, 0); showNotes = false; render(); });
+    document.getElementById("noteToggle").addEventListener("click", () => { showNotes = !showNotes; render(); });
+    document.getElementById("full").addEventListener("click", async () => {
+      if (document.fullscreenElement) await document.exitFullscreen();
+      else await document.documentElement.requestFullscreen();
+    });
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "ArrowRight" || event.key === " ") document.getElementById("next").click();
+      if (event.key === "ArrowLeft") document.getElementById("back").click();
+    });
+    render();
+  </script>
+</body>
+</html>
