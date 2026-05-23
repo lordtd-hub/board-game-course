@@ -1,0 +1,929 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Stone Age Teach-to-Play Interactive Slides</title>
+  <style>
+    :root {
+      --cave: #263238;
+      --slate: #39535a;
+      --moss: #3f7d5b;
+      --river: #2f7f91;
+      --clay: #b8573d;
+      --ochre: #d1a044;
+      --hide: #fff3d6;
+      --hide-2: #f4dfb9;
+      --bone: #fffaf0;
+      --ink: #1f1b16;
+      --muted: #6a5c4b;
+      --line: #d4b77a;
+      --bad: #b64141;
+      --good: #2f7d5b;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      background:
+        radial-gradient(circle at 12% 14%, rgba(209, 160, 68, .26), transparent 28%),
+        radial-gradient(circle at 88% 18%, rgba(47, 127, 145, .2), transparent 28%),
+        linear-gradient(135deg, #182429, #263238 48%, #4a2e20);
+      color: var(--ink);
+      font-family: Arial, "Noto Sans Thai", sans-serif;
+      margin: 0;
+      min-height: 100vh;
+    }
+
+    button { font: inherit; }
+
+    .deck {
+      background:
+        linear-gradient(135deg, rgba(255, 243, 214, .99), rgba(244, 223, 185, .98)),
+        radial-gradient(circle at 90% 82%, rgba(63, 125, 91, .13), transparent 30%);
+      min-height: 100vh;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .deck::before {
+      border: 2px solid rgba(74, 46, 32, .18);
+      content: "";
+      inset: clamp(14px, 2vw, 28px);
+      pointer-events: none;
+      position: absolute;
+      z-index: 1;
+    }
+
+    .progress {
+      background: linear-gradient(90deg, var(--moss), var(--river), var(--ochre), var(--clay));
+      height: 8px;
+      left: 0;
+      position: absolute;
+      top: 0;
+      transition: width 160ms ease;
+      z-index: 5;
+    }
+
+    .meta {
+      color: var(--muted);
+      display: flex;
+      font-size: clamp(11px, 1vw, 14px);
+      font-weight: 900;
+      justify-content: space-between;
+      left: clamp(24px, 4vw, 70px);
+      position: absolute;
+      right: clamp(24px, 4vw, 70px);
+      top: clamp(18px, 2.2vw, 32px);
+      z-index: 6;
+    }
+
+    .slide {
+      display: none;
+      min-height: 100vh;
+      padding: clamp(72px, 8vw, 108px) clamp(40px, 7vw, 116px) clamp(80px, 7vw, 108px);
+      position: relative;
+      z-index: 2;
+    }
+
+    .slide.active { display: grid; }
+
+    h1, h2, h3, p { margin: 0; }
+
+    h1 {
+      color: var(--cave);
+      font-size: clamp(52px, 8vw, 112px);
+      line-height: .96;
+      max-width: 930px;
+    }
+
+    h2 {
+      color: var(--cave);
+      font-size: clamp(34px, 5vw, 68px);
+      line-height: 1.04;
+    }
+
+    h3 {
+      color: var(--slate);
+      font-size: clamp(20px, 2.1vw, 31px);
+      line-height: 1.15;
+    }
+
+    p, li {
+      font-size: clamp(16px, 1.65vw, 24px);
+      line-height: 1.42;
+    }
+
+    ul {
+      display: grid;
+      gap: 12px;
+      margin: 0;
+      padding-left: 1.2em;
+    }
+
+    .kicker {
+      color: var(--river);
+      font-size: clamp(15px, 1.35vw, 20px);
+      font-weight: 900;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+    }
+
+    .title-grid,
+    .two-col {
+      align-items: center;
+      display: grid;
+      gap: clamp(24px, 4vw, 58px);
+      grid-template-columns: minmax(0, 1fr) minmax(330px, .95fr);
+    }
+
+    .stack {
+      display: grid;
+      gap: clamp(16px, 2vw, 26px);
+    }
+
+    .panel {
+      background: rgba(255, 250, 240, .66);
+      border: 1px solid rgba(212, 183, 122, .84);
+      border-radius: 8px;
+      box-shadow: 0 24px 58px rgba(38, 50, 56, .12);
+      padding: clamp(18px, 2.2vw, 30px);
+    }
+
+    .note {
+      background: rgba(47, 127, 145, .1);
+      border-left: 8px solid var(--river);
+      border-radius: 8px;
+      padding: 16px 18px;
+    }
+
+    .warn {
+      background: rgba(184, 87, 61, .1);
+      border-left-color: var(--clay);
+    }
+
+    .small {
+      color: var(--muted);
+      font-size: clamp(13px, 1.15vw, 17px);
+      line-height: 1.4;
+    }
+
+    .hero-board {
+      aspect-ratio: 1.15;
+      background:
+        radial-gradient(circle at 40% 38%, rgba(209, 160, 68, .28), transparent 23%),
+        linear-gradient(145deg, rgba(63, 125, 91, .32), rgba(47, 127, 145, .2)),
+        var(--hide);
+      border: 2px solid var(--line);
+      border-radius: 8px;
+      box-shadow: 0 28px 70px rgba(38, 50, 56, .18);
+      display: grid;
+      grid-template-areas:
+        "field tool hut"
+        "wood clay stone"
+        "hunt card build";
+      gap: 12px;
+      padding: 20px;
+    }
+
+    .spot {
+      align-items: center;
+      background: rgba(255, 250, 240, .82);
+      border: 1px solid rgba(38, 50, 56, .18);
+      border-radius: 8px;
+      display: grid;
+      gap: 5px;
+      justify-items: center;
+      min-height: 90px;
+      padding: 10px;
+      text-align: center;
+    }
+
+    .spot b {
+      color: var(--cave);
+      font-size: clamp(16px, 1.5vw, 23px);
+      line-height: 1.05;
+    }
+
+    .spot span {
+      color: var(--muted);
+      font-size: clamp(12px, 1vw, 15px);
+      font-weight: 800;
+    }
+
+    .icon {
+      align-items: center;
+      border-radius: 999px;
+      color: white;
+      display: inline-grid;
+      font-size: 26px;
+      font-weight: 900;
+      height: 54px;
+      justify-content: center;
+      width: 54px;
+    }
+
+    .i-food { background: var(--moss); }
+    .i-wood { background: #7a4a27; }
+    .i-clay { background: var(--clay); }
+    .i-stone { background: #757b7d; }
+    .i-gold { background: var(--ochre); color: #33240c; }
+    .i-tool { background: var(--slate); }
+    .i-card { background: var(--river); }
+
+    .flow {
+      display: grid;
+      gap: 14px;
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .flow-step {
+      background: rgba(255, 250, 240, .7);
+      border: 1px solid rgba(212, 183, 122, .8);
+      border-radius: 8px;
+      display: grid;
+      gap: 12px;
+      min-height: 190px;
+      padding: 22px;
+    }
+
+    .flow-step b {
+      color: var(--clay);
+      font-size: clamp(36px, 4vw, 64px);
+      line-height: .85;
+    }
+
+    .action-grid,
+    .resource-grid {
+      display: grid;
+      gap: 14px;
+      grid-template-columns: repeat(5, 1fr);
+    }
+
+    .action-grid { grid-template-columns: repeat(3, 1fr); }
+
+    .tile {
+      background: var(--bone);
+      border: 1px solid rgba(212, 183, 122, .84);
+      border-radius: 8px;
+      display: grid;
+      gap: 10px;
+      min-height: 180px;
+      padding: 18px;
+    }
+
+    .tile strong {
+      color: var(--cave);
+      font-size: clamp(19px, 2vw, 29px);
+      line-height: 1.05;
+    }
+
+    .formula {
+      background: var(--cave);
+      border-radius: 8px;
+      color: var(--hide);
+      font-size: clamp(26px, 4.5vw, 58px);
+      font-weight: 900;
+      line-height: 1.1;
+      padding: clamp(20px, 3vw, 34px);
+      text-align: center;
+    }
+
+    .dice-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+    }
+
+    .die {
+      align-items: center;
+      background: #fff;
+      border: 2px solid rgba(38, 50, 56, .35);
+      border-radius: 8px;
+      box-shadow: 0 8px 18px rgba(38, 50, 56, .12);
+      color: var(--cave);
+      display: inline-grid;
+      font-size: 32px;
+      font-weight: 900;
+      height: 60px;
+      justify-content: center;
+      width: 60px;
+    }
+
+    .sim-grid {
+      display: grid;
+      gap: 16px;
+      grid-template-columns: .95fr 1.05fr;
+    }
+
+    .control-row {
+      display: grid;
+      gap: 12px;
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    label {
+      color: var(--muted);
+      display: grid;
+      font-size: 14px;
+      font-weight: 900;
+      gap: 6px;
+    }
+
+    select,
+    input {
+      background: #fffaf0;
+      border: 1px solid rgba(38, 50, 56, .28);
+      border-radius: 8px;
+      color: var(--ink);
+      font-size: 18px;
+      font-weight: 800;
+      padding: 12px;
+      width: 100%;
+    }
+
+    .primary {
+      background: var(--cave);
+      border: 0;
+      border-radius: 999px;
+      color: var(--hide);
+      cursor: pointer;
+      font-weight: 900;
+      padding: 13px 18px;
+    }
+
+    .result {
+      background: rgba(63, 125, 91, .12);
+      border: 1px dashed rgba(63, 125, 91, .6);
+      border-radius: 8px;
+      color: var(--cave);
+      font-size: clamp(20px, 2.4vw, 34px);
+      font-weight: 900;
+      min-height: 92px;
+      padding: 18px;
+    }
+
+    .route {
+      display: grid;
+      gap: 14px;
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .route-card {
+      background: var(--bone);
+      border: 1px solid rgba(212, 183, 122, .84);
+      border-radius: 8px;
+      display: grid;
+      gap: 12px;
+      min-height: 240px;
+      padding: 22px;
+    }
+
+    .route-card strong {
+      color: var(--cave);
+      font-size: clamp(26px, 3vw, 42px);
+      line-height: 1;
+    }
+
+    .quiz {
+      display: grid;
+      gap: 16px;
+    }
+
+    .choices {
+      display: grid;
+      gap: 12px;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .choice {
+      background: #fffaf0;
+      border: 2px solid rgba(38, 50, 56, .18);
+      border-radius: 8px;
+      color: var(--ink);
+      cursor: pointer;
+      font-weight: 900;
+      min-height: 64px;
+      padding: 14px 16px;
+      text-align: left;
+    }
+
+    .choice:hover,
+    .choice:focus-visible {
+      border-color: var(--river);
+      outline: 3px solid rgba(47, 127, 145, .18);
+    }
+
+    .choice.correct {
+      background: rgba(47, 125, 91, .14);
+      border-color: var(--good);
+    }
+
+    .choice.wrong {
+      background: rgba(184, 87, 61, .14);
+      border-color: var(--bad);
+    }
+
+    .feedback {
+      background: rgba(255, 250, 240, .72);
+      border: 1px dashed rgba(38, 50, 56, .35);
+      border-radius: 8px;
+      color: var(--cave);
+      font-size: clamp(16px, 1.45vw, 22px);
+      font-weight: 800;
+      min-height: 58px;
+      padding: 14px 16px;
+    }
+
+    .controls {
+      align-items: center;
+      bottom: clamp(18px, 2.5vw, 34px);
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      left: 50%;
+      position: absolute;
+      transform: translateX(-50%);
+      z-index: 8;
+    }
+
+    .nav {
+      background: var(--cave);
+      border: 0;
+      border-radius: 999px;
+      color: var(--hide);
+      cursor: pointer;
+      font-weight: 900;
+      min-width: 46px;
+      padding: 12px 16px;
+    }
+
+    .nav.secondary {
+      background: #fffaf0;
+      border: 1px solid rgba(38, 50, 56, .28);
+      color: var(--cave);
+    }
+
+    a {
+      color: var(--river);
+      font-weight: 900;
+    }
+
+    @media (max-width: 980px) {
+      .title-grid,
+      .two-col,
+      .sim-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .flow,
+      .action-grid,
+      .resource-grid,
+      .route,
+      .choices,
+      .control-row {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-board {
+        grid-template-areas: none;
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .slide {
+        min-height: 100svh;
+        overflow-y: auto;
+        padding-inline: 24px;
+      }
+
+      .controls {
+        background: rgba(255, 243, 214, .9);
+        border-radius: 999px;
+        padding: 6px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="deck" id="deck">
+    <div class="progress" id="progress"></div>
+    <div class="meta">
+      <span>Stone Age</span>
+      <span id="counter">1/15</span>
+      <span>Teach-to-play</span>
+    </div>
+
+    <section class="slide active">
+      <div class="title-grid">
+        <div class="stack">
+          <p class="kicker">worker placement • dice • resource planning</p>
+          <h1>สอนเล่น Stone Age</h1>
+          <p>เป้าหมายคือพานักศึกษาจาก “ไม่เคยเล่น” ไปสู่ “เริ่มเล่นรอบแรกได้เอง” โดยเข้าใจการวางคน ทอยเต๋า ใช้เครื่องมือ และเลี้ยงเผ่า</p>
+          <div class="note">
+            <p><strong>ประโยคจำทั้งเกม:</strong> วางคนก่อน ทำงานทีหลัง แล้วอย่าลืมเลี้ยงเผ่า</p>
+          </div>
+        </div>
+        <div class="hero-board" aria-label="แผนที่บอร์ด Stone Age แบบจำลอง">
+          <div class="spot"><span class="icon i-food">F</span><b>Hunt</b><span>อาหาร</span></div>
+          <div class="spot"><span class="icon i-tool">T</span><b>Tool</b><span>เพิ่มแต้ม</span></div>
+          <div class="spot"><span class="icon i-card">C</span><b>Cards</b><span>ท้ายเกม</span></div>
+          <div class="spot"><span class="icon i-wood">W</span><b>Forest</b><span>ไม้</span></div>
+          <div class="spot"><span class="icon i-clay">B</span><b>Clay</b><span>ดิน</span></div>
+          <div class="spot"><span class="icon i-stone">S</span><b>Quarry</b><span>หิน</span></div>
+          <div class="spot"><span class="icon i-gold">G</span><b>River</b><span>ทอง</span></div>
+          <div class="spot"><span class="icon i-food">H</span><b>Hut</b><span>เพิ่มคน</span></div>
+          <div class="spot"><span class="icon i-card">B</span><b>Build</b><span>คะแนน</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="stack">
+        <p class="kicker">core loop</p>
+        <h2>หนึ่งรอบมี 3 ขั้น</h2>
+        <div class="flow">
+          <div class="flow-step"><b>1</b><h3>วางคน</h3><p>ผลัดกันส่งคนงานไปจอง action บนบอร์ด</p></div>
+          <div class="flow-step"><b>2</b><h3>ทำงาน</h3><p>เก็บคนกลับ แล้วรับผลของแต่ละตำแหน่ง</p></div>
+          <div class="flow-step"><b>3</b><h3>เลี้ยงคน</h3><p>ท้ายรอบ คนงานทุกคนต้องกินอาหาร 1 หน่วย</p></div>
+        </div>
+        <div class="note"><p>จุดที่มือใหม่พลาดบ่อย: วางคนไม่ได้แปลว่าได้ของทันที แค่จองสิทธิ์ไว้ก่อน</p></div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="two-col">
+        <div class="stack">
+          <p class="kicker">worker placement</p>
+          <h2>วางคน = จองพื้นที่ก่อนคนอื่น</h2>
+          <ul>
+            <li>แต่ละจุดมีจำนวนช่องจำกัด</li>
+            <li>ช่องเต็มแล้ว คนอื่นเข้าไม่ได้ในรอบนั้น</li>
+            <li>วางที่เดิมซ้ำในรอบเดียวกันไม่ได้</li>
+            <li>บางจุดต้องวางหลายคนพร้อมกัน เช่น Hut ใช้ 2 คน</li>
+          </ul>
+        </div>
+        <div class="panel quiz">
+          <h3>ถามก่อนเฉลย</h3>
+          <p>ถ้าเราวางคน 2 คนที่ Forest แล้ว ต่อมาอยากเพิ่มอีก 1 คนที่ Forest ในรอบเดียวกัน ทำได้ไหม?</p>
+          <div class="choices">
+            <button class="choice" data-q="same" data-a="wrong">ทำได้ ถ้ายังมีช่องว่าง</button>
+            <button class="choice" data-q="same" data-a="correct">ทำไม่ได้ เพราะวางจุดเดิมซ้ำไม่ได้</button>
+          </div>
+          <div class="feedback" id="same-feedback">เลือกคำตอบเพื่อดู feedback</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="stack">
+        <p class="kicker">village actions</p>
+        <h2>3 จุดในหมู่บ้านที่ไม่ต้องทอยเต๋า</h2>
+        <div class="action-grid">
+          <div class="tile"><span class="icon i-tool">T</span><strong>Tool Maker</strong><p>ได้เครื่องมือ ใช้เพิ่มผลรวมหลังทอยลูกเต๋า</p></div>
+          <div class="tile"><span class="icon i-food">F</span><strong>Field</strong><p>เพิ่ม agriculture ทำให้ได้อาหารฟรีท้ายรอบ</p></div>
+          <div class="tile"><span class="icon i-food">H</span><strong>Hut</strong><p>ใช้คนงาน 2 คน เพื่อเพิ่มคนงานถาวร 1 คน</p></div>
+        </div>
+        <div class="note warn"><p>คนงานเพิ่มทำให้มี action มากขึ้น แต่ท้ายรอบก็ต้องเลี้ยงเพิ่มด้วย</p></div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="stack">
+        <p class="kicker">resource rule</p>
+        <h2>หาอาหารและทรัพยากรด้วยสูตรเดียว</h2>
+        <div class="formula">จำนวนที่ได้ = floor(ผลรวมลูกเต๋า ÷ ค่าพื้นที่)</div>
+        <div class="resource-grid">
+          <div class="tile"><span class="icon i-food">2</span><strong>Hunt</strong><p>หาร 2 เพื่อได้อาหาร</p></div>
+          <div class="tile"><span class="icon i-wood">3</span><strong>Forest</strong><p>หาร 3 เพื่อได้ไม้</p></div>
+          <div class="tile"><span class="icon i-clay">4</span><strong>Clay</strong><p>หาร 4 เพื่อได้ดิน</p></div>
+          <div class="tile"><span class="icon i-stone">5</span><strong>Quarry</strong><p>หาร 5 เพื่อได้หิน</p></div>
+          <div class="tile"><span class="icon i-gold">6</span><strong>River</strong><p>หาร 6 เพื่อได้ทอง</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="two-col">
+        <div class="stack">
+          <p class="kicker">guided example</p>
+          <h2>ตัวอย่าง: หาไม้จาก Forest</h2>
+          <p>วาง 3 คนที่ Forest จึงทอย 3 ลูก</p>
+          <div class="dice-row">
+            <span class="die">4</span>
+            <span class="die">3</span>
+            <span class="die">5</span>
+          </div>
+          <div class="formula">4 + 3 + 5 = 12<br>12 ÷ 3 = 4 ไม้</div>
+        </div>
+        <div class="panel quiz">
+          <h3>Quick check</h3>
+          <p>ถ้าวาง 2 คนที่ River แล้วทอยรวมได้ 11 จะได้ทองกี่อัน?</p>
+          <div class="choices">
+            <button class="choice" data-q="gold" data-a="wrong">0</button>
+            <button class="choice" data-q="gold" data-a="correct">1</button>
+            <button class="choice" data-q="gold" data-a="wrong">2</button>
+            <button class="choice" data-q="gold" data-a="wrong">11</button>
+          </div>
+          <div class="feedback" id="gold-feedback">เลือกคำตอบเพื่อดู feedback</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="sim-grid">
+        <div class="stack">
+          <p class="kicker">interactive simulator</p>
+          <h2>ลองทอยและใช้ Tool</h2>
+          <p>เลือกพื้นที่ จำนวนคนงาน และค่าเครื่องมือ แล้วดูว่าได้ของกี่ชิ้น</p>
+          <div class="panel">
+            <div class="control-row">
+              <label>พื้นที่
+                <select id="area">
+                  <option value="2">Hunt อาหาร ÷2</option>
+                  <option value="3">Forest ไม้ ÷3</option>
+                  <option value="4">Clay ดิน ÷4</option>
+                  <option value="5">Quarry หิน ÷5</option>
+                  <option value="6">River ทอง ÷6</option>
+                </select>
+              </label>
+              <label>คนงาน
+                <input id="workers" type="number" min="1" max="7" value="3" />
+              </label>
+              <label>Tool เพิ่มแต้ม
+                <input id="tool" type="number" min="0" max="12" value="0" />
+              </label>
+            </div>
+            <button class="primary" id="roll">ทอยตัวอย่าง</button>
+          </div>
+        </div>
+        <div class="panel stack">
+          <h3>ผลลัพธ์</h3>
+          <div class="dice-row" id="dice"></div>
+          <div class="result" id="sim-result">กดทอยเพื่อดูผล</div>
+          <p class="small">Tool ใช้หลังทอย จึงควรใช้ตอนที่เพิ่มแล้วทำให้ข้ามเกณฑ์หารพอดี</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="two-col">
+        <div class="stack">
+          <p class="kicker">why tools matter</p>
+          <h2>Tool เปลี่ยนเศษให้เป็นของเพิ่ม</h2>
+          <p>หาไม้ ทอยได้ 11 ปกติได้ 3 ไม้ เพราะ 11 ÷ 3 ปัดลง</p>
+          <div class="formula">11 ÷ 3 = 3<br>ใช้ Tool +1 → 12 ÷ 3 = 4</div>
+        </div>
+        <div class="panel quiz">
+          <h3>Quick check</h3>
+          <p>หาทอง ทอยได้ 11 ถ้าใช้ Tool +1 จะได้ทองกี่อัน?</p>
+          <div class="choices">
+            <button class="choice" data-q="tool" data-a="wrong">1 ทอง</button>
+            <button class="choice" data-q="tool" data-a="correct">2 ทอง</button>
+            <button class="choice" data-q="tool" data-a="wrong">3 ทอง</button>
+            <button class="choice" data-q="tool" data-a="wrong">ใช้ Tool กับทองไม่ได้</button>
+          </div>
+          <div class="feedback" id="tool-feedback">เลือกคำตอบเพื่อดู feedback</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="stack">
+        <p class="kicker">turn resources into points</p>
+        <h2>ได้ของแล้วต้องแปลงเป็นคะแนน</h2>
+        <div class="route">
+          <div class="route-card">
+            <strong>Building</strong>
+            <p>จ่ายทรัพยากรเพื่อสร้างบ้าน ได้คะแนนทันที เข้าใจง่าย เห็นผลเร็ว</p>
+            <div class="note"><p>เหมาะกับผู้เล่นใหม่ที่อยากเห็นคะแนนเดินชัดเจน</p></div>
+          </div>
+          <div class="route-card">
+            <strong>Civilization Card</strong>
+            <p>จ่ายทรัพยากรเพื่อรับ bonus หรือคะแนนท้ายเกม บางใบไม่แรงทันทีแต่ชนะท้ายเกมได้</p>
+            <div class="note"><p>ให้ดูว่า card เข้ากับสิ่งที่เราสะสมอยู่ไหม</p></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="two-col">
+        <div class="stack">
+          <p class="kicker">feeding phase</p>
+          <h2>ท้ายรอบต้องเลี้ยงเผ่า</h2>
+          <ul>
+            <li>รับอาหารจาก agriculture ก่อน</li>
+            <li>จ่ายอาหาร 1 หน่วยต่อคนงาน 1 คน</li>
+            <li>อาหารไม่พอ ใช้ทรัพยากรแทนได้</li>
+            <li>ถ้าไม่จ่ายหรือจ่ายไม่ครบ เสีย 10 คะแนน</li>
+          </ul>
+          <div class="note warn"><p>เพิ่มคนงานเร็วเกินไปโดยไม่มีแผนอาหาร อาจทำให้เสียคะแนนเอง</p></div>
+        </div>
+        <div class="panel quiz">
+          <h3>Food check</h3>
+          <p>มีคนงาน 7 คน และ agriculture 3 ต้องหาอาหารเพิ่มอย่างน้อยเท่าไร?</p>
+          <div class="choices">
+            <button class="choice" data-q="food" data-a="wrong">3</button>
+            <button class="choice" data-q="food" data-a="correct">4</button>
+            <button class="choice" data-q="food" data-a="wrong">7</button>
+            <button class="choice" data-q="food" data-a="wrong">10</button>
+          </div>
+          <div class="feedback" id="food-feedback">เลือกคำตอบเพื่อดู feedback</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="stack">
+        <p class="kicker">beginner plan</p>
+        <h2>รอบแรกควรคิดอะไร</h2>
+        <div class="flow">
+          <div class="flow-step"><b>A</b><h3>ไม่อด</h3><p>ดูว่าอาหารท้ายรอบพอไหม หรือมีแผนหาอาหารไหม</p></div>
+          <div class="flow-step"><b>B</b><h3>มีของ</h3><p>หาไม้หรือดินไว้ซื้อ card หรือสร้าง building ง่าย ๆ</p></div>
+          <div class="flow-step"><b>C</b><h3>ลงทุน</h3><p>ถ้า Tool หรือ Field ว่าง เป็นจุดเริ่มที่ปลอดภัย</p></div>
+        </div>
+        <div class="note"><p>รอบแรกเล่นให้รอด รอบต่อไปค่อยเล่นให้คุ้ม</p></div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="two-col">
+        <div class="stack">
+          <p class="kicker">walkthrough</p>
+          <h2>ลองคิดตาม 1 รอบ</h2>
+          <p>คุณมีคนงาน 5 คน อาหาร 12 วางดังนี้</p>
+          <div class="route">
+            <div class="tile"><span class="icon i-food">2</span><strong>Hunt</strong><p>วาง 2 คน ทอย 2 ลูกเพื่อหาอาหาร</p></div>
+            <div class="tile"><span class="icon i-wood">2</span><strong>Forest</strong><p>วาง 2 คน ทอย 2 ลูกเพื่อหาไม้</p></div>
+            <div class="tile"><span class="icon i-tool">1</span><strong>Tool Maker</strong><p>วาง 1 คน ได้ Tool 1</p></div>
+          </div>
+        </div>
+        <div class="panel">
+          <h3>สิ่งที่ต้องระวัง</h3>
+          <ul>
+            <li>ท้ายรอบต้องจ่ายอาหาร 5</li>
+            <li>ถ้าหาอาหารได้ไม่พอ ต้องใช้ resource แทนหรือเสีย 10 คะแนน</li>
+            <li>Tool ที่ได้จะช่วยรอบต่อ ๆ ไปให้ทอยคุ้มขึ้น</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="quiz panel">
+        <p class="kicker">pre-play quiz</p>
+        <h2>ถ้าตอบได้ เริ่มเล่นได้</h2>
+        <p>หา Stone ที่ Quarry ทอยรวมได้ 14 ได้หินกี่อัน?</p>
+        <div class="choices">
+          <button class="choice" data-q="stone" data-a="wrong">1</button>
+          <button class="choice" data-q="stone" data-a="correct">2</button>
+          <button class="choice" data-q="stone" data-a="wrong">3</button>
+          <button class="choice" data-q="stone" data-a="wrong">14</button>
+        </div>
+        <div class="feedback" id="stone-feedback">เลือกคำตอบเพื่อดู feedback</div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="quiz panel">
+        <p class="kicker">pre-play quiz</p>
+        <h2>Hut ต้องใช้คนงานกี่คน?</h2>
+        <div class="choices">
+          <button class="choice" data-q="hut" data-a="wrong">1 คน</button>
+          <button class="choice" data-q="hut" data-a="correct">2 คนพร้อมกัน</button>
+          <button class="choice" data-q="hut" data-a="wrong">3 คน</button>
+          <button class="choice" data-q="hut" data-a="wrong">กี่คนก็ได้</button>
+        </div>
+        <div class="feedback" id="hut-feedback">เลือกคำตอบเพื่อดู feedback</div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="two-col">
+        <div class="stack">
+          <p class="kicker">ready to play</p>
+          <h2>Stone Age ใน 5 ประโยค</h2>
+          <ul>
+            <li>วางคนเพื่อจอง action</li>
+            <li>ทอยเต๋าตามจำนวนคนงาน</li>
+            <li>หารตามชนิด resource แล้วปัดลง</li>
+            <li>ใช้ Tool หลังทอยเพื่อเพิ่มผลรวม</li>
+            <li>ท้ายรอบต้องเลี้ยงคนทุกคน</li>
+          </ul>
+        </div>
+        <div class="panel">
+          <h3>อ้างอิงกติกา</h3>
+          <p class="small">สไลด์นี้ใช้ภาพประกอบจำลองเพื่อการสอน ไม่ใช้ภาพจากตัวเกมจริง</p>
+          <p class="small"><a href="https://www.ultraboardgames.com/stone-age/game-rules.php/">UltraBoardGames: Stone Age rules</a></p>
+          <p class="small"><a href="https://www.rulespal.com/stone-age/rulebook">RulesPal: Stone Age rulebook</a></p>
+          <p class="small"><a href="https://images.zmangames.com/filer_public/ee/88/ee888bec-5000-4566-9fb0-8c6475e706a0/zm7260_stone_age_rules.pdf">Z-Man Games rulebook PDF</a></p>
+        </div>
+      </div>
+    </section>
+
+    <div class="controls">
+      <button class="nav secondary" id="prev" aria-label="Previous slide">‹</button>
+      <button class="nav" id="fullscreen">เต็มจอ</button>
+      <button class="nav secondary" id="next" aria-label="Next slide">›</button>
+    </div>
+  </main>
+
+  <script>
+    const slides = Array.from(document.querySelectorAll('.slide'));
+    const progress = document.querySelector('#progress');
+    const counter = document.querySelector('#counter');
+    let index = 0;
+
+    function showSlide(nextIndex) {
+      index = Math.max(0, Math.min(slides.length - 1, nextIndex));
+      slides.forEach((slide, i) => slide.classList.toggle('active', i === index));
+      counter.textContent = `${index + 1}/${slides.length}`;
+      progress.style.width = `${((index + 1) / slides.length) * 100}%`;
+    }
+
+    function toggleFullscreen() {
+      const root = document.documentElement;
+      if (!document.fullscreenElement) root.requestFullscreen?.();
+      else document.exitFullscreen?.();
+    }
+
+    document.querySelector('#next').addEventListener('click', () => showSlide(index + 1));
+    document.querySelector('#prev').addEventListener('click', () => showSlide(index - 1));
+    document.querySelector('#fullscreen').addEventListener('click', toggleFullscreen);
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'ArrowRight' || event.key === 'PageDown' || event.key === ' ') showSlide(index + 1);
+      if (event.key === 'ArrowLeft' || event.key === 'PageUp') showSlide(index - 1);
+      if (event.key.toLowerCase() === 'f') toggleFullscreen();
+    });
+
+    const feedbackText = {
+      same: {
+        correct: 'ถูกต้อง: ในรอบเดียวกัน เราวางคนเพิ่มในตำแหน่งที่ตัวเองวางไว้แล้วไม่ได้ ต้องตัดสินใจจำนวนคนตั้งแต่ตอนวาง',
+        wrong: 'ยังไม่ใช่: ถึงช่องจะว่าง แต่เรากลับไปเติมคนในตำแหน่งเดิมของตัวเองในรอบเดียวกันไม่ได้'
+      },
+      gold: {
+        correct: 'ถูกต้อง: River หาร 6 ดังนั้น 11 ÷ 6 ปัดลง ได้ 1 ทอง',
+        wrong: 'ยังไม่ใช่: ทองใช้ River ซึ่งหาร 6 และต้องปัดเศษลง'
+      },
+      tool: {
+        correct: 'ถูกต้อง: 11 + 1 = 12 และทองหาร 6 จึงได้ 2 ทอง',
+        wrong: 'ยังไม่ใช่: Tool ใช้หลังทอยเพื่อเพิ่มผลรวม ถ้าข้ามเกณฑ์หารได้จะได้ของเพิ่ม'
+      },
+      food: {
+        correct: 'ถูกต้อง: ต้องเลี้ยง 7 คน ได้อาหารจาก agriculture 3 จึงยังขาด 4',
+        wrong: 'ยังไม่ใช่: นับคนงานทั้งหมดก่อน แล้วหักอาหารที่ผลิตจาก agriculture'
+      },
+      stone: {
+        correct: 'ถูกต้อง: Quarry หาร 5 ดังนั้น 14 ÷ 5 ปัดลง ได้ 2 หิน',
+        wrong: 'ยังไม่ใช่: Stone ใช้ Quarry ซึ่งหาร 5 และปัดเศษลง'
+      },
+      hut: {
+        correct: 'ถูกต้อง: Hut ต้องวาง 2 คนพร้อมกันเพื่อเพิ่มคนงานถาวร 1 คน',
+        wrong: 'ยังไม่ใช่: Hut เป็น action พิเศษที่ต้องใช้คนงาน 2 คนพร้อมกัน'
+      }
+    };
+
+    document.querySelectorAll('.choice').forEach((button) => {
+      button.addEventListener('click', () => {
+        const q = button.dataset.q;
+        const isCorrect = button.dataset.a === 'correct';
+        document.querySelectorAll(`.choice[data-q="${q}"]`).forEach((other) => {
+          other.classList.remove('correct', 'wrong');
+        });
+        button.classList.add(isCorrect ? 'correct' : 'wrong');
+        document.querySelector(`#${q}-feedback`).textContent = feedbackText[q][isCorrect ? 'correct' : 'wrong'];
+      });
+    });
+
+    const area = document.querySelector('#area');
+    const workers = document.querySelector('#workers');
+    const tool = document.querySelector('#tool');
+    const dice = document.querySelector('#dice');
+    const simResult = document.querySelector('#sim-result');
+    const areaNames = {
+      2: 'อาหาร',
+      3: 'ไม้',
+      4: 'ดิน',
+      5: 'หิน',
+      6: 'ทอง'
+    };
+
+    function rollDemo() {
+      const divisor = Number(area.value);
+      const workerCount = Math.max(1, Math.min(7, Number(workers.value) || 1));
+      const toolValue = Math.max(0, Number(tool.value) || 0);
+      const rolls = Array.from({ length: workerCount }, () => 1 + Math.floor(Math.random() * 6));
+      const sum = rolls.reduce((total, value) => total + value, 0);
+      const adjusted = sum + toolValue;
+      const gained = Math.floor(adjusted / divisor);
+      dice.innerHTML = rolls.map((value) => `<span class="die">${value}</span>`).join('');
+      simResult.textContent = `ทอยรวม ${sum}${toolValue ? ` + Tool ${toolValue} = ${adjusted}` : ''} | หาร ${divisor} ได้ ${gained} ${areaNames[divisor]}`;
+    }
+
+    document.querySelector('#roll').addEventListener('click', rollDemo);
+    showSlide(0);
+  </script>
+</body>
+</html>
