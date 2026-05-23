@@ -1,0 +1,814 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Avalon Teach-to-Play Interactive Slides</title>
+  <style>
+    :root {
+      --night: #111827;
+      --castle: #243447;
+      --blue: #2f67b1;
+      --blue-soft: #dcecff;
+      --red: #9f2f3f;
+      --red-soft: #ffe2e6;
+      --gold: #d6a642;
+      --paper: #fff7e6;
+      --paper-2: #f4e4c4;
+      --ink: #1f1b17;
+      --muted: #675d52;
+      --line: #cfb26e;
+      --green: #2f7b58;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      background:
+        radial-gradient(circle at 12% 8%, rgba(214, 166, 66, .24), transparent 28%),
+        radial-gradient(circle at 86% 14%, rgba(47, 103, 177, .22), transparent 30%),
+        linear-gradient(135deg, #0d1320, #172033 48%, #4d1421);
+      color: var(--ink);
+      font-family: Arial, "Noto Sans Thai", sans-serif;
+      margin: 0;
+      min-height: 100vh;
+    }
+
+    button { font: inherit; }
+
+    .deck {
+      background:
+        linear-gradient(135deg, rgba(255, 247, 230, .99), rgba(244, 228, 196, .98)),
+        radial-gradient(circle at 90% 82%, rgba(47, 103, 177, .12), transparent 30%);
+      min-height: 100vh;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .deck::before {
+      border: 2px solid rgba(36, 52, 71, .18);
+      content: "";
+      inset: clamp(14px, 2vw, 28px);
+      pointer-events: none;
+      position: absolute;
+      z-index: 1;
+    }
+
+    .progress {
+      background: linear-gradient(90deg, var(--blue), var(--gold), var(--red));
+      height: 8px;
+      left: 0;
+      position: absolute;
+      top: 0;
+      transition: width 160ms ease;
+      z-index: 5;
+    }
+
+    .meta {
+      color: var(--muted);
+      display: flex;
+      font-size: clamp(11px, 1vw, 14px);
+      font-weight: 900;
+      justify-content: space-between;
+      left: clamp(24px, 4vw, 70px);
+      position: absolute;
+      right: clamp(24px, 4vw, 70px);
+      top: clamp(18px, 2.2vw, 32px);
+      z-index: 6;
+    }
+
+    .slide {
+      display: none;
+      min-height: 100vh;
+      padding: clamp(72px, 8vw, 108px) clamp(40px, 7vw, 116px) clamp(80px, 7vw, 108px);
+      position: relative;
+      z-index: 2;
+    }
+
+    .slide.active { display: grid; }
+
+    h1, h2, h3, p { margin: 0; }
+
+    h1 {
+      color: var(--night);
+      font-size: clamp(52px, 8vw, 112px);
+      line-height: .96;
+      max-width: 930px;
+    }
+
+    h2 {
+      color: var(--night);
+      font-size: clamp(34px, 5vw, 68px);
+      line-height: 1.04;
+    }
+
+    h3 {
+      color: var(--castle);
+      font-size: clamp(20px, 2.1vw, 31px);
+      line-height: 1.15;
+    }
+
+    p, li {
+      font-size: clamp(16px, 1.65vw, 24px);
+      line-height: 1.42;
+    }
+
+    ul {
+      display: grid;
+      gap: 12px;
+      margin: 0;
+      padding-left: 1.2em;
+    }
+
+    .kicker {
+      color: var(--blue);
+      font-size: clamp(15px, 1.35vw, 20px);
+      font-weight: 900;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+    }
+
+    .title-grid,
+    .two-col {
+      align-items: center;
+      display: grid;
+      gap: clamp(24px, 4vw, 58px);
+      grid-template-columns: minmax(0, 1fr) minmax(330px, .95fr);
+    }
+
+    .stack {
+      display: grid;
+      gap: clamp(16px, 2vw, 26px);
+    }
+
+    .panel {
+      background: rgba(255, 250, 240, .72);
+      border: 1px solid rgba(207, 178, 110, .86);
+      border-radius: 8px;
+      box-shadow: 0 24px 58px rgba(17, 24, 39, .12);
+      padding: clamp(18px, 2.2vw, 30px);
+    }
+
+    .note {
+      background: rgba(47, 103, 177, .1);
+      border-left: 8px solid var(--blue);
+      border-radius: 8px;
+      padding: 16px 18px;
+    }
+
+    .warning {
+      background: rgba(159, 47, 63, .1);
+      border-left-color: var(--red);
+    }
+
+    .small {
+      color: var(--muted);
+      font-size: clamp(13px, 1.15vw, 17px);
+      line-height: 1.4;
+    }
+
+    .round-table {
+      aspect-ratio: 1.15;
+      background:
+        radial-gradient(circle at 50% 50%, #8f5d32 0 31%, #6f3f25 32% 46%, transparent 47%),
+        radial-gradient(circle at 50% 50%, rgba(214, 166, 66, .34), transparent 55%),
+        linear-gradient(135deg, rgba(36, 52, 71, .2), rgba(159, 47, 63, .16));
+      border: 2px solid var(--line);
+      border-radius: 8px;
+      box-shadow: 0 28px 70px rgba(17, 24, 39, .18);
+      display: grid;
+      place-items: center;
+      position: relative;
+    }
+
+    .round-table::after {
+      color: var(--paper);
+      content: "QUEST";
+      font-size: clamp(28px, 3.2vw, 52px);
+      font-weight: 900;
+      letter-spacing: .08em;
+      position: absolute;
+    }
+
+    .seat {
+      align-items: center;
+      border: 3px solid #fff7e6;
+      border-radius: 999px;
+      color: white;
+      display: grid;
+      font-size: 18px;
+      font-weight: 900;
+      height: 64px;
+      justify-content: center;
+      position: absolute;
+      width: 64px;
+    }
+
+    .seat.good { background: var(--blue); }
+    .seat.evil { background: var(--red); }
+    .s1 { left: 47%; top: 5%; }
+    .s2 { right: 14%; top: 19%; }
+    .s3 { right: 14%; bottom: 19%; }
+    .s4 { left: 47%; bottom: 5%; }
+    .s5 { left: 14%; bottom: 19%; }
+    .s6 { left: 14%; top: 19%; }
+
+    .flow {
+      display: grid;
+      gap: 14px;
+      grid-template-columns: repeat(4, 1fr);
+    }
+
+    .flow-step {
+      background: rgba(255, 250, 240, .76);
+      border: 1px solid rgba(207, 178, 110, .82);
+      border-radius: 8px;
+      display: grid;
+      gap: 12px;
+      min-height: 185px;
+      padding: 20px;
+    }
+
+    .flow-step b {
+      color: var(--gold);
+      font-size: clamp(34px, 3.5vw, 58px);
+      line-height: .88;
+    }
+
+    .role-grid {
+      display: grid;
+      gap: 14px;
+      grid-template-columns: repeat(4, 1fr);
+    }
+
+    .role-card {
+      background: var(--paper);
+      border: 1px solid rgba(207, 178, 110, .86);
+      border-radius: 8px;
+      display: grid;
+      gap: 10px;
+      min-height: 230px;
+      padding: 18px;
+    }
+
+    .role-card.good { border-top: 8px solid var(--blue); }
+    .role-card.evil { border-top: 8px solid var(--red); }
+
+    .shield {
+      align-items: center;
+      clip-path: polygon(50% 0%, 92% 15%, 84% 72%, 50% 100%, 16% 72%, 8% 15%);
+      color: white;
+      display: grid;
+      font-size: 28px;
+      font-weight: 900;
+      height: 76px;
+      justify-content: center;
+      width: 66px;
+    }
+
+    .blue-shield { background: var(--blue); }
+    .red-shield { background: var(--red); }
+    .gold-shield { background: var(--gold); color: #24190b; }
+
+    .table {
+      display: grid;
+      gap: 8px;
+    }
+
+    .row {
+      align-items: center;
+      background: rgba(255, 250, 240, .72);
+      border: 1px solid rgba(207, 178, 110, .62);
+      border-radius: 8px;
+      display: grid;
+      gap: 10px;
+      grid-template-columns: 86px 1fr 1fr;
+      padding: 10px 14px;
+    }
+
+    .badge {
+      background: var(--night);
+      border-radius: 999px;
+      color: white;
+      display: inline-flex;
+      font-weight: 900;
+      justify-content: center;
+      padding: 8px 12px;
+      width: fit-content;
+    }
+
+    .vote-box {
+      display: grid;
+      gap: 14px;
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .vote-card {
+      background: var(--paper);
+      border: 3px solid rgba(36, 52, 71, .16);
+      border-radius: 8px;
+      cursor: pointer;
+      display: grid;
+      gap: 10px;
+      min-height: 180px;
+      padding: 22px;
+      text-align: left;
+    }
+
+    .vote-card[data-vote="approve"] { border-top-color: var(--blue); }
+    .vote-card[data-vote="reject"] { border-top-color: var(--red); }
+    .vote-card.selected { outline: 5px solid rgba(214, 166, 66, .38); }
+
+    .mission-board {
+      display: grid;
+      gap: 12px;
+      grid-template-columns: repeat(5, 1fr);
+    }
+
+    .mission {
+      background: var(--paper);
+      border: 2px solid rgba(36, 52, 71, .18);
+      border-radius: 8px;
+      display: grid;
+      gap: 8px;
+      min-height: 150px;
+      padding: 16px;
+      place-items: center;
+      text-align: center;
+    }
+
+    .mission.success { background: var(--blue-soft); border-color: var(--blue); }
+    .mission.fail { background: var(--red-soft); border-color: var(--red); }
+
+    .mission strong {
+      color: var(--night);
+      font-size: clamp(22px, 2.3vw, 34px);
+      line-height: 1;
+    }
+
+    .quiz {
+      display: grid;
+      gap: 16px;
+    }
+
+    .choices {
+      display: grid;
+      gap: 12px;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .choice {
+      background: #fffaf0;
+      border: 2px solid rgba(36, 52, 71, .18);
+      border-radius: 8px;
+      color: var(--ink);
+      cursor: pointer;
+      font-weight: 900;
+      min-height: 64px;
+      padding: 14px 16px;
+      text-align: left;
+    }
+
+    .choice:hover,
+    .choice:focus-visible {
+      border-color: var(--blue);
+      outline: 3px solid rgba(47, 103, 177, .18);
+    }
+
+    .choice.correct {
+      background: rgba(47, 123, 88, .14);
+      border-color: var(--green);
+    }
+
+    .choice.wrong {
+      background: rgba(159, 47, 63, .14);
+      border-color: var(--red);
+    }
+
+    .feedback {
+      background: rgba(255, 250, 240, .72);
+      border: 1px dashed rgba(36, 52, 71, .35);
+      border-radius: 8px;
+      color: var(--night);
+      font-size: clamp(16px, 1.45vw, 22px);
+      font-weight: 800;
+      min-height: 58px;
+      padding: 14px 16px;
+    }
+
+    .controls {
+      align-items: center;
+      bottom: clamp(18px, 2.5vw, 34px);
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      left: 50%;
+      position: absolute;
+      transform: translateX(-50%);
+      z-index: 8;
+    }
+
+    .nav {
+      background: var(--night);
+      border: 0;
+      border-radius: 999px;
+      color: var(--paper);
+      cursor: pointer;
+      font-weight: 900;
+      min-width: 46px;
+      padding: 12px 16px;
+    }
+
+    .nav.secondary {
+      background: #fffaf0;
+      border: 1px solid rgba(36, 52, 71, .28);
+      color: var(--night);
+    }
+
+    a { color: var(--blue); font-weight: 900; }
+
+    @media (max-width: 980px) {
+      .title-grid,
+      .two-col {
+        grid-template-columns: 1fr;
+      }
+
+      .flow,
+      .role-grid,
+      .vote-box,
+      .mission-board,
+      .choices {
+        grid-template-columns: 1fr;
+      }
+
+      .row {
+        grid-template-columns: 1fr;
+      }
+
+      .slide {
+        min-height: 100svh;
+        overflow-y: auto;
+        padding-inline: 24px;
+      }
+
+      .controls {
+        background: rgba(255, 247, 230, .9);
+        border-radius: 999px;
+        padding: 6px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="deck">
+    <div class="progress" id="progress"></div>
+    <div class="meta">
+      <span>The Resistance: Avalon</span>
+      <span id="counter">1/15</span>
+      <span>Teach-to-play</span>
+    </div>
+
+    <section class="slide active">
+      <div class="title-grid">
+        <div class="stack">
+          <p class="kicker">hidden role • voting • deduction</p>
+          <h1>สอนเล่น Avalon</h1>
+          <p>เกมประชุมอัศวินที่มีคนทรยศซ่อนอยู่ ฝ่ายดีต้องเลือกทีมให้ถูก ฝ่ายร้ายต้องแอบปนเข้าไปทำภารกิจพัง</p>
+          <div class="note"><p><strong>เป้าหมายคาบ:</strong> ผู้เล่นใหม่เข้าใจบทบาทลับ การเสนอทีม การโหวต ภารกิจ และเหตุผลที่ Merlin ต้องช่วยแบบไม่เปิดตัว</p></div>
+        </div>
+        <div class="round-table" aria-label="โต๊ะกลมพร้อมฝ่ายดีและฝ่ายร้ายแบบจำลอง">
+          <span class="seat good s1">G</span>
+          <span class="seat evil s2">E</span>
+          <span class="seat good s3">G</span>
+          <span class="seat good s4">M</span>
+          <span class="seat evil s5">A</span>
+          <span class="seat good s6">G</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="two-col">
+        <div class="stack">
+          <p class="kicker">one sentence</p>
+          <h2>เกมนี้คือการเลือกทีมภายใต้ข้อมูลไม่เท่ากัน</h2>
+          <ul>
+            <li>ฝ่ายดีส่วนใหญ่ไม่รู้ว่าใครร้าย</li>
+            <li>ฝ่ายร้ายส่วนใหญ่รู้จักกัน</li>
+            <li>Merlin รู้ว่าร้ายคือใคร แต่พูดตรงเกินไปไม่ได้</li>
+            <li>Assassin รอจับว่าใครคือ Merlin ตอนท้ายเกม</li>
+          </ul>
+        </div>
+        <div class="panel">
+          <h3>ประโยคที่ต้องจำ</h3>
+          <p>ฝ่ายดีต้องชนะด้วยข้อมูล แต่ต้องไม่เปิด Merlin ให้ฝ่ายร้ายเห็น</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="stack">
+        <p class="kicker">winning conditions</p>
+        <h2>ใครชนะอย่างไร</h2>
+        <div class="vote-box">
+          <div class="role-card good">
+            <span class="shield blue-shield">G</span>
+            <h3>ฝ่ายดี</h3>
+            <p>ทำภารกิจสำเร็จ 3 ครั้ง และ Assassin ทาย Merlin ไม่ถูก</p>
+          </div>
+          <div class="role-card evil">
+            <span class="shield red-shield">E</span>
+            <h3>ฝ่ายร้าย</h3>
+            <p>ทำให้ภารกิจล้มเหลว 3 ครั้ง หรือบังคับให้ Reject ทีมครบ 5 ครั้ง หรือ Assassin ทาย Merlin ถูก</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="stack">
+        <p class="kicker">player count</p>
+        <h2>จำนวนฝ่ายดีและฝ่ายร้าย</h2>
+        <div class="panel table">
+          <div class="row"><span class="badge">5 คน</span><p>ฝ่ายดี 3</p><p>ฝ่ายร้าย 2</p></div>
+          <div class="row"><span class="badge">6 คน</span><p>ฝ่ายดี 4</p><p>ฝ่ายร้าย 2</p></div>
+          <div class="row"><span class="badge">7 คน</span><p>ฝ่ายดี 4</p><p>ฝ่ายร้าย 3</p></div>
+          <div class="row"><span class="badge">8 คน</span><p>ฝ่ายดี 5</p><p>ฝ่ายร้าย 3</p></div>
+          <div class="row"><span class="badge">9 คน</span><p>ฝ่ายดี 6</p><p>ฝ่ายร้าย 3</p></div>
+          <div class="row"><span class="badge">10 คน</span><p>ฝ่ายดี 6</p><p>ฝ่ายร้าย 4</p></div>
+        </div>
+        <div class="note"><p>เกมแรกแนะนำใช้แค่ Merlin + Assassin ก่อน อย่าเพิ่งใส่บทบาทเสริมเยอะ</p></div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="stack">
+        <p class="kicker">basic roles</p>
+        <h2>บทบาทพื้นฐานที่ต้องรู้</h2>
+        <div class="role-grid">
+          <div class="role-card good"><span class="shield blue-shield">S</span><h3>Servant</h3><p>ฝ่ายดีทั่วไป ไม่รู้อะไรพิเศษ ต้องสังเกตคำพูดและผลโหวต</p></div>
+          <div class="role-card good"><span class="shield gold-shield">M</span><h3>Merlin</h3><p>รู้ว่าร้ายคือใคร แต่ต้องช่วยแบบไม่ให้ Assassin จับได้</p></div>
+          <div class="role-card evil"><span class="shield red-shield">m</span><h3>Minion</h3><p>ฝ่ายร้ายทั่วไป รู้จักพวกเดียวกันและพยายามปนเข้า mission</p></div>
+          <div class="role-card evil"><span class="shield red-shield">A</span><h3>Assassin</h3><p>ฝ่ายร้ายที่มีโอกาสสุดท้ายในการทาย Merlin</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="stack">
+        <p class="kicker">round loop</p>
+        <h2>หนึ่งรอบเล่นแบบนี้</h2>
+        <div class="flow">
+          <div class="flow-step"><b>1</b><h3>เสนอทีม</h3><p>Leader เลือกคนตามจำนวนที่ภารกิจต้องการ</p></div>
+          <div class="flow-step"><b>2</b><h3>คุยและโหวต</h3><p>ทุกคนโหวต Approve หรือ Reject ทีมนี้</p></div>
+          <div class="flow-step"><b>3</b><h3>ทำภารกิจ</h3><p>คนในทีมส่ง Success/Fail แบบลับ</p></div>
+          <div class="flow-step"><b>4</b><h3>อ่านผล</h3><p>สำเร็จหรือล้มเหลว แล้วเปลี่ยน Leader</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="two-col">
+        <div class="stack">
+          <p class="kicker">team vote</p>
+          <h2>การโหวตทีมสำคัญพอ ๆ กับภารกิจ</h2>
+          <ul>
+            <li>ทุกคนโหวต แม้ไม่ได้อยู่ในทีม</li>
+            <li>เสียงข้างมาก Approve ทีมจึงผ่าน</li>
+            <li>คะแนนเสมอถือว่า Reject</li>
+            <li>Reject ครบ 5 ครั้งในภารกิจเดียว ฝ่ายร้ายชนะ</li>
+          </ul>
+        </div>
+        <div class="panel">
+          <h3>ลองกดเลือก</h3>
+          <div class="vote-box">
+            <button class="vote-card" data-vote="approve"><span class="shield blue-shield">✓</span><h3>Approve</h3><p>ทีมนี้น่าลอง หรือข้อมูลที่ได้คุ้ม</p></button>
+            <button class="vote-card" data-vote="reject"><span class="shield red-shield">×</span><h3>Reject</h3><p>ทีมนี้เสี่ยง หรืออยากให้ Leader ถัดไปเสนอใหม่</p></button>
+          </div>
+          <div class="feedback" id="vote-feedback">เลือกเพื่อดูคำแนะนำ</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="two-col">
+        <div class="stack">
+          <p class="kicker">quest phase</p>
+          <h2>ภารกิจสำเร็จหรือล้มเหลวอย่างไร</h2>
+          <ul>
+            <li>เฉพาะคนในทีมเท่านั้นที่ส่งการ์ดภารกิจ</li>
+            <li>ฝ่ายดีต้องส่ง Success</li>
+            <li>ฝ่ายร้ายเลือกได้ว่าจะ Success หรือ Fail</li>
+            <li>ปกติ Fail 1 ใบก็ทำให้ภารกิจล้มเหลว</li>
+          </ul>
+        </div>
+        <div class="mission-board">
+          <div class="mission success"><strong>Success</strong><p>ไม่มี Fail</p></div>
+          <div class="mission fail"><strong>Fail</strong><p>มี Fail 1 ใบ</p></div>
+          <div class="mission success"><strong>?</strong><p>ยังไม่รู้</p></div>
+          <div class="mission success"><strong>?</strong><p>ยังไม่รู้</p></div>
+          <div class="mission success"><strong>?</strong><p>ยังไม่รู้</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="quiz panel">
+        <p class="kicker">quick check</p>
+        <h2>ถ้าทีมมี 3 คน แล้วเปิดภารกิจเจอ Fail 1 ใบ เรารู้อะไรแน่ ๆ?</h2>
+        <div class="choices">
+          <button class="choice" data-q="fail" data-a="wrong">ทั้ง 3 คนเป็นฝ่ายร้าย</button>
+          <button class="choice" data-q="fail" data-a="correct">มีฝ่ายร้ายอย่างน้อย 1 คนในทีม</button>
+          <button class="choice" data-q="fail" data-a="wrong">Leader เป็นฝ่ายร้ายแน่นอน</button>
+          <button class="choice" data-q="fail" data-a="wrong">Merlin อยู่ในทีมแน่นอน</button>
+        </div>
+        <div class="feedback" id="fail-feedback">เลือกคำตอบเพื่อดู feedback</div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="two-col">
+        <div class="stack">
+          <p class="kicker">Merlin problem</p>
+          <h2>Merlin รู้เยอะ แต่พูดตรงเกินไปไม่ได้</h2>
+          <p>Merlin เห็นฝ่ายร้าย จึงช่วยฝ่ายดีได้มากที่สุด แต่ถ้าทำตัวเหมือนรู้คำตอบทุกอย่าง Assassin จะจับได้</p>
+          <div class="note warning"><p>Merlin ที่ดีไม่ใช่คนที่พูดว่า “คนนี้ร้ายแน่นอน” แต่เป็นคนที่ทำให้โต๊ะเดินไปทางทีมที่ปลอดภัยโดยยังดูเหมือนผู้เล่นปกติ</p></div>
+        </div>
+        <div class="panel">
+          <h3>วิธีช่วยแบบเนียน</h3>
+          <ul>
+            <li>ถามเหตุผลแทนการชี้ตัว</li>
+            <li>โหวต Reject ทีมเสี่ยง พร้อมเหตุผลทั่วไป</li>
+            <li>เสนอคู่/ทีมที่น่าเชื่อ ไม่ใช่บอกความจริงทั้งหมด</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="two-col">
+        <div class="stack">
+          <p class="kicker">Assassin ending</p>
+          <h2>ฝ่ายดีทำสำเร็จ 3 ภารกิจ ยังไม่ชนะทันที</h2>
+          <p>ถ้าฝ่ายดีทำภารกิจสำเร็จครบ 3 ครั้ง ฝ่ายร้ายจะคุยกัน แล้ว Assassin เลือกผู้เล่นฝ่ายดี 1 คนที่คิดว่าเป็น Merlin</p>
+          <div class="note"><p>ถ้าทายถูก ฝ่ายร้ายชนะ ถ้าทายผิด ฝ่ายดีชนะ</p></div>
+        </div>
+        <div class="panel quiz">
+          <h3>Quick check</h3>
+          <p>Good สำเร็จ 3 ภารกิจแล้ว เกมจบทันทีไหม?</p>
+          <div class="choices">
+            <button class="choice" data-q="assassin" data-a="wrong">จบทันที ฝ่ายดีชนะเลย</button>
+            <button class="choice" data-q="assassin" data-a="correct">ยังมี Assassin ทาย Merlin ก่อน</button>
+          </div>
+          <div class="feedback" id="assassin-feedback">เลือกคำตอบเพื่อดู feedback</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="stack">
+        <p class="kicker">beginner strategy</p>
+        <h2>มือใหม่ควรคิดอย่างไร</h2>
+        <div class="role-grid">
+          <div class="role-card good"><span class="shield blue-shield">G</span><h3>ถ้าเป็นฝ่ายดี</h3><p>อย่าเชื่อแค่คำพูด ดูว่าใครโหวตผ่านทีมไหน และผลภารกิจออกมาอย่างไร</p></div>
+          <div class="role-card evil"><span class="shield red-shield">E</span><h3>ถ้าเป็นฝ่ายร้าย</h3><p>อย่า Fail ทุกครั้งจนโดนจับ บางครั้ง Success เพื่อซ่อนตัวได้</p></div>
+          <div class="role-card good"><span class="shield gold-shield">M</span><h3>ถ้าเป็น Merlin</h3><p>ช่วยฝ่ายดีด้วยคำถามและ vote pattern ไม่ใช่ประกาศความจริงทั้งหมด</p></div>
+          <div class="role-card evil"><span class="shield red-shield">A</span><h3>ถ้าเป็น Assassin</h3><p>จดว่าใครเหมือนรู้มากเกินไป ใครเลี่ยงทีมร้ายได้แม่นผิดปกติ</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="quiz panel">
+        <p class="kicker">vote scenario</p>
+        <h2>สถานการณ์: ภารกิจ 1 มี A+B แล้ว Fail หลังจากนั้น Leader เสนอ A+C ควรคิดอะไร?</h2>
+        <div class="choices">
+          <button class="choice" data-q="scenario" data-a="wrong">Approve ทันที เพราะ C ยังไม่เคยลงภารกิจ</button>
+          <button class="choice" data-q="scenario" data-a="correct">ระวัง A เพราะ A อยู่ในทีมที่เคย Fail แต่ยังสรุปไม่ได้ว่า A ร้ายแน่นอน</button>
+          <button class="choice" data-q="scenario" data-a="wrong">B เป็นร้ายแน่นอน เพราะ A ถูกเสนออีกครั้ง</button>
+          <button class="choice" data-q="scenario" data-a="wrong">Reject ทุกทีมที่มีคนใหม่เสมอ</button>
+        </div>
+        <div class="feedback" id="scenario-feedback">เลือกคำตอบเพื่อดู feedback</div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="quiz panel">
+        <p class="kicker">pre-play quiz</p>
+        <h2>ทุกคนมีสิทธิ์โหวตทีมไหม แม้ไม่ได้อยู่ในทีม?</h2>
+        <div class="choices">
+          <button class="choice" data-q="voteall" data-a="correct">มี ทุกคนโหวต Approve/Reject</button>
+          <button class="choice" data-q="voteall" data-a="wrong">ไม่มี เฉพาะคนในทีมเท่านั้น</button>
+          <button class="choice" data-q="voteall" data-a="wrong">เฉพาะ Leader โหวต</button>
+          <button class="choice" data-q="voteall" data-a="wrong">เฉพาะฝ่ายดีโหวต</button>
+        </div>
+        <div class="feedback" id="voteall-feedback">เลือกคำตอบเพื่อดู feedback</div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="two-col">
+        <div class="stack">
+          <p class="kicker">ready to play</p>
+          <h2>Avalon ใน 6 ประโยค</h2>
+          <ul>
+            <li>ทุกคนมีบทบาทลับและอยู่ฝ่ายดีหรือฝ่ายร้าย</li>
+            <li>Leader เสนอทีมไปทำภารกิจ</li>
+            <li>ทุกคนโหวตว่าทีมนี้ผ่านหรือไม่</li>
+            <li>คนในทีมส่ง Success/Fail แบบลับ</li>
+            <li>ฝ่ายดีชนะด้วย 3 Success แต่ต้องซ่อน Merlin</li>
+            <li>ฝ่ายร้ายชนะด้วย 3 Fail หรือ Assassin ทาย Merlin ถูก</li>
+          </ul>
+        </div>
+        <div class="panel">
+          <h3>อ้างอิงกติกา</h3>
+          <p class="small">สไลด์นี้ใช้ภาพประกอบจำลองเพื่อการสอน ไม่ใช้ artwork จากเกมจริง</p>
+          <p class="small"><a href="https://cdn.1j1ju.com/medias/a6/dc/c1-the-resistance-avalon-rulebook.pdf">The Resistance: Avalon Rulebook PDF</a></p>
+          <p class="small"><a href="https://www.ultraboardgames.com/avalon/game-rules.php">UltraBoardGames: Avalon rules</a></p>
+          <p class="small"><a href="https://merchantsofplay.com/howtoplay/the-resistance-avalon/">Merchants of Play: How to Play Avalon</a></p>
+        </div>
+      </div>
+    </section>
+
+    <div class="controls">
+      <button class="nav secondary" id="prev" aria-label="Previous slide">‹</button>
+      <button class="nav" id="fullscreen">เต็มจอ</button>
+      <button class="nav secondary" id="next" aria-label="Next slide">›</button>
+    </div>
+  </main>
+
+  <script>
+    const slides = Array.from(document.querySelectorAll('.slide'));
+    const progress = document.querySelector('#progress');
+    const counter = document.querySelector('#counter');
+    let index = 0;
+
+    function showSlide(nextIndex) {
+      index = Math.max(0, Math.min(slides.length - 1, nextIndex));
+      slides.forEach((slide, i) => slide.classList.toggle('active', i === index));
+      counter.textContent = `${index + 1}/${slides.length}`;
+      progress.style.width = `${((index + 1) / slides.length) * 100}%`;
+    }
+
+    function toggleFullscreen() {
+      const root = document.documentElement;
+      if (!document.fullscreenElement) root.requestFullscreen?.();
+      else document.exitFullscreen?.();
+    }
+
+    document.querySelector('#next').addEventListener('click', () => showSlide(index + 1));
+    document.querySelector('#prev').addEventListener('click', () => showSlide(index - 1));
+    document.querySelector('#fullscreen').addEventListener('click', toggleFullscreen);
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'ArrowRight' || event.key === 'PageDown' || event.key === ' ') showSlide(index + 1);
+      if (event.key === 'ArrowLeft' || event.key === 'PageUp') showSlide(index - 1);
+      if (event.key.toLowerCase() === 'f') toggleFullscreen();
+    });
+
+    const feedbackText = {
+      fail: {
+        correct: 'ถูกต้อง: จาก Fail 1 ใบ เรารู้ว่ามีฝ่ายร้ายอย่างน้อย 1 คนในทีม แต่ยังไม่รู้ว่าใคร',
+        wrong: 'ยังไม่ใช่: ผล Fail ให้ข้อมูลว่ามีร้ายในทีม แต่ไม่ได้ระบุตัวแน่นอน'
+      },
+      assassin: {
+        correct: 'ถูกต้อง: เมื่อ Good สำเร็จ 3 ภารกิจ Assassin ยังมีโอกาสทาย Merlin',
+        wrong: 'ยังไม่ใช่: Avalon มีช่วงสุดท้ายให้ Assassin ทาย Merlin ก่อนตัดสินผู้ชนะ'
+      },
+      scenario: {
+        correct: 'ถูกต้อง: A น่าสงสัยเพราะเคยอยู่ในทีมที่ Fail แต่ A หรือ B ก็อาจเป็นคนร้ายได้ ต้องใช้ vote pattern เพิ่ม',
+        wrong: 'ยังไม่ใช่: ทีมที่เคย Fail บอกว่ามีร้ายอย่างน้อย 1 คนในทีมเดิม แต่ยังไม่ฟันธงได้ทันที'
+      },
+      voteall: {
+        correct: 'ถูกต้อง: ทุกคนโหวตทีม เพราะทุกคนมีส่วนได้เสียว่าทีมนี้ควรผ่านหรือไม่',
+        wrong: 'ยังไม่ใช่: การโหวตทีมเป็นสิทธิ์ของผู้เล่นทุกคน ไม่ใช่เฉพาะคนในทีม'
+      }
+    };
+
+    document.querySelectorAll('.choice').forEach((button) => {
+      button.addEventListener('click', () => {
+        const q = button.dataset.q;
+        const isCorrect = button.dataset.a === 'correct';
+        document.querySelectorAll(`.choice[data-q="${q}"]`).forEach((other) => {
+          other.classList.remove('correct', 'wrong');
+        });
+        button.classList.add(isCorrect ? 'correct' : 'wrong');
+        document.querySelector(`#${q}-feedback`).textContent = feedbackText[q][isCorrect ? 'correct' : 'wrong'];
+      });
+    });
+
+    document.querySelectorAll('.vote-card').forEach((button) => {
+      button.addEventListener('click', () => {
+        document.querySelectorAll('.vote-card').forEach((card) => card.classList.remove('selected'));
+        button.classList.add('selected');
+        const vote = button.dataset.vote;
+        document.querySelector('#vote-feedback').textContent = vote === 'approve'
+          ? 'Approve เมื่อทีมมีเหตุผลพอ หรือคุณต้องการข้อมูลจากผลภารกิจนี้'
+          : 'Reject ไม่ได้แปลว่าคุณร้ายเสมอไป ถ้าทีมเสี่ยง การปฏิเสธคือเครื่องมือของฝ่ายดี';
+      });
+    });
+
+    showSlide(0);
+  </script>
+</body>
+</html>
