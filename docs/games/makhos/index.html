@@ -357,14 +357,15 @@
 
     <aside class="panel">
       <h2>เล่นกันเองหรือเล่นกับคอม</h2>
-      <p>กติกาเวอร์ชันนี้ใช้หมากฮอสไทย: ฝ่ายละ 8 ตัว บังคับกิน กินติด และเข้าฮอสแล้วเดินทแยงไกลได้</p>
+      <p>กติกาเวอร์ชันนี้ใช้หมากฮอสไทย: ฝ่ายละ 8 ตัว บังคับกิน กินติด และเข้าฮอสแล้วเดินทแยงไกลได้ โหมดคอมมีแบบง่ายและแบบยากสำหรับฝึกเล่นจริงจังขึ้น</p>
 
       <div class="controls">
         <label>
           โหมด
           <select id="mode">
             <option value="human">2 คนบนเครื่องเดียวกัน</option>
-            <option value="ai">เล่นกับคอม</option>
+            <option value="ai">เล่นกับคอมแบบง่าย</option>
+            <option value="ai-hard">เล่นกับคอมโหมดยาก</option>
           </select>
         </label>
         <div class="row">
@@ -404,6 +405,7 @@
     const DARK = "dark";
     const HUMAN_MODE = "human";
     const AI_MODE = "ai";
+    const AI_HARD_MODE = "ai-hard";
 
     const boardEl = document.getElementById("board");
     const turnLabel = document.getElementById("turnLabel");
@@ -422,6 +424,10 @@
     let gameOver = false;
     let history = [];
     let log = [];
+
+    function isAiMode() {
+      return modeEl.value === AI_MODE || modeEl.value === AI_HARD_MODE;
+    }
 
     function createInitialBoard() {
       return Array.from({ length: SIZE }, (_, row) =>
@@ -558,7 +564,7 @@
     }
 
     function selectSquare(row, col) {
-      if (gameOver || (modeEl.value === AI_MODE && turn === DARK)) return;
+      if (gameOver || (isAiMode() && turn === DARK)) return;
       const piece = board[row][col];
       const destination = legalMoves.find((move) => move.to.row === row && move.to.col === col);
       if (destination) {
@@ -614,7 +620,7 @@
           legalMoves = continuing;
           setMessage(`${piece.side === LIGHT ? "ฝ่ายขาว" : "ฝ่ายดำ"} ต้องกินติดด้วยตัวเดิม`);
           render();
-          if (ai && modeEl.value === AI_MODE && turn === DARK) window.setTimeout(aiMove, 450);
+          if (ai && isAiMode() && turn === DARK) window.setTimeout(aiMove, 450);
           return;
         }
       }
@@ -623,7 +629,7 @@
       turn = turn === LIGHT ? DARK : LIGHT;
       checkGameEnd();
       render();
-      if (!gameOver && modeEl.value === AI_MODE && turn === DARK) window.setTimeout(aiMove, 550);
+      if (!gameOver && isAiMode() && turn === DARK) window.setTimeout(aiMove, 550);
     }
 
     function checkGameEnd() {
@@ -645,7 +651,7 @@
     }
 
     function aiMove() {
-      if (gameOver || modeEl.value !== AI_MODE || turn !== DARK) return;
+      if (gameOver || !isAiMode() || turn !== DARK) return;
       const moves = chainPiece
         ? movesForSelection(chainPiece.row, chainPiece.col)
         : getAllMoves(DARK);
@@ -654,10 +660,32 @@
         render();
         return;
       }
-      const ranked = moves
+      const chosen = modeEl.value === AI_HARD_MODE ? chooseHardMove(moves) : chooseEasyMove(moves);
+      applyMove(chosen, true);
+    }
+
+    function chooseEasyMove(moves) {
+      return moves
         .map((move) => ({ move, score: scoreMove(move) + Math.random() * 0.2 }))
-        .sort((a, b) => b.score - a.score);
-      applyMove(ranked[0].move, true);
+        .sort((a, b) => b.score - a.score)[0].move;
+    }
+
+    function chooseHardMove(moves) {
+      const depth = chainPiece ? 5 : 4;
+      return moves
+        .map((move) => {
+          const result = applyMoveOn(board, move);
+          const continuations = move.captures.length && !result.promoted
+            ? getPieceMovesOn(result.board, move.to.row, move.to.col, true)
+            : [];
+          const nextSide = continuations.length ? DARK : LIGHT;
+          const nextChain = continuations.length ? { row: move.to.row, col: move.to.col } : null;
+          return {
+            move,
+            score: minimax(result.board, nextSide, depth - 1, -Infinity, Infinity, nextChain) + Math.random() * 0.05
+          };
+        })
+        .sort((a, b) => b.score - a.score)[0].move;
     }
 
     function scoreMove(move) {
@@ -668,6 +696,102 @@
       score += piece.side === DARK ? move.to.row * 2 : (7 - move.to.row) * 2;
       const center = 6 - Math.abs(3.5 - move.to.col) - Math.abs(3.5 - move.to.row);
       score += center;
+      return score;
+    }
+
+    function cloneMove(move) {
+      return {
+        from: { ...move.from },
+        to: { ...move.to },
+        captures: move.captures.map((capture) => ({ ...capture }))
+      };
+    }
+
+    function withBoard(testBoard, fn) {
+      const saved = board;
+      board = testBoard;
+      try {
+        return fn();
+      } finally {
+        board = saved;
+      }
+    }
+
+    function getMovesOn(testBoard, side) {
+      return withBoard(testBoard, () => getAllMoves(side).map(cloneMove));
+    }
+
+    function getPieceMovesOn(testBoard, row, col, capturesOnly = false) {
+      return withBoard(testBoard, () => getPieceMoves(row, col, capturesOnly).map(cloneMove));
+    }
+
+    function applyMoveOn(testBoard, move) {
+      const next = cloneBoard(testBoard);
+      const piece = next[move.from.row][move.from.col];
+      next[move.from.row][move.from.col] = null;
+      for (const captured of move.captures) {
+        next[captured.row][captured.col] = null;
+      }
+      const promoted = !piece.king && isPromotionRow(piece.side, move.to.row);
+      next[move.to.row][move.to.col] = { ...piece, king: piece.king || promoted };
+      return { board: next, promoted };
+    }
+
+    function minimax(testBoard, side, depth, alpha, beta, chainPos = null) {
+      if (depth <= 0) return evaluateBoard(testBoard);
+
+      const moves = chainPos
+        ? getPieceMovesOn(testBoard, chainPos.row, chainPos.col, true)
+        : getMovesOn(testBoard, side);
+
+      if (!moves.length) {
+        if (chainPos) return evaluateBoard(testBoard);
+        const otherMoves = getMovesOn(testBoard, side === LIGHT ? DARK : LIGHT);
+        if (!otherMoves.length) return evaluateBoard(testBoard) * 10;
+        return minimax(testBoard, side === LIGHT ? DARK : LIGHT, depth - 1, alpha, beta);
+      }
+
+      const maximizing = side === DARK;
+      let best = maximizing ? -Infinity : Infinity;
+      for (const move of moves) {
+        const result = applyMoveOn(testBoard, move);
+        const continuations = move.captures.length && !result.promoted
+          ? getPieceMovesOn(result.board, move.to.row, move.to.col, true)
+          : [];
+        const nextSide = continuations.length ? side : (side === LIGHT ? DARK : LIGHT);
+        const nextChain = continuations.length ? { row: move.to.row, col: move.to.col } : null;
+        const value = minimax(result.board, nextSide, depth - 1, alpha, beta, nextChain);
+
+        if (maximizing) {
+          best = Math.max(best, value);
+          alpha = Math.max(alpha, value);
+        } else {
+          best = Math.min(best, value);
+          beta = Math.min(beta, value);
+        }
+        if (beta <= alpha) break;
+      }
+      return best;
+    }
+
+    function evaluateBoard(testBoard) {
+      let score = 0;
+      for (let row = 0; row < SIZE; row++) {
+        for (let col = 0; col < SIZE; col++) {
+          const piece = testBoard[row][col];
+          if (!piece) continue;
+          const sign = piece.side === DARK ? 1 : -1;
+          const advancement = piece.side === DARK ? row : SIZE - 1 - row;
+          const center = 6 - Math.abs(3.5 - row) - Math.abs(3.5 - col);
+          score += sign * (100 + (piece.king ? 85 : 0) + advancement * 7 + center * 2);
+        }
+      }
+
+      const darkMoves = getMovesOn(testBoard, DARK);
+      const lightMoves = getMovesOn(testBoard, LIGHT);
+      score += (darkMoves.length - lightMoves.length) * 5;
+      score += darkMoves.filter((move) => move.captures.length).length * 18;
+      score -= lightMoves.filter((move) => move.captures.length).length * 22;
       return score;
     }
 
@@ -693,7 +817,7 @@
       chainPiece = last.chainPiece;
       gameOver = last.gameOver;
       log = last.log;
-      if (modeEl.value === AI_MODE && turn === DARK && history.length) {
+      if (isAiMode() && turn === DARK && history.length) {
         undo();
         return;
       }
