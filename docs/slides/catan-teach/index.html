@@ -1,0 +1,776 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Catan Teach-to-Play Interactive Slides</title>
+  <style>
+    :root {
+      --sea: #0f6f82;
+      --sea-dark: #0c3f56;
+      --sand: #fff1cf;
+      --paper: #fffaf0;
+      --ink: #211c17;
+      --muted: #685d51;
+      --line: #dfbf80;
+      --brick: #bd5c38;
+      --lumber: #2f7c4f;
+      --wool: #83b95a;
+      --grain: #e1ad37;
+      --ore: #6f7682;
+      --desert: #d9bd7b;
+      --road: #8e4f2a;
+      --red: #c9453d;
+      --blue: #2362a8;
+      --teal: #0f7770;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      background:
+        radial-gradient(circle at 12% 10%, rgba(225, 173, 55, .25), transparent 28%),
+        radial-gradient(circle at 88% 12%, rgba(15, 111, 130, .18), transparent 26%),
+        linear-gradient(135deg, #163542, #0c3f56 52%, #3b2717);
+      color: var(--ink);
+      font-family: Arial, "Noto Sans Thai", sans-serif;
+      margin: 0;
+      min-height: 100vh;
+    }
+
+    button { font: inherit; }
+
+    .frame {
+      background:
+        linear-gradient(135deg, rgba(255, 241, 207, .99), rgba(255, 250, 240, .98)),
+        radial-gradient(circle at 90% 82%, rgba(15, 111, 130, .08), transparent 26%);
+      min-height: 100vh;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .progress {
+      background: linear-gradient(90deg, var(--brick), var(--lumber), var(--wool), var(--grain), var(--ore), var(--sea));
+      height: 8px;
+      left: 0;
+      position: absolute;
+      top: 0;
+      transition: width 160ms ease;
+      z-index: 4;
+    }
+
+    .meta {
+      color: var(--muted);
+      display: flex;
+      font-size: clamp(11px, 1.1vw, 14px);
+      font-weight: 900;
+      justify-content: space-between;
+      left: clamp(24px, 4vw, 70px);
+      position: absolute;
+      right: clamp(24px, 4vw, 70px);
+      top: clamp(18px, 2.3vw, 32px);
+      z-index: 5;
+    }
+
+    .slide {
+      display: none;
+      min-height: 100vh;
+      padding: clamp(72px, 8vw, 112px) clamp(42px, 7vw, 120px) clamp(76px, 7vw, 108px);
+    }
+
+    .slide.active { display: grid; }
+
+    .layout {
+      align-content: center;
+      display: grid;
+      gap: clamp(18px, 2.1vw, 28px);
+      min-height: calc(100vh - 180px);
+    }
+
+    .split {
+      align-items: center;
+      grid-template-columns: minmax(0, .95fr) minmax(460px, 1fr);
+    }
+
+    .wide-split {
+      align-items: center;
+      grid-template-columns: minmax(520px, 1fr) minmax(0, .9fr);
+    }
+
+    .eyebrow {
+      color: var(--teal);
+      font-size: clamp(15px, 1.5vw, 22px);
+      font-weight: 900;
+      margin: 0;
+      text-transform: uppercase;
+    }
+
+    h1, h2 {
+      letter-spacing: 0;
+      line-height: 1.04;
+      margin: 0;
+    }
+
+    h1 { font-size: clamp(56px, 7.1vw, 108px); max-width: 1180px; }
+    h2 { font-size: clamp(34px, 5vw, 70px); max-width: 1200px; }
+
+    p, li {
+      font-size: clamp(18px, 1.85vw, 27px);
+      line-height: 1.35;
+      margin: 0;
+    }
+
+    ul, ol { display: grid; gap: 12px; margin: 0; padding-left: 1.12em; }
+
+    .lead {
+      color: #3c3228;
+      font-size: clamp(23px, 2.55vw, 38px);
+      line-height: 1.28;
+      max-width: 1120px;
+    }
+
+    .note {
+      color: var(--muted);
+      font-size: clamp(14px, 1.25vw, 18px);
+    }
+
+    .panel, .mini-card {
+      background: rgba(255,255,255,.82);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: 0 16px 42px rgba(91, 54, 28, .12);
+      padding: 18px;
+    }
+
+    .mini-card {
+      display: grid;
+      gap: 10px;
+      min-height: 140px;
+    }
+
+    .mini-card strong, .panel strong {
+      font-size: clamp(22px, 2vw, 30px);
+      line-height: 1.08;
+    }
+
+    .mini-card p, .panel p, .choice {
+      color: #584c3e;
+      font-size: clamp(16px, 1.32vw, 20px);
+    }
+
+    .two-grid, .three-grid, .four-grid {
+      display: grid;
+      gap: 14px;
+    }
+
+    .two-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .three-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .four-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+
+    .island {
+      align-items: center;
+      aspect-ratio: 1.15;
+      background: radial-gradient(circle, rgba(15,111,130,.28), rgba(15,111,130,.1) 58%, transparent 59%);
+      display: grid;
+      justify-items: center;
+      min-height: 480px;
+      position: relative;
+    }
+
+    .hex-map {
+      display: grid;
+      gap: 7px;
+      grid-template-columns: repeat(5, 86px);
+      justify-content: center;
+      transform: rotate(-2deg);
+    }
+
+    .hex {
+      align-items: center;
+      aspect-ratio: 1.12;
+      clip-path: polygon(25% 4%, 75% 4%, 100% 50%, 75% 96%, 25% 96%, 0 50%);
+      color: white;
+      display: grid;
+      font-size: 18px;
+      font-weight: 900;
+      justify-items: center;
+      margin-top: -8px;
+      padding: 12px;
+      text-align: center;
+      text-shadow: 0 2px 4px rgba(0,0,0,.25);
+    }
+
+    .hex:nth-child(5n+1), .hex:nth-child(5n+5) { transform: translateY(42px); }
+    .hex:nth-child(5n+2), .hex:nth-child(5n+4) { transform: translateY(20px); }
+
+    .h-brick { background: var(--brick); }
+    .h-lumber { background: var(--lumber); }
+    .h-wool { background: var(--wool); }
+    .h-grain { background: var(--grain); color: #4d3105; text-shadow: none; }
+    .h-ore { background: var(--ore); }
+    .h-desert { background: var(--desert); color: #604215; text-shadow: none; }
+
+    .token {
+      align-items: center;
+      background: #fff5dc;
+      border: 2px solid rgba(90, 61, 28, .35);
+      border-radius: 999px;
+      color: #3e2a12;
+      display: inline-flex;
+      font-size: 20px;
+      font-weight: 900;
+      height: 42px;
+      justify-content: center;
+      text-shadow: none;
+      width: 42px;
+    }
+
+    .token.hot { color: #bb2c26; }
+
+    .icon-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .res {
+      align-items: center;
+      border: 2px solid rgba(36,29,22,.14);
+      border-radius: 8px;
+      color: white;
+      display: inline-flex;
+      font-weight: 900;
+      gap: 8px;
+      min-height: 48px;
+      padding: 9px 12px;
+    }
+
+    .res.brick { background: var(--brick); }
+    .res.lumber { background: var(--lumber); }
+    .res.wool { background: var(--wool); color: #1e3a1d; }
+    .res.grain { background: var(--grain); color: #4d3105; }
+    .res.ore { background: var(--ore); }
+
+    .cost {
+      align-items: center;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .dice-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .die {
+      align-items: center;
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      color: var(--ink);
+      display: inline-flex;
+      font-size: 28px;
+      font-weight: 900;
+      height: 56px;
+      justify-content: center;
+      width: 56px;
+    }
+
+    .choice-grid {
+      display: grid;
+      gap: 12px;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .choice, .nav button, .fullscreen, .sim-controls button {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      color: var(--ink);
+      cursor: pointer;
+      font-weight: 900;
+      min-height: 42px;
+      padding: 10px 14px;
+      text-align: left;
+    }
+
+    .sim-controls button.primary {
+      background: var(--teal);
+      border-color: var(--teal);
+      color: white;
+    }
+
+    .choice.correct { border-color: var(--teal); box-shadow: inset 0 0 0 3px rgba(15,119,112,.22); }
+    .choice.wrong { border-color: var(--red); box-shadow: inset 0 0 0 3px rgba(201,69,61,.22); }
+
+    .feedback, .result {
+      background: #e8f7ef;
+      border: 1px solid #b6dfc8;
+      border-radius: 8px;
+      color: #0f5d45;
+      font-size: clamp(18px, 1.7vw, 24px);
+      font-weight: 900;
+      min-height: 54px;
+      padding: 14px;
+    }
+
+    .sim-controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .vp-track {
+      display: grid;
+      gap: 10px;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+    }
+
+    .vp {
+      align-items: center;
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      display: grid;
+      min-height: 98px;
+      padding: 12px;
+      text-align: center;
+    }
+
+    .vp strong { color: var(--teal); font-size: 36px; }
+
+    .nav {
+      bottom: clamp(18px, 2vw, 28px);
+      display: flex;
+      gap: 10px;
+      position: absolute;
+      right: clamp(24px, 4vw, 70px);
+      z-index: 6;
+    }
+
+    .fullscreen {
+      bottom: clamp(18px, 2vw, 28px);
+      left: clamp(24px, 4vw, 70px);
+      position: absolute;
+      z-index: 6;
+    }
+
+    a { color: #164e8a; font-weight: 900; }
+
+    @media (max-width: 980px) {
+      .frame { overflow: auto; }
+      .slide { padding: 72px 22px 82px; }
+      .meta span:last-child { display: none; }
+      .split, .wide-split, .two-grid, .three-grid, .four-grid, .choice-grid, .vp-track { grid-template-columns: 1fr; }
+      .island { min-height: 360px; }
+      .hex-map { grid-template-columns: repeat(5, 58px); gap: 4px; }
+      .hex { font-size: 12px; padding: 7px; }
+      .token { font-size: 14px; height: 30px; width: 30px; }
+      h1 { font-size: clamp(44px, 13vw, 78px); }
+      h2 { font-size: clamp(32px, 10vw, 56px); }
+      p, li { font-size: 18px; }
+      .lead { font-size: 24px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="frame" id="frame">
+    <div class="progress" id="progress"></div>
+    <div class="meta">
+      <span>Catan Teach-to-Play</span>
+      <span id="counter">1/15</span>
+      <span>เป้าหมาย: เล่นเป็นก่อนคิดกลยุทธ์ลึก</span>
+    </div>
+
+    <section class="slide active">
+      <div class="layout split">
+        <div>
+          <p class="eyebrow">SMA2106 Board Game Course</p>
+          <h1>สอนเล่น Catan</h1>
+          <p class="lead">สร้างถนน ตั้งหมู่บ้าน แลกเปลี่ยนทรัพยากร และแข่งกันเป็นคนแรกที่ถึง 10 คะแนน</p>
+        </div>
+        <div class="island" aria-label="แผนที่ Catan จำลอง">
+          <div class="hex-map">
+            <div class="hex h-lumber">ป่า<span class="token hot">8</span></div>
+            <div class="hex h-brick">อิฐ<span class="token">4</span></div>
+            <div class="hex h-wool">แกะ<span class="token">10</span></div>
+            <div class="hex h-grain">ข้าว<span class="token hot">6</span></div>
+            <div class="hex h-ore">แร่<span class="token">3</span></div>
+            <div class="hex h-grain">ข้าว<span class="token">9</span></div>
+            <div class="hex h-desert">ทะเลทราย</div>
+            <div class="hex h-lumber">ป่า<span class="token">5</span></div>
+            <div class="hex h-wool">แกะ<span class="token">11</span></div>
+            <div class="hex h-brick">อิฐ<span class="token">2</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="layout">
+        <p class="eyebrow">Game Goal</p>
+        <h2>ชนะเมื่อถึง 10 Victory Points</h2>
+        <div class="vp-track">
+          <div class="vp"><strong>1</strong><p>Settlement</p></div>
+          <div class="vp"><strong>2</strong><p>City</p></div>
+          <div class="vp"><strong>2</strong><p>Longest Road</p></div>
+          <div class="vp"><strong>2</strong><p>Largest Army</p></div>
+          <div class="vp"><strong>?</strong><p>Development VP</p></div>
+        </div>
+        <p class="lead">ให้ผู้เรียนจำก่อนว่า “สร้างเพิ่มและอัปเกรดเมืองคือทางหลักสู่ 10 คะแนน”</p>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="layout">
+        <p class="eyebrow">Resources</p>
+        <h2>ทรัพยากร 5 อย่าง และสิ่งที่สร้างได้</h2>
+        <div class="three-grid">
+          <div class="mini-card"><strong>Road</strong><div class="cost"><span class="res brick">อิฐ</span><span class="res lumber">ไม้</span></div><p>ใช้ขยายพื้นที่วาง settlement ใหม่</p></div>
+          <div class="mini-card"><strong>Settlement</strong><div class="cost"><span class="res brick">อิฐ</span><span class="res lumber">ไม้</span><span class="res wool">แกะ</span><span class="res grain">ข้าว</span></div><p>ได้ 1 คะแนน และผลิต resource รอบ ๆ</p></div>
+          <div class="mini-card"><strong>City</strong><div class="cost"><span class="res ore">แร่ x3</span><span class="res grain">ข้าว x2</span></div><p>อัปเกรด settlement เป็น 2 คะแนน และผลิตสองเท่า</p></div>
+          <div class="mini-card"><strong>Development</strong><div class="cost"><span class="res ore">แร่</span><span class="res wool">แกะ</span><span class="res grain">ข้าว</span></div><p>ได้ Knight, Progress, หรือ VP card</p></div>
+          <div class="mini-card"><strong>Trade</strong><p>ถ้าขาดของ ให้แลกกับผู้เล่น ธนาคาร หรือท่าเรือ</p></div>
+          <div class="mini-card"><strong>Question</strong><p>อยากสร้าง settlement ต้องมี resource กี่ชนิด?</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="layout split">
+        <div>
+          <p class="eyebrow">Map Reading</p>
+          <h2>Hex ให้ชนิดทรัพยากร เลขบอกโอกาสผลิต</h2>
+          <ul>
+            <li>Settlement/city ที่ติด hex จะได้ resource เมื่อเลขนั้นออก</li>
+            <li>เลข 6 และ 8 ออกบ่อย ควรสังเกตเป็นพิเศษ</li>
+            <li>ทะเลทรายไม่ผลิต resource และ robber เริ่มที่นี่</li>
+            <li>เมืองผลิต 2 ใบแทน 1 ใบ</li>
+          </ul>
+        </div>
+        <div class="panel">
+          <strong>Dice probability demo</strong>
+          <div class="dice-row" id="diceButtons"></div>
+          <div class="result" id="diceResult">กดเลขเพื่อดูความน่าจะออกโดยประมาณ</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="layout">
+        <p class="eyebrow">Turn Loop</p>
+        <h2>หนึ่ง turn มี 3 จังหวะ</h2>
+        <div class="three-grid">
+          <div class="mini-card"><strong>1. Roll</strong><p>ทอยลูกเต๋า ทุกคนที่ติดเลขนั้นได้ resource</p></div>
+          <div class="mini-card"><strong>2. Trade</strong><p>เจ้าของ turn แลกกับผู้เล่นอื่น หรือแลกกับ bank/harbor</p></div>
+          <div class="mini-card"><strong>3. Build</strong><p>สร้าง road, settlement, city หรือซื้อ development card</p></div>
+        </div>
+        <div class="panel">
+          <strong>จำง่าย</strong>
+          <p class="lead">Roll → Trade → Build</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="layout wide-split">
+        <div class="panel">
+          <strong>Production simulator</strong>
+          <p>สมมติเรามี settlement ติดป่าเลข 8 และข้าวเลข 6 กดทอยเพื่อดูว่าได้อะไร</p>
+          <div class="sim-controls">
+            <button class="primary" data-roll="8">ทอยได้ 8</button>
+            <button data-roll="6">ทอยได้ 6</button>
+            <button data-roll="7">ทอยได้ 7</button>
+          </div>
+          <div class="result" id="productionResult">เลือกผลลูกเต๋า</div>
+        </div>
+        <div>
+          <p class="eyebrow">Production</p>
+          <h2>คนอื่นก็ได้ resource ใน turn ของเรา</h2>
+          <ul>
+            <li>การผลิตขึ้นกับเลข ไม่ได้ขึ้นกับว่าใครทอย</li>
+            <li>ทุกคนที่มี settlement/city ติด hex เลขนั้นได้ resource</li>
+            <li>ถ้า robber อยู่บน hex นั้น hex นั้นไม่ผลิต</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="layout split">
+        <div>
+          <p class="eyebrow">Placement</p>
+          <h2>กฎตั้ง settlement สำคัญมาก</h2>
+          <ul>
+            <li>Settlement ต้องอยู่บนจุดตัดของ hex</li>
+            <li>ต้องห่าง settlement/city อื่นอย่างน้อย 2 เส้นถนน</li>
+            <li>จะสร้าง settlement ใหม่ต้องเชื่อมด้วย road ของเรา</li>
+            <li>ตอน setup เลือกจุดที่ได้เลขดีและ resource หลากหลาย</li>
+          </ul>
+        </div>
+        <div class="panel">
+          <strong>Placement check</strong>
+          <div class="choice-grid">
+            <button class="choice" data-place="near">วางติด settlement คนอื่นได้ถ้ามี road</button>
+            <button class="choice" data-place="distance">ต้องเว้นอย่างน้อย 2 เส้นถนน</button>
+            <button class="choice" data-place="anywhere">วางตรงไหนก็ได้บน hex</button>
+            <button class="choice" data-place="city">สร้าง city บนจุดว่างได้เลย</button>
+          </div>
+          <div class="feedback" id="placeFeedback">เลือกคำตอบเพื่อดู feedback</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="layout">
+        <p class="eyebrow">Trading</p>
+        <h2>ถ้าขาดของ ให้แลก</h2>
+        <div class="three-grid">
+          <div class="mini-card"><strong>Player trade</strong><p>เจ้าของ turn ต่อรองกับผู้เล่นคนอื่นได้ เช่น ไม้ 1 แลกข้าว 1</p></div>
+          <div class="mini-card"><strong>Bank 4:1</strong><p>เอา resource ชนิดเดียวกัน 4 ใบแลก resource ที่ต้องการ 1 ใบ</p></div>
+          <div class="mini-card"><strong>Harbor</strong><p>ท่าเรือช่วยลดอัตราแลก เช่น 3:1 หรือ 2:1 สำหรับ resource เฉพาะ</p></div>
+        </div>
+        <p class="lead">สอนผู้เล่นใหม่ว่า “Catan ไม่ใช่เกมรอของครบอย่างเดียว มันคือเกมต่อรอง”</p>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="layout wide-split">
+        <div class="panel">
+          <strong>Build checker</strong>
+          <p>เรามี: ไม้ 1, อิฐ 1, แกะ 1, ข้าว 1 สร้างอะไรได้?</p>
+          <div class="cost">
+            <span class="res lumber">ไม้</span>
+            <span class="res brick">อิฐ</span>
+            <span class="res wool">แกะ</span>
+            <span class="res grain">ข้าว</span>
+          </div>
+          <div class="choice-grid">
+            <button class="choice" data-build="road">Road เท่านั้น</button>
+            <button class="choice" data-build="settlement">Settlement</button>
+            <button class="choice" data-build="city">City</button>
+            <button class="choice" data-build="dev">Development card</button>
+          </div>
+          <div class="feedback" id="buildFeedback">เลือกคำตอบเพื่อดู feedback</div>
+        </div>
+        <div>
+          <p class="eyebrow">Build Decision</p>
+          <h2>ดูของในมือ แล้วถามว่าสร้างอะไรได้</h2>
+          <ul>
+            <li>Road เปิดทาง แต่ยังไม่เพิ่มคะแนน</li>
+            <li>Settlement เพิ่มคะแนนและจุดผลิตใหม่</li>
+            <li>City ทำให้จุดผลิตเดิมแรงขึ้น</li>
+            <li>Development card ช่วยแก้เกมหรือเก็บแต้มซ่อน</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="layout split">
+        <div>
+          <p class="eyebrow">Robber</p>
+          <h2>เลข 7 คือเหตุการณ์พิเศษ</h2>
+          <ul>
+            <li>ถ้ามีไพ่ resource มากกว่า 7 ใบ ต้องทิ้งครึ่งหนึ่ง</li>
+            <li>ผู้ทอย 7 ย้าย robber ไปปิด hex หนึ่งช่อง</li>
+            <li>ขโมย resource 1 ใบจากผู้เล่นที่มีสิ่งปลูกสร้างติด hex นั้น</li>
+            <li>hex ที่มี robber ไม่ผลิต resource</li>
+          </ul>
+        </div>
+        <div class="panel">
+          <strong>Robber check</strong>
+          <p>ถ้าเรามี resource 9 ใบแล้วมีคนทอย 7 ต้องทิ้งกี่ใบ?</p>
+          <div class="choice-grid">
+            <button class="choice" data-robber="3">3 ใบ</button>
+            <button class="choice" data-robber="4">4 ใบ</button>
+            <button class="choice" data-robber="5">5 ใบ</button>
+            <button class="choice" data-robber="0">ไม่ต้องทิ้ง</button>
+          </div>
+          <div class="feedback" id="robberFeedback">เลือกคำตอบเพื่อดู feedback</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="layout">
+        <p class="eyebrow">Development Cards</p>
+        <h2>Development card คือแผนสำรองและแต้มซ่อน</h2>
+        <div class="three-grid">
+          <div class="mini-card"><strong>Knight</strong><p>ย้าย robber และช่วยสะสม Largest Army</p></div>
+          <div class="mini-card"><strong>Progress</strong><p>เช่น Road Building, Year of Plenty, Monopoly</p></div>
+          <div class="mini-card"><strong>Victory Point</strong><p>เก็บซ่อนไว้ นับตอนประกาศชนะ</p></div>
+        </div>
+        <p class="lead">กติกาสำคัญ: โดยทั่วไป development card ที่ซื้อใน turn นี้ ยังเล่นใน turn เดียวกันไม่ได้</p>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="layout">
+        <p class="eyebrow">Guided Opening</p>
+        <h2>กิจกรรมสอนเล่น 20 นาทีแรก</h2>
+        <div class="four-grid">
+          <div class="mini-card"><strong>Turn 1</strong><p>ทอย แล้วให้ทุกคนชี้ว่าใครได้ resource</p></div>
+          <div class="mini-card"><strong>Turn 2</strong><p>ให้เจ้าของ turn ลอง trade อย่างน้อย 1 ครั้ง</p></div>
+          <div class="mini-card"><strong>Turn 3</strong><p>ถามว่า “ของในมือสร้างอะไรได้” ก่อน build</p></div>
+          <div class="mini-card"><strong>Turn 4</strong><p>ถ้าออก 7 สาธิต robber แบบช้า ๆ</p></div>
+        </div>
+        <p class="lead">เป้าหมายช่วงแรกไม่ใช่เล่นเร็ว แต่คือเห็นวงจร Roll → Trade → Build</p>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="layout">
+        <p class="eyebrow">Beginner Strategy</p>
+        <h2>3 แนวคิดเริ่มต้น</h2>
+        <div class="three-grid">
+          <div class="mini-card"><strong>เลขดี</strong><p>6/8/5/9 มักผลิตบ่อยกว่า 2/12</p></div>
+          <div class="mini-card"><strong>ของหลากหลาย</strong><p>อย่ามีแต่ resource เดียวจนสร้างอะไรไม่ได้</p></div>
+          <div class="mini-card"><strong>ทางขยาย</strong><p>ดูว่าถนนจะพาไปตั้ง settlement ใหม่ตรงไหน</p></div>
+        </div>
+        <p class="lead">สำหรับเกมแรก ให้เล่นเพื่อ “ได้ของหลายแบบและสร้าง settlement เพิ่ม” ก่อนคิดแผนซับซ้อน</p>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="layout">
+        <p class="eyebrow">Quick Check</p>
+        <h2>ก่อนเริ่มเล่นจริง</h2>
+        <div class="panel">
+          <p class="lead" id="quizQuestion">ข้อ 1: Catan ชนะเมื่อได้กี่คะแนน?</p>
+          <div class="choice-grid" id="quizChoices"></div>
+          <div class="feedback" id="quizFeedback">เลือกคำตอบเพื่อดู feedback</div>
+          <button class="choice" id="nextQuiz">ข้อถัดไป</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="layout">
+        <p class="eyebrow">Wrap Up</p>
+        <h2>จำ 5 ประโยคนี้แล้วเริ่มเล่นได้</h2>
+        <div class="two-grid">
+          <div class="mini-card"><strong>1</strong><p>เป้าหมายคือ 10 คะแนน</p></div>
+          <div class="mini-card"><strong>2</strong><p>ทุก turn คือ Roll → Trade → Build</p></div>
+          <div class="mini-card"><strong>3</strong><p>เลขที่ออกทำให้ทุกคนที่ติด hex นั้นได้ resource</p></div>
+          <div class="mini-card"><strong>4</strong><p>ถ้าขาดของ ให้ trade ไม่ใช่รออย่างเดียว</p></div>
+          <div class="mini-card"><strong>5</strong><p>เลข 7 ย้าย robber และอาจทำให้คนถือไพ่เยอะต้องทิ้ง</p></div>
+          <div class="mini-card"><strong>References</strong><p><a href="https://www.catan.com/understand-catan/game-rules">Official game rules</a> | <a href="https://catanboard.com/en/rules/gettingStarted">Getting Started</a> | <a href="https://catanboard.com/en/rules/turnOverview">Turn Overview</a></p></div>
+        </div>
+        <p class="note">ภาพประกอบในสไลด์นี้เป็น diagram/ไอคอนที่วาดใหม่เพื่อการสอน ไม่ใช่ artwork official ของ Catan</p>
+      </div>
+    </section>
+
+    <button class="fullscreen" id="fullscreen">เต็มจอ</button>
+    <div class="nav">
+      <button id="prev" aria-label="previous slide">‹</button>
+      <button id="next" aria-label="next slide">›</button>
+    </div>
+  </main>
+
+  <script>
+    const slides = [...document.querySelectorAll(".slide")];
+    const progress = document.getElementById("progress");
+    const counter = document.getElementById("counter");
+    let current = 0;
+
+    function showSlide(index) {
+      current = Math.max(0, Math.min(slides.length - 1, index));
+      slides.forEach((slide, i) => slide.classList.toggle("active", i === current));
+      progress.style.width = `${((current + 1) / slides.length) * 100}%`;
+      counter.textContent = `${current + 1}/${slides.length}`;
+    }
+
+    const diceOdds = { 2: 1, 3: 2, 4: 3, 5: 4, 6: 5, 8: 5, 9: 4, 10: 3, 11: 2, 12: 1 };
+    const diceButtons = document.getElementById("diceButtons");
+    Object.keys(diceOdds).forEach((value) => {
+      const button = document.createElement("button");
+      button.className = "die";
+      button.textContent = value;
+      button.addEventListener("click", () => {
+        document.getElementById("diceResult").textContent = `เลข ${value} มีโอกาสประมาณ ${diceOdds[value]} วิธีจาก 36 วิธี ${value === "6" || value === "8" ? "จึงเป็นเลขร้อนที่ผู้เล่นใหม่ควรสังเกต" : ""}`;
+      });
+      diceButtons.appendChild(button);
+    });
+
+    document.querySelectorAll("[data-roll]").forEach((button) => {
+      button.addEventListener("click", () => {
+        const roll = button.dataset.roll;
+        const text = {
+          8: "ทอยได้ 8: settlement ที่ติดป่าเลข 8 ได้ไม้ 1 ใบ ถ้าเป็น city จะได้ 2 ใบ",
+          6: "ทอยได้ 6: settlement ที่ติดข้าวเลข 6 ได้ข้าว 1 ใบ ผู้เล่นอื่นที่ติดเลข 6 ก็ได้ด้วย",
+          7: "ทอยได้ 7: ไม่มี hex ผลิต resource ให้ย้าย robber และคนถือเกิน 7 ใบต้องทิ้งครึ่งหนึ่ง"
+        };
+        document.getElementById("productionResult").textContent = text[roll];
+      });
+    });
+
+    function wireChoice(selector, correctValue, feedbackId, correctText, wrongText) {
+      document.querySelectorAll(selector).forEach((button) => {
+        button.addEventListener("click", () => {
+          const correct = button.dataset[selector.slice(6, -1)] === correctValue;
+          document.querySelectorAll(selector).forEach((item) => item.classList.remove("correct", "wrong"));
+          button.classList.add(correct ? "correct" : "wrong");
+          document.getElementById(feedbackId).textContent = correct ? correctText : wrongText;
+        });
+      });
+    }
+
+    wireChoice("[data-place]", "distance", "placeFeedback", "ถูกต้อง ต้องเว้นอย่างน้อย 2 เส้นถนนจาก settlement/city อื่น", "ยังไม่ใช่ กฎ distance rule เป็นจุดที่ผู้เล่นใหม่พลาดบ่อย");
+    wireChoice("[data-build]", "settlement", "buildFeedback", "ถูกต้อง มีครบ brick + lumber + wool + grain จึงสร้าง settlement ได้", "ยังไม่ใช่ ชุด resource นี้ตรงกับ cost ของ settlement");
+    wireChoice("[data-robber]", "4", "robberFeedback", "ถูกต้อง 9 ใบต้องทิ้งครึ่งหนึ่งปัดลง คือ 4 ใบ", "ยังไม่ใช่ ถ้ามีมากกว่า 7 ใบ ต้องทิ้งครึ่งหนึ่งและปัดลง");
+
+    const quizItems = [
+      { prompt: "ข้อ 1: Catan ชนะเมื่อได้กี่คะแนน?", choices: ["7", "10", "12", "20"], answer: 1, feedback: "ถูกต้อง ผู้เล่นที่ถึง 10 Victory Points ใน turn ของตัวเองชนะ" },
+      { prompt: "ข้อ 2: ถ้าทอยได้เลข 8 ใครได้ resource?", choices: ["เฉพาะคนทอย", "ทุกคนที่มี settlement/city ติด hex เลข 8", "คนที่มีถนนยาวที่สุด", "ไม่มีใครได้"], answer: 1, feedback: "ถูกต้อง การผลิตเกิดกับทุกคนที่ติดเลขนั้น" },
+      { prompt: "ข้อ 3: สร้าง road ต้องใช้อะไร?", choices: ["อิฐ + ไม้", "แกะ + ข้าว", "แร่ x3 + ข้าว x2", "แร่ + แกะ + ข้าว"], answer: 0, feedback: "ถูกต้อง road ใช้ brick + lumber" },
+      { prompt: "ข้อ 4: ทอยได้ 7 เกิดอะไร?", choices: ["ทุกคนได้ resource", "ย้าย robber และคนถือไพ่เกิน 7 ทิ้งครึ่งหนึ่ง", "จบเกมทันที", "สร้างฟรีหนึ่งอย่าง"], answer: 1, feedback: "ถูกต้อง เลข 7 คือ robber event" }
+    ];
+    let quizIndex = 0;
+
+    function renderQuiz() {
+      const item = quizItems[quizIndex];
+      const choicesEl = document.getElementById("quizChoices");
+      document.getElementById("quizQuestion").textContent = item.prompt;
+      document.getElementById("quizFeedback").textContent = "เลือกคำตอบเพื่อดู feedback";
+      choicesEl.innerHTML = "";
+      item.choices.forEach((choice, index) => {
+        const button = document.createElement("button");
+        button.className = "choice";
+        button.textContent = choice;
+        button.addEventListener("click", () => {
+          [...choicesEl.children].forEach((child) => child.classList.remove("correct", "wrong"));
+          button.classList.add(index === item.answer ? "correct" : "wrong");
+          if (index !== item.answer) choicesEl.children[item.answer].classList.add("correct");
+          document.getElementById("quizFeedback").textContent = index === item.answer ? item.feedback : `ยังไม่ใช่: ${item.feedback}`;
+        });
+        choicesEl.appendChild(button);
+      });
+    }
+
+    document.getElementById("nextQuiz").addEventListener("click", () => {
+      quizIndex = (quizIndex + 1) % quizItems.length;
+      renderQuiz();
+    });
+
+    document.getElementById("prev").addEventListener("click", () => showSlide(current - 1));
+    document.getElementById("next").addEventListener("click", () => showSlide(current + 1));
+    document.getElementById("fullscreen").addEventListener("click", () => {
+      if (!document.fullscreenElement) document.getElementById("frame").requestFullscreen();
+      else document.exitFullscreen();
+    });
+    window.addEventListener("keydown", (event) => {
+      if (event.key === "ArrowRight" || event.key === "PageDown" || event.key === " ") showSlide(current + 1);
+      if (event.key === "ArrowLeft" || event.key === "PageUp") showSlide(current - 1);
+      if (event.key === "Home") showSlide(0);
+      if (event.key === "End") showSlide(slides.length - 1);
+    });
+
+    renderQuiz();
+    const requestedSlide = Number.parseInt(new URLSearchParams(window.location.search).get("slide") || "1", 10) - 1;
+    showSlide(Number.isFinite(requestedSlide) ? requestedSlide : 0);
+  </script>
+</body>
+</html>
