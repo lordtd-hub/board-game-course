@@ -3,166 +3,448 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>SMA2106 Board Game Course</title>
+  <title>SMA2106 Board Game Materials</title>
   <style>
     :root {
-      --bg: #fff8ec;
-      --ink: #22201c;
+      --paper: #fff7e6;
+      --paper-2: #f4e4c4;
+      --ink: #211c17;
+      --muted: #6c5d4f;
+      --line: #dbc28a;
       --teal: #0f6f72;
-      --coral: #ec6a5c;
-      --gold: #d9a441;
-      --line: #eadcc4;
+      --sea: #2f7f91;
+      --coral: #ec665d;
+      --gold: #d8a642;
+      --clay: #b8573d;
+      --night: #182233;
+      --blue: #2f67b1;
+      --rose: #8d2143;
+      --green: #3f7d5b;
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
-      align-items: center;
       background:
-        linear-gradient(135deg, rgba(21, 154, 156, 0.13), transparent 36%),
-        linear-gradient(315deg, rgba(236, 106, 92, 0.12), transparent 42%),
-        var(--bg);
+        linear-gradient(135deg, rgba(47, 127, 145, .12), transparent 34%),
+        linear-gradient(315deg, rgba(216, 166, 66, .16), transparent 42%),
+        linear-gradient(180deg, var(--paper), #fffaf1);
       color: var(--ink);
-      display: grid;
       font-family: Arial, "Noto Sans Thai", sans-serif;
+      margin: 0;
       min-height: 100vh;
-      margin: 0;
-      padding: 32px;
     }
 
-    main {
+    a { text-decoration: none; }
+
+    .shell {
       display: grid;
-      gap: 24px;
-      max-width: 980px;
+      gap: 28px;
+      margin: 0 auto;
+      max-width: 1220px;
+      padding: 34px clamp(18px, 4vw, 44px) 56px;
     }
 
-    p {
-      font-size: 20px;
-      line-height: 1.5;
-      margin: 0;
+    .topbar {
+      align-items: center;
+      display: flex;
+      gap: 14px;
+      justify-content: space-between;
     }
+
+    .course-mark {
+      align-items: center;
+      color: var(--muted);
+      display: flex;
+      font-size: 15px;
+      font-weight: 900;
+      gap: 10px;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+
+    .course-mark::before {
+      background: linear-gradient(135deg, var(--teal), var(--gold), var(--coral));
+      border-radius: 999px;
+      content: "";
+      height: 14px;
+      width: 48px;
+    }
+
+    .status {
+      border: 1px solid rgba(15, 111, 114, .22);
+      border-radius: 999px;
+      color: var(--teal);
+      font-size: 14px;
+      font-weight: 900;
+      padding: 8px 12px;
+      white-space: nowrap;
+    }
+
+    .hero {
+      align-items: end;
+      display: grid;
+      gap: 22px;
+      grid-template-columns: minmax(0, 1fr) minmax(260px, 360px);
+      padding-block: 12px 6px;
+    }
+
+    h1, h2, h3, p { margin: 0; }
 
     h1 {
       color: var(--teal);
-      font-size: clamp(42px, 7vw, 76px);
-      line-height: 1.05;
-      margin: 0;
+      font-size: clamp(42px, 7vw, 86px);
+      line-height: .98;
+      max-width: 900px;
     }
 
-    a {
-      background: var(--coral);
-      border-radius: 8px;
-      color: white;
-      display: inline-flex;
-      font-weight: 800;
-      justify-content: center;
-      padding: 12px 18px;
-      text-decoration: none;
+    .lead {
+      color: #342c24;
+      font-size: clamp(18px, 2vw, 26px);
+      line-height: 1.4;
+      max-width: 860px;
     }
 
-    .lesson-grid {
-      display: grid;
-      gap: 16px;
-      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
-    }
-
-    .lesson-card {
-      background: rgba(255,255,255,.82);
+    .summary-panel {
+      background: rgba(255, 250, 240, .72);
       border: 1px solid var(--line);
-      border-radius: 10px;
-      box-shadow: 0 18px 44px rgba(15, 111, 114, .12);
+      border-radius: 8px;
       display: grid;
       gap: 12px;
-      padding: 22px;
+      padding: 18px;
     }
 
-    .lesson-card strong {
-      color: var(--teal);
-      font-size: 26px;
+    .summary-panel strong {
+      color: var(--night);
+      font-size: 18px;
+    }
+
+    .summary-row {
+      display: grid;
+      gap: 8px;
+      grid-template-columns: 44px 1fr;
+    }
+
+    .summary-row span {
+      align-items: center;
+      background: var(--teal);
+      border-radius: 999px;
+      color: white;
+      display: inline-grid;
+      font-weight: 900;
+      height: 34px;
+      justify-content: center;
+      width: 34px;
+    }
+
+    .section {
+      display: grid;
+      gap: 14px;
+    }
+
+    .section-head {
+      align-items: end;
+      display: flex;
+      gap: 18px;
+      justify-content: space-between;
+    }
+
+    h2 {
+      color: var(--night);
+      font-size: clamp(26px, 3vw, 42px);
       line-height: 1.1;
     }
 
-    .lesson-card:first-child a,
-    .lesson-card:nth-child(2) a {
-      background: var(--gold);
-      color: #2c2112;
+    .section-note {
+      color: var(--muted);
+      font-size: 17px;
+      line-height: 1.35;
+      max-width: 560px;
     }
 
-    @media (max-width: 720px) {
-      .lesson-grid {
+    .grid {
+      display: grid;
+      gap: 16px;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .card {
+      background: rgba(255, 250, 240, .82);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: 0 18px 44px rgba(33, 28, 23, .08);
+      display: grid;
+      gap: 14px;
+      min-height: 252px;
+      padding: 20px;
+      position: relative;
+    }
+
+    .card::before {
+      background: var(--accent, var(--teal));
+      border-radius: 8px 8px 0 0;
+      content: "";
+      height: 7px;
+      left: -1px;
+      position: absolute;
+      right: -1px;
+      top: -1px;
+    }
+
+    .card-title {
+      align-items: start;
+      display: grid;
+      gap: 10px;
+      grid-template-columns: 44px 1fr;
+      padding-top: 8px;
+    }
+
+    .token {
+      align-items: center;
+      background: var(--accent, var(--teal));
+      border-radius: 999px;
+      color: white;
+      display: inline-grid;
+      font-size: 18px;
+      font-weight: 900;
+      height: 44px;
+      justify-content: center;
+      width: 44px;
+    }
+
+    .card h3 {
+      color: var(--night);
+      font-size: 24px;
+      line-height: 1.08;
+    }
+
+    .card p {
+      color: var(--ink);
+      font-size: 17px;
+      line-height: 1.45;
+    }
+
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .tag {
+      background: rgba(24, 34, 51, .07);
+      border-radius: 999px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 900;
+      padding: 6px 9px;
+    }
+
+    .open-link {
+      align-self: end;
+      background: var(--accent, var(--coral));
+      border-radius: 8px;
+      color: white;
+      display: inline-flex;
+      font-weight: 900;
+      justify-content: center;
+      padding: 12px 14px;
+      text-align: center;
+    }
+
+    .open-link:hover,
+    .open-link:focus-visible {
+      filter: brightness(.95);
+      outline: 3px solid rgba(216, 166, 66, .35);
+    }
+
+    .course-card {
+      grid-column: span 2;
+      min-height: 210px;
+    }
+
+    .game-card {
+      min-height: 220px;
+    }
+
+    .accent-splendor { --accent: var(--teal); }
+    .accent-makhos { --accent: var(--gold); }
+    .accent-othello { --accent: var(--green); }
+    .accent-seven { --accent: var(--coral); }
+    .accent-catan { --accent: var(--sea); }
+    .accent-love { --accent: var(--rose); }
+    .accent-stone { --accent: var(--clay); }
+    .accent-avalon { --accent: var(--blue); }
+    .accent-week { --accent: var(--night); }
+
+    @media (max-width: 1100px) {
+      .grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 820px) {
+      .hero {
         grid-template-columns: 1fr;
+      }
+
+      .grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .course-card {
+        grid-column: span 2;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .shell {
+        padding-inline: 16px;
+      }
+
+      .topbar,
+      .section-head {
+        align-items: start;
+        flex-direction: column;
+      }
+
+      .grid,
+      .course-card {
+        grid-template-columns: 1fr;
+        grid-column: span 1;
+      }
+
+      .card {
+        min-height: 0;
       }
     }
   </style>
 </head>
 <body>
-  <main>
-    <p>SMA2106 Board Game Course</p>
-    <h1>Interactive Board Game Course</h1>
-    <p>เลือกสไลด์หรือเกมที่ต้องการเปิดใช้ในห้องเรียน</p>
-    <section class="lesson-grid">
-      <article class="lesson-card">
-        <strong>สอนเล่น Splendor</strong>
-        <p>สไลด์ teach-to-play พร้อมผังโต๊ะ การ์ดจำลอง simulator และ quick check</p>
-        <a href="slides/splendor-teach/">เปิดสไลด์สอนเล่น</a>
-      </article>
-      <article class="lesson-card">
-        <strong>สอนเล่นหมากฮอสไทย</strong>
-        <p>สไลด์ teach-to-play พร้อมกระดาน interactive กฎกินติด เข้าฮอส และแบบทดสอบ</p>
-        <a href="slides/makhos-teach/">เปิดสไลด์หมากฮอสไทย</a>
-      </article>
-      <article class="lesson-card">
-        <strong>สอนเล่น Othello</strong>
-        <p>สไลด์ teach-to-play พร้อมตัวอย่างหนีบหมาก กระดานทดลอง และ quick check</p>
-        <a href="slides/othello-teach/">เปิดสไลด์ Othello</a>
-      </article>
-      <article class="lesson-card">
-        <strong>7 Wonders Symbols</strong>
-        <p>สไลด์ช่วยสอนสัญลักษณ์ 7 Wonders แบบจัดกลุ่ม พร้อมไอคอนประกอบและ quick check</p>
-        <a href="slides/seven-wonders-symbols/">เปิดสไลด์สัญลักษณ์</a>
-      </article>
-      <article class="lesson-card">
-        <strong>สอนเล่น 7 Wonders</strong>
-        <p>สไลด์ teach-to-play สำหรับเริ่มเล่นทั้งเกม พร้อม simulator, payment puzzle และ quick check</p>
-        <a href="slides/seven-wonders-teach/">เปิดสไลด์สอนเล่น</a>
-      </article>
-      <article class="lesson-card">
-        <strong>สอนเล่น Catan</strong>
-        <p>สไลด์ teach-to-play พร้อมแผนที่จำลอง, dice probability, production demo และ quick check</p>
-        <a href="slides/catan-teach/">เปิดสไลด์ Catan</a>
-      </article>
-      <article class="lesson-card">
-        <strong>สอนเล่น Love Letter</strong>
-        <p>สไลด์ teach-to-play เวอร์ชันการ์ด 0-9 พร้อมการ์ดจำลอง, combo สำคัญ และ quick check</p>
-        <a href="slides/love-letter-teach/">เปิดสไลด์ Love Letter</a>
-      </article>
-      <article class="lesson-card">
-        <strong>สอนเล่น Stone Age</strong>
-        <p>สไลด์ teach-to-play พร้อมตัวจำลองทอยเต๋า, Tool calculator, food check และ quick quiz</p>
-        <a href="slides/stone-age-teach/">เปิดสไลด์ Stone Age</a>
-      </article>
-      <article class="lesson-card">
-        <strong>สอนเล่น Avalon</strong>
-        <p>สไลด์ teach-to-play พร้อม role map, vote demo, mission logic และ quiz อ่านสถานการณ์</p>
-        <a href="slides/avalon-teach/">เปิดสไลด์ Avalon</a>
-      </article>
-      <article class="lesson-card">
-        <strong>Week 1: Strategic Thinking</strong>
-        <p>สไลด์บทนำรายวิชา ใช้ Splendor และ Chess เป็นฐานเชื่อมสู่กลยุทธ์</p>
-        <a href="slides/week1/">เปิด Week 1</a>
-      </article>
-      <article class="lesson-card">
-        <strong>เกมหมากฮอสไทย</strong>
-        <p>เล่น 2 คนบนเครื่องเดียวกัน หรือเล่นกับคอมแบบง่าย แยกจากสไลด์สอน</p>
-        <a href="games/makhos/">เปิดเกม</a>
-      </article>
-      <article class="lesson-card">
-        <strong>เกม Othello</strong>
-        <p>เล่น 2 คนบนเครื่องเดียวกัน หรือฝึกกับบอทแบบง่าย พร้อมจุด legal move และ hint</p>
-        <a href="games/othello/">เปิดเกม</a>
-      </article>
+  <main class="shell">
+    <header class="topbar">
+      <div class="course-mark">SMA2106 Board Game Course</div>
+      <div class="status">GitHub Pages Materials Hub</div>
+    </header>
+
+    <section class="hero">
+      <div class="section">
+        <h1>Interactive Board Game Materials</h1>
+        <p class="lead">ศูนย์รวมสไลด์สอนเล่น บทเรียนรายวิชา และเกมฝึกเล่นสำหรับใช้ในห้องเรียน เลือกเปิดสื่อที่ต้องการแล้วนำขึ้นจอได้ทันที</p>
+      </div>
+      <aside class="summary-panel" aria-label="ภาพรวมสื่อ">
+        <strong>โครงสื่อปัจจุบัน</strong>
+        <div class="summary-row"><span>9</span><p>ชุดสไลด์/บทเรียนแบบ interactive</p></div>
+        <div class="summary-row"><span>2</span><p>เกม HTML สำหรับฝึกเล่นในชั้นเรียน</p></div>
+        <div class="summary-row"><span>1</span><p>หน้า Week 1 สำหรับบทนำรายวิชา</p></div>
+      </aside>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <h2>Teach-to-Play Slides</h2>
+        <p class="section-note">สไลด์สอนเล่นเกมจริง เน้นอธิบายกติกาให้เริ่มเล่นได้เร็ว พร้อมตัวอย่างและคำถามตรวจความเข้าใจ</p>
+      </div>
+      <div class="grid">
+        <article class="card accent-splendor">
+          <div class="card-title"><span class="token">S</span><h3>สอนเล่น Splendor</h3></div>
+          <p>สไลด์ teach-to-play พร้อมผังโต๊ะ การ์ดจำลอง simulator และ quick check</p>
+          <div class="tag-row"><span class="tag">engine building</span><span class="tag">resource</span></div>
+          <a class="open-link" href="slides/splendor-teach/">เปิดสไลด์ Splendor</a>
+        </article>
+
+        <article class="card accent-makhos">
+          <div class="card-title"><span class="token">M</span><h3>สอนเล่นหมากฮอสไทย</h3></div>
+          <p>สไลด์ teach-to-play พร้อมกระดาน interactive กฎกินต่อ เข้าฮอส และแบบทดสอบ</p>
+          <div class="tag-row"><span class="tag">abstract</span><span class="tag">capture</span></div>
+          <a class="open-link" href="slides/makhos-teach/">เปิดสไลด์หมากฮอสไทย</a>
+        </article>
+
+        <article class="card accent-othello">
+          <div class="card-title"><span class="token">O</span><h3>สอนเล่น Othello</h3></div>
+          <p>สไลด์ teach-to-play พร้อมตัวอย่างหนีบหมาก กระดานทดลอง และ quick check</p>
+          <div class="tag-row"><span class="tag">abstract</span><span class="tag">area control</span></div>
+          <a class="open-link" href="slides/othello-teach/">เปิดสไลด์ Othello</a>
+        </article>
+
+        <article class="card accent-seven">
+          <div class="card-title"><span class="token">7</span><h3>7 Wonders Symbols</h3></div>
+          <p>สไลด์ช่วยสอนสัญลักษณ์ 7 Wonders แบบจัดกลุ่ม พร้อมไอคอนประกอบและ quick check</p>
+          <div class="tag-row"><span class="tag">symbols</span><span class="tag">reference</span></div>
+          <a class="open-link" href="slides/seven-wonders-symbols/">เปิดสไลด์สัญลักษณ์</a>
+        </article>
+
+        <article class="card accent-seven">
+          <div class="card-title"><span class="token">7</span><h3>สอนเล่น 7 Wonders</h3></div>
+          <p>สไลด์ teach-to-play สำหรับเริ่มเล่นทั้งเกม พร้อม simulator, payment puzzle และ quick check</p>
+          <div class="tag-row"><span class="tag">drafting</span><span class="tag">payment</span></div>
+          <a class="open-link" href="slides/seven-wonders-teach/">เปิดสไลด์ 7 Wonders</a>
+        </article>
+
+        <article class="card accent-catan">
+          <div class="card-title"><span class="token">C</span><h3>สอนเล่น Catan</h3></div>
+          <p>สไลด์ teach-to-play พร้อมแผนที่จำลอง dice probability, production demo และ quick check</p>
+          <div class="tag-row"><span class="tag">trading</span><span class="tag">dice</span></div>
+          <a class="open-link" href="slides/catan-teach/">เปิดสไลด์ Catan</a>
+        </article>
+
+        <article class="card accent-love">
+          <div class="card-title"><span class="token">L</span><h3>สอนเล่น Love Letter</h3></div>
+          <p>สไลด์ teach-to-play เวอร์ชันการ์ด 0-9 พร้อมการ์ดจำลอง combo สำคัญ และ quick check</p>
+          <div class="tag-row"><span class="tag">deduction</span><span class="tag">hand reading</span></div>
+          <a class="open-link" href="slides/love-letter-teach/">เปิดสไลด์ Love Letter</a>
+        </article>
+
+        <article class="card accent-stone">
+          <div class="card-title"><span class="token">SA</span><h3>สอนเล่น Stone Age</h3></div>
+          <p>สไลด์ teach-to-play พร้อมตัวจำลองทอยเต๋า Tool calculator, food check และ quick quiz</p>
+          <div class="tag-row"><span class="tag">worker placement</span><span class="tag">dice</span></div>
+          <a class="open-link" href="slides/stone-age-teach/">เปิดสไลด์ Stone Age</a>
+        </article>
+
+        <article class="card accent-avalon">
+          <div class="card-title"><span class="token">A</span><h3>สอนเล่น Avalon</h3></div>
+          <p>สไลด์ teach-to-play พร้อม role map, vote demo, mission logic และ quiz อ่านสถานการณ์</p>
+          <div class="tag-row"><span class="tag">social deduction</span><span class="tag">voting</span></div>
+          <a class="open-link" href="slides/avalon-teach/">เปิดสไลด์ Avalon</a>
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <h2>Course Materials</h2>
+        <p class="section-note">สื่อที่ใช้ประกอบรายวิชาโดยตรง แยกจากสไลด์สอนเล่นรายเกม</p>
+      </div>
+      <div class="grid">
+        <article class="card course-card accent-week">
+          <div class="card-title"><span class="token">W1</span><h3>Week 1: Strategic Thinking</h3></div>
+          <p>สไลด์บทนำรายวิชา ใช้ Splendor และ Chess เป็นฐานเชื่อมสู่การคิดเชิงกลยุทธ์</p>
+          <div class="tag-row"><span class="tag">strategy</span><span class="tag">course intro</span></div>
+          <a class="open-link" href="slides/week1/">เปิด Week 1</a>
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <h2>Playable HTML Games</h2>
+        <p class="section-note">เกมแยกสำหรับให้นักศึกษาฝึกเล่นกันเองหรือฝึกกับบอทหลังเรียนกติกา</p>
+      </div>
+      <div class="grid">
+        <article class="card game-card accent-makhos">
+          <div class="card-title"><span class="token">M</span><h3>เกมหมากฮอสไทย</h3></div>
+          <p>เล่น 2 คนบนเครื่องเดียวกัน หรือเล่นกับคอม พร้อมปรับการมองเห็นหมากบนช่องเข้ม</p>
+          <div class="tag-row"><span class="tag">2 players</span><span class="tag">bot</span></div>
+          <a class="open-link" href="games/makhos/">เปิดเกมหมากฮอสไทย</a>
+        </article>
+
+        <article class="card game-card accent-othello">
+          <div class="card-title"><span class="token">O</span><h3>เกม Othello</h3></div>
+          <p>เล่น 2 คนบนเครื่องเดียวกัน หรือฝึกกับบอท พร้อมจุด legal move และ hint</p>
+          <div class="tag-row"><span class="tag">2 players</span><span class="tag">bot</span></div>
+          <a class="open-link" href="games/othello/">เปิดเกม Othello</a>
+        </article>
+      </div>
     </section>
   </main>
 </body>
