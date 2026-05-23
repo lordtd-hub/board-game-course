@@ -373,7 +373,7 @@
 
     <aside class="panel">
       <h2>เล่นกันเองหรือเล่นกับคอม</h2>
-      <p>กติกาเวอร์ชันนี้ใช้หมากฮอสไทย: ฝ่ายละ 8 ตัว บังคับกิน กินติด และเข้าฮอสแล้วเดินทแยงไกลได้ โหมดคอมมีแบบง่ายและแบบยากสำหรับฝึกเล่นจริงจังขึ้น</p>
+      <p>กติกาเวอร์ชันนี้ใช้หมากฮอสไทย: ฝ่ายละ 8 ตัว บังคับกิน กินติด และเข้าฮอสแล้วเดินทแยงไกลได้ แต่เวลากินต้องลงช่องถัดหลังหมากที่กิน โหมดคอมมีแบบง่ายและแบบยากสำหรับฝึกเล่นจริงจังขึ้น</p>
 
       <div class="controls">
         <label>
@@ -408,7 +408,7 @@
         <li>หมากธรรมดาเดินและกินทแยงไปข้างหน้าเท่านั้น</li>
         <li>ถ้ามีโอกาสกิน ต้องกิน</li>
         <li>ถ้ากินแล้วตัวเดิมยังกินต่อได้ ต้องกินติด</li>
-        <li>ถึงแถวสุดท้ายจะเข้าฮอส ฮอสเดิน/กินตามทแยงได้ 4 ทิศ</li>
+        <li>ถึงแถวสุดท้ายจะเข้าฮอส ฮอสเดินตามทแยงได้ 4 ทิศ แต่เวลากินต้องลงช่องถัดหลังหมากที่กิน</li>
       </ol>
 
       <div class="log" id="log"></div>
@@ -537,18 +537,21 @@
       for (const [dr, dc] of allDirs()) {
         let r = row + dr;
         let c = col + dc;
-        let jumped = null;
         while (inBounds(r, c)) {
           const occupant = board[r][c];
           if (!occupant) {
-            if (jumped) moves.push({ from: { row, col }, to: { row: r, col: c }, captures: [jumped] });
-          } else if (occupant.side === piece.side || jumped) {
-            break;
-          } else {
-            jumped = { row: r, col: c };
+            r += dr;
+            c += dc;
+            continue;
           }
-          r += dr;
-          c += dc;
+          if (occupant.side === piece.side) {
+            break;
+          }
+          const landing = { row: r + dr, col: c + dc };
+          if (inBounds(landing.row, landing.col) && !board[landing.row][landing.col]) {
+            moves.push({ from: { row, col }, to: landing, captures: [{ row: r, col: c }] });
+          }
+          break;
         }
       }
       return moves;
