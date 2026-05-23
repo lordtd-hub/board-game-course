@@ -1,0 +1,876 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Taluva Teach-to-Play Interactive Slides</title>
+  <style>
+    :root {
+      --lava: #c8482c;
+      --lava-dark: #7d271d;
+      --ash: #38454b;
+      --stone: #6e7778;
+      --jungle: #347c55;
+      --grass: #74a85a;
+      --sand: #dfbd73;
+      --lagoon: #2f8aa0;
+      --paper: #fff6df;
+      --paper-2: #f4dfb9;
+      --ink: #1f1a15;
+      --muted: #6b5a4c;
+      --line: #d3b36d;
+      --night: #1f2b33;
+      --good: #2f7d5b;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      background:
+        radial-gradient(circle at 12% 12%, rgba(200, 72, 44, .24), transparent 28%),
+        radial-gradient(circle at 88% 16%, rgba(47, 138, 160, .2), transparent 30%),
+        linear-gradient(135deg, #1d2f35, #38454b 48%, #6b2d1f);
+      color: var(--ink);
+      font-family: Arial, "Noto Sans Thai", sans-serif;
+      margin: 0;
+      min-height: 100vh;
+    }
+
+    button, input, select { font: inherit; }
+
+    .deck {
+      background:
+        linear-gradient(135deg, rgba(255, 246, 223, .99), rgba(244, 223, 185, .98)),
+        radial-gradient(circle at 92% 82%, rgba(47, 138, 160, .12), transparent 32%);
+      min-height: 100vh;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .deck::before {
+      border: 2px solid rgba(56, 69, 75, .18);
+      content: "";
+      inset: clamp(14px, 2vw, 28px);
+      pointer-events: none;
+      position: absolute;
+      z-index: 1;
+    }
+
+    .progress {
+      background: linear-gradient(90deg, var(--lagoon), var(--jungle), var(--sand), var(--lava));
+      height: 8px;
+      left: 0;
+      position: absolute;
+      top: 0;
+      transition: width 160ms ease;
+      z-index: 5;
+    }
+
+    .meta {
+      color: var(--muted);
+      display: flex;
+      font-size: clamp(11px, 1vw, 14px);
+      font-weight: 900;
+      justify-content: space-between;
+      left: clamp(24px, 4vw, 70px);
+      position: absolute;
+      right: clamp(24px, 4vw, 70px);
+      top: clamp(18px, 2.2vw, 32px);
+      z-index: 6;
+    }
+
+    .slide {
+      display: none;
+      min-height: 100vh;
+      padding: clamp(72px, 8vw, 108px) clamp(40px, 7vw, 116px) clamp(80px, 7vw, 108px);
+      position: relative;
+      z-index: 2;
+    }
+
+    .slide.active { display: grid; }
+
+    h1, h2, h3, p { margin: 0; }
+
+    h1 {
+      color: var(--lava-dark);
+      font-size: clamp(52px, 8vw, 112px);
+      line-height: .96;
+      max-width: 930px;
+    }
+
+    h2 {
+      color: var(--night);
+      font-size: clamp(34px, 5vw, 68px);
+      line-height: 1.04;
+    }
+
+    h3 {
+      color: var(--night);
+      font-size: clamp(20px, 2.1vw, 31px);
+      line-height: 1.15;
+    }
+
+    p, li {
+      font-size: clamp(16px, 1.62vw, 24px);
+      line-height: 1.42;
+    }
+
+    ul {
+      display: grid;
+      gap: 12px;
+      margin: 0;
+      padding-left: 1.2em;
+    }
+
+    .kicker {
+      color: var(--lagoon);
+      font-size: clamp(15px, 1.35vw, 20px);
+      font-weight: 900;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+    }
+
+    .title-grid,
+    .two-col {
+      align-items: center;
+      display: grid;
+      gap: clamp(24px, 4vw, 58px);
+      grid-template-columns: minmax(0, 1fr) minmax(330px, .95fr);
+    }
+
+    .stack {
+      display: grid;
+      gap: clamp(16px, 2vw, 26px);
+    }
+
+    .panel {
+      background: rgba(255, 250, 240, .74);
+      border: 1px solid rgba(211, 179, 109, .86);
+      border-radius: 8px;
+      box-shadow: 0 24px 58px rgba(31, 43, 51, .12);
+      padding: clamp(18px, 2.2vw, 30px);
+    }
+
+    .note {
+      background: rgba(47, 138, 160, .1);
+      border-left: 8px solid var(--lagoon);
+      border-radius: 8px;
+      padding: 16px 18px;
+    }
+
+    .warning {
+      background: rgba(200, 72, 44, .1);
+      border-left-color: var(--lava);
+    }
+
+    .small {
+      color: var(--muted);
+      font-size: clamp(13px, 1.12vw, 17px);
+      line-height: 1.4;
+    }
+
+    .island {
+      aspect-ratio: 1.14;
+      background:
+        radial-gradient(circle at 50% 45%, rgba(223, 189, 115, .45), transparent 38%),
+        linear-gradient(180deg, rgba(47, 138, 160, .24), rgba(52, 124, 85, .22)),
+        var(--paper);
+      border: 2px solid var(--line);
+      border-radius: 8px;
+      box-shadow: 0 28px 70px rgba(31, 43, 51, .18);
+      display: grid;
+      place-items: center;
+      position: relative;
+    }
+
+    .hex-map {
+      height: min(76%, 440px);
+      position: relative;
+      width: min(82%, 540px);
+    }
+
+    .hex {
+      align-items: center;
+      clip-path: polygon(25% 4%, 75% 4%, 100% 50%, 75% 96%, 25% 96%, 0% 50%);
+      color: white;
+      display: grid;
+      font-size: 16px;
+      font-weight: 900;
+      height: 116px;
+      justify-content: center;
+      position: absolute;
+      text-align: center;
+      text-shadow: 0 1px 2px rgba(0,0,0,.28);
+      width: 132px;
+    }
+
+    .volcano { background: radial-gradient(circle at 50% 34%, #f4a33d 0 15%, var(--lava) 16% 48%, var(--lava-dark)); }
+    .jungle { background: var(--jungle); }
+    .grass { background: var(--grass); }
+    .sand { background: var(--sand); color: #3b2b16; text-shadow: none; }
+    .lake { background: var(--lagoon); }
+    .rock { background: var(--stone); }
+    .level2 { filter: drop-shadow(0 16px 0 rgba(31, 43, 51, .2)); transform: translateY(-8px); }
+    .level3 { filter: drop-shadow(0 24px 0 rgba(31, 43, 51, .24)); transform: translateY(-16px); }
+    .h1 { left: 36%; top: 6%; }
+    .h2 { left: 19%; top: 27%; }
+    .h3 { left: 52%; top: 27%; }
+    .h4 { left: 35%; top: 48%; }
+    .h5 { left: 4%; top: 48%; }
+    .h6 { left: 67%; top: 48%; }
+
+    .piece {
+      align-items: center;
+      background: #fff;
+      border: 3px solid var(--night);
+      border-radius: 999px;
+      color: var(--night);
+      display: inline-grid;
+      font-size: 14px;
+      font-weight: 900;
+      height: 42px;
+      justify-content: center;
+      width: 42px;
+    }
+
+    .piece.hut { border-color: var(--jungle); color: var(--jungle); }
+    .piece.temple { border-color: var(--sun); color: #5b3b05; }
+    .piece.tower { border-color: var(--ash); color: var(--ash); }
+
+    .flow {
+      display: grid;
+      gap: 14px;
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .flow-step {
+      background: rgba(255, 250, 240, .78);
+      border: 1px solid rgba(211, 179, 109, .82);
+      border-radius: 8px;
+      display: grid;
+      gap: 12px;
+      min-height: 210px;
+      padding: 22px;
+    }
+
+    .flow-step b {
+      color: var(--lava);
+      font-size: clamp(38px, 4vw, 66px);
+      line-height: .88;
+    }
+
+    .rule-grid,
+    .build-grid,
+    .score-grid {
+      display: grid;
+      gap: 14px;
+      grid-template-columns: repeat(4, 1fr);
+    }
+
+    .build-grid { grid-template-columns: repeat(2, 1fr); }
+
+    .rule-card {
+      background: var(--paper);
+      border: 1px solid rgba(211, 179, 109, .86);
+      border-radius: 8px;
+      display: grid;
+      gap: 12px;
+      min-height: 190px;
+      padding: 18px;
+    }
+
+    .rule-card strong {
+      color: var(--night);
+      font-size: clamp(22px, 2.3vw, 34px);
+      line-height: 1.08;
+    }
+
+    .terrain-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .terrain {
+      border-radius: 999px;
+      color: white;
+      font-size: 13px;
+      font-weight: 900;
+      padding: 8px 12px;
+    }
+
+    .terrain.sand { color: #3b2b16; }
+
+    .calculator {
+      display: grid;
+      gap: 14px;
+    }
+
+    .calc-row {
+      display: grid;
+      gap: 12px;
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    label {
+      color: var(--muted);
+      display: grid;
+      font-size: 14px;
+      font-weight: 900;
+      gap: 6px;
+    }
+
+    input {
+      background: #fffaf0;
+      border: 1px solid rgba(31, 43, 51, .28);
+      border-radius: 8px;
+      color: var(--ink);
+      font-size: 18px;
+      font-weight: 800;
+      padding: 12px;
+      width: 100%;
+    }
+
+    .result {
+      background: rgba(47, 138, 160, .12);
+      border: 1px dashed rgba(47, 138, 160, .6);
+      border-radius: 8px;
+      color: var(--night);
+      font-size: clamp(20px, 2.4vw, 34px);
+      font-weight: 900;
+      min-height: 76px;
+      padding: 16px;
+    }
+
+    .primary {
+      background: var(--lava-dark);
+      border: 0;
+      border-radius: 999px;
+      color: var(--paper);
+      cursor: pointer;
+      font-weight: 900;
+      padding: 13px 18px;
+    }
+
+    .quiz {
+      display: grid;
+      gap: 16px;
+    }
+
+    .choices {
+      display: grid;
+      gap: 12px;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .choice {
+      background: #fffaf0;
+      border: 2px solid rgba(31, 43, 51, .18);
+      border-radius: 8px;
+      color: var(--ink);
+      cursor: pointer;
+      font-weight: 900;
+      min-height: 64px;
+      padding: 14px 16px;
+      text-align: left;
+    }
+
+    .choice:hover,
+    .choice:focus-visible {
+      border-color: var(--lagoon);
+      outline: 3px solid rgba(47, 138, 160, .18);
+    }
+
+    .choice.correct {
+      background: rgba(47, 125, 91, .14);
+      border-color: var(--good);
+    }
+
+    .choice.wrong {
+      background: rgba(200, 72, 44, .14);
+      border-color: var(--lava);
+    }
+
+    .feedback {
+      background: rgba(255, 250, 240, .74);
+      border: 1px dashed rgba(31, 43, 51, .35);
+      border-radius: 8px;
+      color: var(--night);
+      font-size: clamp(16px, 1.45vw, 22px);
+      font-weight: 800;
+      min-height: 58px;
+      padding: 14px 16px;
+    }
+
+    .controls {
+      align-items: center;
+      bottom: clamp(18px, 2.5vw, 34px);
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      left: 50%;
+      position: absolute;
+      transform: translateX(-50%);
+      z-index: 8;
+    }
+
+    .nav {
+      background: var(--lava-dark);
+      border: 0;
+      border-radius: 999px;
+      color: var(--paper);
+      cursor: pointer;
+      font-weight: 900;
+      min-width: 46px;
+      padding: 12px 16px;
+    }
+
+    .nav.secondary {
+      background: #fffaf0;
+      border: 1px solid rgba(31, 43, 51, .28);
+      color: var(--lava-dark);
+    }
+
+    a { color: var(--lagoon); font-weight: 900; }
+
+    @media (max-width: 1040px) {
+      .title-grid,
+      .two-col,
+      .flow,
+      .rule-grid,
+      .build-grid,
+      .score-grid,
+      .choices,
+      .calc-row {
+        grid-template-columns: 1fr;
+      }
+
+      .slide {
+        min-height: 100svh;
+        overflow-y: auto;
+        padding-inline: 24px;
+      }
+
+      .hex-map {
+        height: 340px;
+        width: 100%;
+      }
+
+      .hex {
+        height: 86px;
+        width: 98px;
+      }
+
+      .controls {
+        background: rgba(255, 246, 223, .9);
+        border-radius: 999px;
+        padding: 6px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="deck">
+    <div class="progress" id="progress"></div>
+    <div class="meta">
+      <span>Taluva</span>
+      <span id="counter">1/16</span>
+      <span>Teach-to-play</span>
+    </div>
+
+    <section class="slide active">
+      <div class="title-grid">
+        <div class="stack">
+          <p class="kicker">volcano tiles • settlements • height</p>
+          <h1>สอนเล่น Taluva</h1>
+          <p>เกมสร้างเกาะภูเขาไฟ วางแผ่น hex ให้เกาะโตหรือสูงขึ้น แล้วสร้างกระท่อม วิหาร และหอคอยให้คุ้มที่สุด</p>
+          <div class="note"><p><strong>เป้าหมายคาบ:</strong> มือใหม่เข้าใจ 1 เทิร์น, วาง volcano tile, สร้าง settlement, expand hut, temple/tower และเงื่อนไขชนะ</p></div>
+        </div>
+        <div class="island" aria-label="เกาะภูเขาไฟ Taluva แบบจำลอง">
+          <div class="hex-map">
+            <div class="hex volcano h1">VOLCANO</div>
+            <div class="hex jungle h2">JUNGLE</div>
+            <div class="hex sand h3">SAND</div>
+            <div class="hex lake h4 level2">LAKE<br>Lv2</div>
+            <div class="hex grass h5">GRASS</div>
+            <div class="hex rock h6 level3">ROCK<br>Lv3</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="two-col">
+        <div class="stack">
+          <p class="kicker">core idea</p>
+          <h2>ทุกเทิร์นมี 2 งานเท่านั้น</h2>
+          <p>แต่สองงานนี้ทำให้เกมลึก: เรากำหนดรูปเกาะก่อน แล้วค่อยตัดสินใจว่าจะสร้างอะไรเพื่อเข้าใกล้การชนะ</p>
+        </div>
+        <div class="flow">
+          <div class="flow-step"><b>1</b><h3>วาง Volcano Tile</h3><p>ขยายเกาะที่ระดับ 1 หรือซ้อนขึ้นเพื่อให้ภูเขาไฟระเบิด</p></div>
+          <div class="flow-step"><b>2</b><h3>สร้าง Building</h3><p>ต้องสร้างอย่างน้อย 1 อย่าง: hut, expand, temple หรือ tower</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="two-col">
+        <div class="stack">
+          <p class="kicker">tile placement</p>
+          <h2>วิธีวาง tile แบบที่ 1: ขยายเกาะ</h2>
+          <ul>
+            <li>วาง tile บนโต๊ะที่ระดับ 1</li>
+            <li>อย่างน้อย 1 ด้านต้องแตะ tile ที่มีอยู่แล้ว</li>
+            <li>เกิดช่องว่างในแผนที่ได้ ไม่ผิดกฎ</li>
+            <li>เหมาะกับการเปิดพื้นที่ใหม่และเริ่ม settlement ใหม่</li>
+          </ul>
+        </div>
+        <div class="island">
+          <div class="hex-map">
+            <div class="hex volcano h2">V</div>
+            <div class="hex jungle h3">J</div>
+            <div class="hex sand h4">S</div>
+            <div class="hex grass h6">NEW<br>TILE</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="two-col">
+        <div class="stack">
+          <p class="kicker">eruption</p>
+          <h2>วิธีวาง tile แบบที่ 2: ภูเขาไฟระเบิด</h2>
+          <ul>
+            <li>วาง tile ซ้อนบน tile เดิมเพื่อเพิ่มระดับพื้นที่</li>
+            <li>ช่อง Volcano ใหม่ต้องทับช่อง Volcano เดิม</li>
+            <li>ทิศของ Volcano ต้องไม่ตรงกับทิศเดิม</li>
+            <li>ใต้ tile ต้องรองรับครบ ห้ามมีช่องลอย</li>
+          </ul>
+        </div>
+        <div class="island">
+          <div class="hex-map">
+            <div class="hex volcano h1 level2">V<br>ทับ V</div>
+            <div class="hex jungle h2 level2">Lv2</div>
+            <div class="hex sand h3 level2">Lv2</div>
+            <div class="hex lake h4">เก่า</div>
+            <div class="hex grass h5">เก่า</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="stack">
+        <p class="kicker">eruption limits</p>
+        <h2>ภูเขาไฟทับอะไรได้และไม่ได้</h2>
+        <div class="rule-grid">
+          <div class="rule-card"><span class="piece hut">H</span><strong>ทับ Hut ได้</strong><p>Hut ที่ถูกทับออกจากเกม ไม่กลับไปใน supply</p></div>
+          <div class="rule-card"><span class="piece temple">T</span><strong>ห้ามทับ Temple</strong><p>ถ้ามีวิหารอยู่ใต้ tile ใหม่ วางไม่ได้</p></div>
+          <div class="rule-card"><span class="piece tower">W</span><strong>ห้ามทับ Tower</strong><p>หอคอยเป็นสิ่งปลูกสร้างที่ภูเขาไฟทับไม่ได้</p></div>
+          <div class="rule-card"><span class="piece hut">1</span><strong>ห้ามลบทั้ง Settlement</strong><p>ถ้าทับแล้ว settlement หายทั้งกลุ่ม วางไม่ได้</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="two-col">
+        <div class="stack">
+          <p class="kicker">settlement</p>
+          <h2>Settlement คืออะไร</h2>
+          <p>Settlement คือกลุ่ม building สีเดียวกันที่เชื่อมติดกัน ไม่ว่าจะเป็น hut, temple หรือ tower</p>
+          <div class="note"><p>Settlement เป็นฐานสำหรับ expand hut, สร้าง temple และสร้าง tower</p></div>
+        </div>
+        <div class="panel">
+          <h3>ภาพจำ</h3>
+          <p><span class="piece hut">H</span> + <span class="piece hut">H</span> + <span class="piece temple">T</span> ที่ติดกัน = settlement เดียวกัน</p>
+          <p class="small">ถ้า building สีเดียวกันมาต่อกันภายหลัง settlement จะรวมกัน</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="stack">
+        <p class="kicker">build actions</p>
+        <h2>หลังวาง tile ต้องเลือกสร้าง 1 แบบ</h2>
+        <div class="build-grid">
+          <div class="rule-card"><span class="piece hut">H</span><strong>สร้าง Hut ใหม่</strong><p>วาง hut 1 หลังบนช่องว่างระดับ 1 ที่ไม่ใช่ volcano และไม่ติด settlement สีตัวเอง</p></div>
+          <div class="rule-card"><span class="piece hut">H+</span><strong>Expand Settlement</strong><p>เลือก terrain type ที่ติด settlement แล้ววาง hut บนทุกช่องชนิดนั้นตามระดับพื้นที่</p></div>
+          <div class="rule-card"><span class="piece temple">T</span><strong>สร้าง Temple</strong><p>settlement ต้องมีอย่างน้อย 3 hex และยังไม่มี temple</p></div>
+          <div class="rule-card"><span class="piece tower">W</span><strong>สร้าง Tower</strong><p>ต้องวางที่ level 3+ และ settlement นั้นยังไม่มี tower</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="two-col">
+        <div class="stack">
+          <p class="kicker">new hut</p>
+          <h2>สร้าง Hut ใหม่เพื่อเริ่ม settlement</h2>
+          <ul>
+            <li>ใช้ hut 1 หลัง</li>
+            <li>ต้องวางบนพื้นที่ level 1</li>
+            <li>ห้ามวางบน volcano</li>
+            <li>ห้ามวางติดกับ settlement สีเดียวกันของตัวเอง</li>
+          </ul>
+        </div>
+        <div class="panel quiz">
+          <h3>Quick check</h3>
+          <p>สร้าง hut ใหม่บนพื้นที่ level 2 ได้ไหม?</p>
+          <div class="choices">
+            <button class="choice" data-q="hut" data-a="wrong">ได้ ถ้ามี hut พอ</button>
+            <button class="choice" data-q="hut" data-a="correct">ไม่ได้ hut ใหม่ต้อง level 1</button>
+            <button class="choice" data-q="hut" data-a="wrong">ได้เฉพาะถ้าเป็น terrain jungle</button>
+            <button class="choice" data-q="hut" data-a="wrong">ได้ถ้าอยู่ติด temple</button>
+          </div>
+          <div class="feedback" id="hut-feedback">เลือกคำตอบเพื่อดู feedback</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="two-col">
+        <div class="stack">
+          <p class="kicker">expand</p>
+          <h2>Expand Settlement คือจุดที่มือใหม่พลาดบ่อย</h2>
+          <ul>
+            <li>เลือก settlement ของตัวเอง 1 กลุ่ม</li>
+            <li>เลือก terrain type 1 ชนิดที่ติดกับ settlement</li>
+            <li>ต้องวาง hut บนทุกช่องของ terrain นั้นที่ติดกับ settlement</li>
+            <li>จำนวน hut ต่อช่อง = level ของช่องนั้น</li>
+          </ul>
+        </div>
+        <div class="panel calculator">
+          <h3>Hut calculator</h3>
+          <div class="calc-row">
+            <label>ช่อง level 1
+              <input id="lv1" type="number" min="0" max="6" value="2" />
+            </label>
+            <label>ช่อง level 2
+              <input id="lv2" type="number" min="0" max="6" value="1" />
+            </label>
+            <label>ช่อง level 3
+              <input id="lv3" type="number" min="0" max="6" value="1" />
+            </label>
+          </div>
+          <button class="primary" id="calc">คำนวณ hut ที่ต้องใช้</button>
+          <div class="result" id="calc-result">ตัวอย่าง: 2 ช่อง Lv1 + 1 ช่อง Lv2 + 1 ช่อง Lv3 = 7 huts</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="two-col">
+        <div class="stack">
+          <p class="kicker">temple</p>
+          <h2>Temple คือคะแนนหลักตอนจบ</h2>
+          <ul>
+            <li>ต้องสร้างติดกับ settlement ของตัวเอง</li>
+            <li>settlement นั้นต้องมีขนาดอย่างน้อย 3 hex</li>
+            <li>settlement นั้นยังไม่มี temple</li>
+            <li>วางบนช่องว่างที่ไม่ใช่ volcano</li>
+          </ul>
+        </div>
+        <div class="panel quiz">
+          <h3>Quick check</h3>
+          <p>Settlement มี 2 hut สร้าง temple ได้ไหม?</p>
+          <div class="choices">
+            <button class="choice" data-q="temple" data-a="wrong">ได้ทันที</button>
+            <button class="choice" data-q="temple" data-a="correct">ยังไม่ได้ ต้องมีอย่างน้อย 3 hex</button>
+            <button class="choice" data-q="temple" data-a="wrong">ได้เฉพาะถ้าอยู่ level 3</button>
+            <button class="choice" data-q="temple" data-a="wrong">ได้ถ้ามี tower แล้ว</button>
+          </div>
+          <div class="feedback" id="temple-feedback">เลือกคำตอบเพื่อดู feedback</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="two-col">
+        <div class="stack">
+          <p class="kicker">tower</p>
+          <h2>Tower ต้องใช้ความสูง</h2>
+          <ul>
+            <li>ต้องสร้างติดกับ settlement ของตัวเอง</li>
+            <li>วางบนพื้นที่ level 3 ขึ้นไป</li>
+            <li>settlement นั้นยังไม่มี tower</li>
+            <li>เป็นเหตุผลสำคัญที่เราต้องทำ volcano eruption เพื่อสร้างพื้นที่สูง</li>
+          </ul>
+        </div>
+        <div class="island">
+          <div class="hex-map">
+            <div class="hex rock h4 level3">Lv3<br><span class="piece tower">W</span></div>
+            <div class="hex volcano h1 level2">V</div>
+            <div class="hex jungle h2">H</div>
+            <div class="hex sand h3">H</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="stack">
+        <p class="kicker">winning</p>
+        <h2>ชนะอย่างไร</h2>
+        <div class="score-grid">
+          <div class="rule-card"><strong>ชนะทันที</strong><p>ถ้าสร้างหมด 2 ประเภทจาก 3 ประเภท: huts, temples, towers</p></div>
+          <div class="rule-card"><strong>จบเมื่อ tile หมด</strong><p>นับ temple มากสุดก่อน</p></div>
+          <div class="rule-card"><strong>ถ้าเสมอ</strong><p>ดู tower มากสุด จากนั้นดู hut ที่สร้างไปแล้ว</p></div>
+          <div class="rule-card"><strong>ห้ามสร้างไม่ได้</strong><p>ถ้าถึงตาแล้วสร้างอะไรไม่ได้ ผู้เล่นตกรอบ</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="stack">
+        <p class="kicker">beginner strategy</p>
+        <h2>มือใหม่ควรคิดอะไร</h2>
+        <div class="build-grid">
+          <div class="rule-card"><strong>อย่าสร้าง hut แบบเปลือง</strong><p>Expand บน level สูงใช้ hut เยอะมาก คำนวณก่อนกดใจ</p></div>
+          <div class="rule-card"><strong>ทำ settlement ให้ถึง 3 hex</strong><p>เพื่อเปิดสิทธิ์สร้าง temple ซึ่งเป็นตัวตัดสินคะแนนหลัก</p></div>
+          <div class="rule-card"><strong>สร้างพื้นที่สูงให้ตัวเอง</strong><p>Tower ต้อง level 3+ จึงต้องวาง eruption อย่างมีแผน</p></div>
+          <div class="rule-card"><strong>ใช้ภูเขาไฟเป็นอาวุธ</strong><p>ทับ hut คนอื่นได้ แต่ต้องไม่ทับ temple/tower และไม่ลบ settlement ทั้งกลุ่ม</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="quiz panel">
+        <p class="kicker">pre-play quiz</p>
+        <h2>ภูเขาไฟระเบิดทับอะไรได้?</h2>
+        <div class="choices">
+          <button class="choice" data-q="cover" data-a="correct">ทับ hut ได้ แต่ห้ามทับ temple/tower</button>
+          <button class="choice" data-q="cover" data-a="wrong">ทับอะไรก็ได้ถ้าเป็นของคนอื่น</button>
+          <button class="choice" data-q="cover" data-a="wrong">ทับ temple ได้ แต่ห้ามทับ hut</button>
+          <button class="choice" data-q="cover" data-a="wrong">ห้ามทับ building ทุกชนิด</button>
+        </div>
+        <div class="feedback" id="cover-feedback">เลือกคำตอบเพื่อดู feedback</div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="quiz panel">
+        <p class="kicker">pre-play quiz</p>
+        <h2>ถ้า expand ไปยัง terrain ที่ติด settlement มี 1 ช่อง Lv1 และ 2 ช่อง Lv2 ต้องใช้ hut กี่หลัง?</h2>
+        <div class="choices">
+          <button class="choice" data-q="expand" data-a="wrong">3</button>
+          <button class="choice" data-q="expand" data-a="correct">5</button>
+          <button class="choice" data-q="expand" data-a="wrong">6</button>
+          <button class="choice" data-q="expand" data-a="wrong">เลือกวางเฉพาะบางช่องได้</button>
+        </div>
+        <div class="feedback" id="expand-feedback">เลือกคำตอบเพื่อดู feedback</div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="two-col">
+        <div class="stack">
+          <p class="kicker">ready to play</p>
+          <h2>Taluva ใน 6 ประโยค</h2>
+          <ul>
+            <li>ทุกเทิร์นวาง tile 1 แผ่น แล้วสร้างอย่างน้อย 1 อย่าง</li>
+            <li>Tile วางได้ทั้งขยายเกาะหรือซ้อนเป็น eruption</li>
+            <li>Settlement คือ building สีเดียวกันที่เชื่อมติดกัน</li>
+            <li>Hut ใหม่เริ่ม settlement, Expand ใช้ hut ตาม level</li>
+            <li>Temple ต้อง settlement 3+ hex, Tower ต้อง level 3+</li>
+            <li>ชนะทันทีเมื่อสร้างหมด 2 ประเภท หรือจบเกมนับ temple ก่อน</li>
+          </ul>
+        </div>
+        <div class="panel">
+          <h3>อ้างอิงกติกา</h3>
+          <p class="small">สไลด์นี้ใช้ภาพประกอบจำลองเพื่อการสอน ไม่ใช้ artwork จากเกมจริง</p>
+          <p class="small"><a href="https://www.ultraboardgames.com/taluva/game-rules.php">UltraBoardGames: Taluva Rules</a></p>
+          <p class="small"><a href="https://en.ferti-games.com/taluva">Ferti Games: Taluva</a></p>
+          <p class="small"><a href="https://cdn.1j1ju.com/medias/e6/47/c6-taluva-rulebook.pdf">Taluva Rulebook PDF</a></p>
+          <p class="small"><a href="https://boardgamegeek.com/wiki/page/Taluva_FAQ">BoardGameGeek: Taluva FAQ</a></p>
+        </div>
+      </div>
+    </section>
+
+    <div class="controls">
+      <button class="nav secondary" id="prev" aria-label="Previous slide">‹</button>
+      <button class="nav" id="fullscreen">เต็มจอ</button>
+      <button class="nav secondary" id="next" aria-label="Next slide">›</button>
+    </div>
+  </main>
+
+  <script>
+    const slides = Array.from(document.querySelectorAll('.slide'));
+    const progress = document.querySelector('#progress');
+    const counter = document.querySelector('#counter');
+    let index = 0;
+
+    function showSlide(nextIndex) {
+      index = Math.max(0, Math.min(slides.length - 1, nextIndex));
+      slides.forEach((slide, i) => slide.classList.toggle('active', i === index));
+      counter.textContent = `${index + 1}/${slides.length}`;
+      progress.style.width = `${((index + 1) / slides.length) * 100}%`;
+    }
+
+    function toggleFullscreen() {
+      const root = document.documentElement;
+      if (!document.fullscreenElement) root.requestFullscreen?.();
+      else document.exitFullscreen?.();
+    }
+
+    document.querySelector('#next').addEventListener('click', () => showSlide(index + 1));
+    document.querySelector('#prev').addEventListener('click', () => showSlide(index - 1));
+    document.querySelector('#fullscreen').addEventListener('click', toggleFullscreen);
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'ArrowRight' || event.key === 'PageDown' || event.key === ' ') showSlide(index + 1);
+      if (event.key === 'ArrowLeft' || event.key === 'PageUp') showSlide(index - 1);
+      if (event.key.toLowerCase() === 'f') toggleFullscreen();
+    });
+
+    const feedbackText = {
+      hut: {
+        correct: 'ถูกต้อง: hut ใหม่ใช้เริ่ม settlement จึงวางได้เฉพาะ level 1 และต้องไม่ติด settlement สีตัวเอง',
+        wrong: 'ยังไม่ใช่: ถ้าจะวาง hut บน level สูง ต้องเป็นการ Expand settlement ไม่ใช่สร้าง hut ใหม่'
+      },
+      temple: {
+        correct: 'ถูกต้อง: temple ต้องอาศัย settlement ที่มีอย่างน้อย 3 hex และยังไม่มี temple',
+        wrong: 'ยังไม่ใช่: ขนาด settlement เป็นเงื่อนไขสำคัญของ temple'
+      },
+      cover: {
+        correct: 'ถูกต้อง: eruption ทับ hut ได้ แต่ห้ามทับ temple/tower และห้ามลบ settlement ทั้งกลุ่ม',
+        wrong: 'ยังไม่ใช่: ภูเขาไฟมีข้อจำกัดเรื่องสิ่งปลูกสร้างที่ทับได้'
+      },
+      expand: {
+        correct: 'ถูกต้อง: 1 ช่อง Lv1 ใช้ 1 hut และ 2 ช่อง Lv2 ใช้ 4 hut รวม 5 hut',
+        wrong: 'ยังไม่ใช่: Expand ต้องวางทุกช่อง terrain ที่เลือกซึ่งติด settlement และใช้ hut ตาม level'
+      }
+    };
+
+    document.querySelectorAll('.choice').forEach((button) => {
+      button.addEventListener('click', () => {
+        const q = button.dataset.q;
+        const isCorrect = button.dataset.a === 'correct';
+        document.querySelectorAll(`.choice[data-q="${q}"]`).forEach((other) => {
+          other.classList.remove('correct', 'wrong');
+        });
+        button.classList.add(isCorrect ? 'correct' : 'wrong');
+        document.querySelector(`#${q}-feedback`).textContent = feedbackText[q][isCorrect ? 'correct' : 'wrong'];
+      });
+    });
+
+    const lv1 = document.querySelector('#lv1');
+    const lv2 = document.querySelector('#lv2');
+    const lv3 = document.querySelector('#lv3');
+    const calcResult = document.querySelector('#calc-result');
+
+    function calculateHuts() {
+      const a = Math.max(0, Number(lv1.value) || 0);
+      const b = Math.max(0, Number(lv2.value) || 0);
+      const c = Math.max(0, Number(lv3.value) || 0);
+      const total = a + (b * 2) + (c * 3);
+      calcResult.textContent = `${a} ช่อง Lv1 + ${b} ช่อง Lv2 + ${c} ช่อง Lv3 = ต้องใช้ ${total} huts`;
+    }
+
+    document.querySelector('#calc').addEventListener('click', calculateHuts);
+    [lv1, lv2, lv3].forEach((input) => input.addEventListener('input', calculateHuts));
+
+    showSlide(0);
+  </script>
+</body>
+</html>
