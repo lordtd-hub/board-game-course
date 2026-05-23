@@ -141,7 +141,9 @@
     .piece {
       align-items: center;
       border-radius: 50%;
+      border: 2px solid rgba(255, 248, 226, .86);
       box-shadow:
+        0 0 0 4px rgba(255, 248, 226, .42),
         inset 0 6px 12px rgba(255,255,255,.28),
         inset 0 -8px 16px rgba(0,0,0,.25),
         0 9px 18px rgba(0,0,0,.22);
@@ -161,13 +163,27 @@
     }
 
     .piece.dark-piece {
-      background: linear-gradient(145deg, #384254, #101724);
+      background:
+        radial-gradient(circle at 34% 26%, #59677d, #1d2637 48%, #05070b 76%),
+        linear-gradient(145deg, #384254, #101724);
+      border-color: #fff2bd;
+      box-shadow:
+        0 0 0 5px rgba(255, 242, 189, .62),
+        0 0 18px rgba(255, 242, 189, .38),
+        inset 0 7px 13px rgba(255,255,255,.28),
+        inset 0 -10px 18px rgba(0,0,0,.34),
+        0 9px 18px rgba(0,0,0,.28);
       color: #ffe7aa;
     }
 
     .piece.light-piece {
       background: linear-gradient(145deg, #fff8e8, #d9c497);
-      border: 1px solid rgba(96, 76, 46, .5);
+      border-color: rgba(96, 76, 46, .62);
+      box-shadow:
+        0 0 0 3px rgba(43, 33, 20, .18),
+        inset 0 6px 12px rgba(255,255,255,.35),
+        inset 0 -8px 16px rgba(0,0,0,.18),
+        0 9px 18px rgba(0,0,0,.22);
       color: #263248;
     }
 

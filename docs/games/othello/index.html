@@ -138,15 +138,36 @@
     }
 
     .disc {
+      border: 2px solid rgba(255, 248, 226, .86);
       border-radius: 999px;
-      box-shadow: inset -8px -10px 16px rgba(0,0,0,.24), 0 8px 15px rgba(0,0,0,.24);
+      box-shadow:
+        0 0 0 4px rgba(255, 248, 226, .42),
+        inset -8px -10px 16px rgba(0,0,0,.24),
+        0 8px 15px rgba(0,0,0,.24);
       height: 68%;
       transform: translateZ(0);
       width: 68%;
     }
 
-    .disc.black { background: radial-gradient(circle at 32% 24%, #4e5868, var(--black-disc) 58%); }
-    .disc.white { background: radial-gradient(circle at 34% 24%, #fffdf2, var(--white-disc) 62%); }
+    .disc.black {
+      background: radial-gradient(circle at 32% 24%, #657185, #1f293a 48%, var(--black-disc) 76%);
+      border-color: #fff2bd;
+      box-shadow:
+        0 0 0 5px rgba(255, 242, 189, .62),
+        0 0 18px rgba(255, 242, 189, .38),
+        inset -8px -10px 16px rgba(0,0,0,.34),
+        inset 8px 8px 14px rgba(255,255,255,.18),
+        0 8px 15px rgba(0,0,0,.28);
+    }
+
+    .disc.white {
+      background: radial-gradient(circle at 34% 24%, #fffdf2, var(--white-disc) 62%);
+      border-color: rgba(73, 57, 35, .62);
+      box-shadow:
+        0 0 0 3px rgba(43, 33, 20, .16),
+        inset -8px -10px 16px rgba(0,0,0,.18),
+        0 8px 15px rgba(0,0,0,.22);
+    }
 
     .disc.pop { animation: pop 340ms ease; }
 
