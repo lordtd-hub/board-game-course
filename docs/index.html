@@ -65,7 +65,7 @@
     .lesson-grid {
       display: grid;
       gap: 16px;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
     }
 
     .lesson-card {
@@ -100,8 +100,8 @@
 <body>
   <main>
     <p>SMA2106 Board Game Course</p>
-    <h1>Interactive Slide Lesson</h1>
-    <p>เลือกสไลด์ที่ต้องการเปิดสอนในห้องเรียน</p>
+    <h1>Interactive Board Game Course</h1>
+    <p>เลือกสไลด์หรือเกมที่ต้องการเปิดใช้ในห้องเรียน</p>
     <section class="lesson-grid">
       <article class="lesson-card">
         <strong>สอนเล่น Splendor</strong>
@@ -117,6 +117,11 @@
         <strong>Week 1: Strategic Thinking</strong>
         <p>สไลด์บทนำรายวิชา ใช้ Splendor และ Chess เป็นฐานเชื่อมสู่กลยุทธ์</p>
         <a href="slides/week1/">เปิด Week 1</a>
+      </article>
+      <article class="lesson-card">
+        <strong>เกมหมากฮอสไทย</strong>
+        <p>เล่น 2 คนบนเครื่องเดียวกัน หรือเล่นกับคอมแบบง่าย แยกจากสไลด์สอน</p>
+        <a href="games/makhos/">เปิดเกม</a>
       </article>
     </section>
   </main>

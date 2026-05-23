@@ -1,0 +1,755 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>เกมหมากฮอสไทย</title>
+  <style>
+    :root {
+      --bg: #101423;
+      --paper: #fff8e8;
+      --ink: #221f1a;
+      --muted: #766d62;
+      --line: #e5d2ad;
+      --red: #d64045;
+      --blue: #233b83;
+      --gold: #d9a441;
+      --jade: #14866d;
+      --wood: #5f321e;
+      --dark-square: #2f4b44;
+      --light-square: #f1d69f;
+      --legal: #f4c95d;
+      --capture: #ef6f6c;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      background:
+        radial-gradient(circle at 14% 12%, rgba(217, 164, 65, .24), transparent 26%),
+        radial-gradient(circle at 88% 10%, rgba(214, 64, 69, .16), transparent 24%),
+        linear-gradient(135deg, #101423, #201629 48%, #0e3f3a);
+      color: var(--ink);
+      font-family: Arial, "Noto Sans Thai", sans-serif;
+      margin: 0;
+      min-height: 100vh;
+    }
+
+    button, select {
+      font: inherit;
+    }
+
+    .app {
+      display: grid;
+      gap: 18px;
+      grid-template-columns: minmax(320px, 1fr) minmax(300px, 420px);
+      min-height: 100vh;
+      padding: clamp(16px, 3vw, 34px);
+    }
+
+    .play-area {
+      align-content: center;
+      display: grid;
+      gap: 16px;
+      justify-items: center;
+      min-width: 0;
+    }
+
+    .topbar {
+      align-items: center;
+      color: white;
+      display: flex;
+      gap: 12px;
+      justify-content: space-between;
+      max-width: min(92vh, 760px);
+      width: 100%;
+    }
+
+    h1 {
+      font-size: clamp(28px, 4vw, 54px);
+      line-height: 1.04;
+      margin: 0;
+    }
+
+    .status-chip {
+      background: rgba(255, 248, 232, .12);
+      border: 1px solid rgba(255,255,255,.2);
+      border-radius: 999px;
+      color: #fff6dd;
+      font-weight: 900;
+      padding: 10px 14px;
+      white-space: nowrap;
+    }
+
+    .board-wrap {
+      background: linear-gradient(135deg, #6a3a22, #2c1710);
+      border-radius: 20px;
+      box-shadow: 0 30px 80px rgba(0,0,0,.32);
+      padding: clamp(10px, 1.8vw, 18px);
+      width: min(92vh, 760px, 100%);
+    }
+
+    .board {
+      aspect-ratio: 1;
+      border: 8px solid #8e5c34;
+      border-radius: 12px;
+      display: grid;
+      grid-template-columns: repeat(8, 1fr);
+      grid-template-rows: repeat(8, 1fr);
+      overflow: hidden;
+      position: relative;
+      width: 100%;
+    }
+
+    .sq {
+      align-items: center;
+      border: 0;
+      border-radius: 0;
+      cursor: default;
+      display: grid;
+      justify-items: center;
+      min-height: 0;
+      min-width: 0;
+      padding: 0;
+      position: relative;
+    }
+
+    .sq.light { background: var(--light-square); }
+    .sq.dark { background: var(--dark-square); }
+    .sq.playable { cursor: pointer; }
+    .sq.selected { box-shadow: inset 0 0 0 6px var(--gold); }
+    .sq.legal::after,
+    .sq.capture::after {
+      border-radius: 50%;
+      content: "";
+      height: 34%;
+      position: absolute;
+      width: 34%;
+      z-index: 1;
+    }
+
+    .sq.legal::after {
+      background: rgba(244, 201, 93, .82);
+      box-shadow: 0 0 0 4px rgba(255,255,255,.4);
+    }
+
+    .sq.capture::after {
+      background: rgba(239, 111, 108, .88);
+      box-shadow: 0 0 0 4px rgba(255,255,255,.42);
+    }
+
+    .piece {
+      align-items: center;
+      border-radius: 50%;
+      box-shadow:
+        inset 0 6px 12px rgba(255,255,255,.28),
+        inset 0 -8px 16px rgba(0,0,0,.25),
+        0 9px 18px rgba(0,0,0,.22);
+      display: inline-flex;
+      height: 68%;
+      justify-content: center;
+      line-height: 1;
+      position: relative;
+      transition: transform 120ms ease;
+      width: 68%;
+      z-index: 2;
+    }
+
+    .sq.playable:hover .piece,
+    .sq.selected .piece {
+      transform: translateY(-3px);
+    }
+
+    .piece.dark-piece {
+      background: linear-gradient(145deg, #384254, #101724);
+      color: #ffe7aa;
+    }
+
+    .piece.light-piece {
+      background: linear-gradient(145deg, #fff8e8, #d9c497);
+      border: 1px solid rgba(96, 76, 46, .5);
+      color: #263248;
+    }
+
+    .piece.king::after {
+      align-items: center;
+      background: linear-gradient(145deg, #f7d774, #b88320);
+      border: 2px solid rgba(255,255,255,.7);
+      border-radius: 50%;
+      box-shadow: 0 2px 6px rgba(0,0,0,.24);
+      color: #2b2114;
+      content: "ฮ";
+      display: inline-flex;
+      font-size: clamp(13px, 1.5vw, 20px);
+      font-weight: 900;
+      height: 42%;
+      justify-content: center;
+      left: 50%;
+      line-height: 1;
+      position: absolute;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 42%;
+    }
+
+    .panel {
+      align-content: start;
+      background: rgba(255, 248, 232, .94);
+      border: 1px solid rgba(229, 210, 173, .9);
+      border-radius: 14px;
+      box-shadow: 0 24px 70px rgba(0,0,0,.24);
+      display: grid;
+      gap: 16px;
+      padding: 18px;
+    }
+
+    .panel h2 {
+      color: var(--blue);
+      font-size: 28px;
+      line-height: 1.1;
+      margin: 0;
+    }
+
+    .panel p {
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.45;
+      margin: 0;
+    }
+
+    .controls {
+      display: grid;
+      gap: 10px;
+    }
+
+    .row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    button, select {
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      color: var(--ink);
+      cursor: pointer;
+      font-weight: 900;
+      min-height: 40px;
+      padding: 8px 12px;
+    }
+
+    button.primary {
+      background: var(--jade);
+      border-color: var(--jade);
+      color: white;
+    }
+
+    button.warn {
+      background: var(--red);
+      border-color: var(--red);
+      color: white;
+    }
+
+    button:disabled {
+      cursor: not-allowed;
+      opacity: .45;
+    }
+
+    .score {
+      display: grid;
+      gap: 8px;
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .score-card {
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      display: grid;
+      gap: 4px;
+      padding: 12px;
+    }
+
+    .score-card strong {
+      font-size: 30px;
+      line-height: 1;
+    }
+
+    .message {
+      background: #edf9f3;
+      border: 1px solid #b7ddd3;
+      border-radius: 10px;
+      color: #0f5d4d;
+      font-weight: 800;
+      line-height: 1.35;
+      min-height: 58px;
+      padding: 12px;
+    }
+
+    .rules {
+      display: grid;
+      gap: 8px;
+      margin: 0;
+      padding-left: 1.2em;
+    }
+
+    .rules li {
+      color: var(--ink);
+      font-size: 15px;
+      line-height: 1.35;
+    }
+
+    .log {
+      background: rgba(255,255,255,.66);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      display: grid;
+      gap: 6px;
+      max-height: 180px;
+      overflow: auto;
+      padding: 10px;
+    }
+
+    .log div {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.25;
+    }
+
+    @media (max-width: 980px) {
+      .app {
+        grid-template-columns: 1fr;
+      }
+      .panel {
+        order: -1;
+      }
+      .topbar {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .app {
+        padding: 12px;
+      }
+      .board {
+        border-width: 5px;
+      }
+      .score {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <section class="play-area">
+      <div class="topbar">
+        <h1>หมากฮอสไทย</h1>
+        <div class="status-chip" id="turnLabel">ตาฝ่ายขาว</div>
+      </div>
+      <div class="board-wrap">
+        <div class="board" id="board" aria-label="กระดานหมากฮอสไทย"></div>
+      </div>
+    </section>
+
+    <aside class="panel">
+      <h2>เล่นกันเองหรือเล่นกับคอม</h2>
+      <p>กติกาเวอร์ชันนี้ใช้หมากฮอสไทย: ฝ่ายละ 8 ตัว บังคับกิน กินติด และเข้าฮอสแล้วเดินทแยงไกลได้</p>
+
+      <div class="controls">
+        <label>
+          โหมด
+          <select id="mode">
+            <option value="human">2 คนบนเครื่องเดียวกัน</option>
+            <option value="ai">เล่นกับคอม</option>
+          </select>
+        </label>
+        <div class="row">
+          <button class="primary" id="newGame">เริ่มเกมใหม่</button>
+          <button id="undo">Undo</button>
+          <button id="flipBoard">กลับกระดาน</button>
+        </div>
+      </div>
+
+      <div class="score">
+        <div class="score-card">
+          <span>ฝ่ายขาว</span>
+          <strong id="lightCount">8</strong>
+        </div>
+        <div class="score-card">
+          <span>ฝ่ายดำ</span>
+          <strong id="darkCount">8</strong>
+        </div>
+      </div>
+
+      <div class="message" id="message">เลือกหมากฝ่ายขาวเพื่อเริ่มเดิน</div>
+
+      <ol class="rules">
+        <li>หมากธรรมดาเดินและกินทแยงไปข้างหน้าเท่านั้น</li>
+        <li>ถ้ามีโอกาสกิน ต้องกิน</li>
+        <li>ถ้ากินแล้วตัวเดิมยังกินต่อได้ ต้องกินติด</li>
+        <li>ถึงแถวสุดท้ายจะเข้าฮอส ฮอสเดิน/กินตามทแยงได้ 4 ทิศ</li>
+      </ol>
+
+      <div class="log" id="log"></div>
+    </aside>
+  </main>
+
+  <script>
+    const SIZE = 8;
+    const LIGHT = "light";
+    const DARK = "dark";
+    const HUMAN_MODE = "human";
+    const AI_MODE = "ai";
+
+    const boardEl = document.getElementById("board");
+    const turnLabel = document.getElementById("turnLabel");
+    const messageEl = document.getElementById("message");
+    const logEl = document.getElementById("log");
+    const lightCountEl = document.getElementById("lightCount");
+    const darkCountEl = document.getElementById("darkCount");
+    const modeEl = document.getElementById("mode");
+
+    let board = [];
+    let turn = LIGHT;
+    let selected = null;
+    let legalMoves = [];
+    let chainPiece = null;
+    let flipped = false;
+    let gameOver = false;
+    let history = [];
+    let log = [];
+
+    function createInitialBoard() {
+      return Array.from({ length: SIZE }, (_, row) =>
+        Array.from({ length: SIZE }, (_, col) => {
+          const darkSquare = (row + col) % 2 === 1;
+          if (!darkSquare) return null;
+          if (row <= 1) return { side: DARK, king: false };
+          if (row >= 6) return { side: LIGHT, king: false };
+          return null;
+        })
+      );
+    }
+
+    function cloneBoard(value) {
+      return value.map((row) => row.map((piece) => piece ? { ...piece } : null));
+    }
+
+    function resetGame() {
+      board = createInitialBoard();
+      turn = LIGHT;
+      selected = null;
+      legalMoves = [];
+      chainPiece = null;
+      gameOver = false;
+      history = [];
+      log = ["เริ่มเกมใหม่"];
+      setMessage("เลือกหมากฝ่ายขาวเพื่อเริ่มเดิน");
+      render();
+    }
+
+    function inBounds(row, col) {
+      return row >= 0 && row < SIZE && col >= 0 && col < SIZE;
+    }
+
+    function isPromotionRow(side, row) {
+      return side === LIGHT ? row === 0 : row === SIZE - 1;
+    }
+
+    function forwardDirs(side) {
+      return side === LIGHT ? [[-1, -1], [-1, 1]] : [[1, -1], [1, 1]];
+    }
+
+    function allDirs() {
+      return [[-1, -1], [-1, 1], [1, -1], [1, 1]];
+    }
+
+    function getPieceMoves(row, col, capturesOnly = false) {
+      const piece = board[row][col];
+      if (!piece) return [];
+      const captures = piece.king ? getKingCaptures(row, col, piece) : getManCaptures(row, col, piece);
+      if (captures.length || capturesOnly) return captures;
+      return piece.king ? getKingSlides(row, col) : getManSlides(row, col, piece);
+    }
+
+    function getManSlides(row, col, piece) {
+      return forwardDirs(piece.side)
+        .map(([dr, dc]) => ({ from: { row, col }, to: { row: row + dr, col: col + dc }, captures: [] }))
+        .filter((move) => inBounds(move.to.row, move.to.col) && !board[move.to.row][move.to.col]);
+    }
+
+    function getManCaptures(row, col, piece) {
+      return forwardDirs(piece.side)
+        .map(([dr, dc]) => {
+          const mid = { row: row + dr, col: col + dc };
+          const to = { row: row + dr * 2, col: col + dc * 2 };
+          return { from: { row, col }, to, captures: [mid] };
+        })
+        .filter((move) => {
+          if (!inBounds(move.to.row, move.to.col)) return false;
+          const jumped = board[move.captures[0].row][move.captures[0].col];
+          return jumped && jumped.side !== piece.side && !board[move.to.row][move.to.col];
+        });
+    }
+
+    function getKingSlides(row, col) {
+      const moves = [];
+      for (const [dr, dc] of allDirs()) {
+        let r = row + dr;
+        let c = col + dc;
+        while (inBounds(r, c) && !board[r][c]) {
+          moves.push({ from: { row, col }, to: { row: r, col: c }, captures: [] });
+          r += dr;
+          c += dc;
+        }
+      }
+      return moves;
+    }
+
+    function getKingCaptures(row, col, piece) {
+      const moves = [];
+      for (const [dr, dc] of allDirs()) {
+        let r = row + dr;
+        let c = col + dc;
+        let jumped = null;
+        while (inBounds(r, c)) {
+          const occupant = board[r][c];
+          if (!occupant) {
+            if (jumped) moves.push({ from: { row, col }, to: { row: r, col: c }, captures: [jumped] });
+          } else if (occupant.side === piece.side || jumped) {
+            break;
+          } else {
+            jumped = { row: r, col: c };
+          }
+          r += dr;
+          c += dc;
+        }
+      }
+      return moves;
+    }
+
+    function getAllMoves(side) {
+      const captureMoves = [];
+      const quietMoves = [];
+      for (let row = 0; row < SIZE; row++) {
+        for (let col = 0; col < SIZE; col++) {
+          const piece = board[row][col];
+          if (!piece || piece.side !== side) continue;
+          const moves = getPieceMoves(row, col);
+          for (const move of moves) {
+            if (move.captures.length) captureMoves.push(move);
+            else quietMoves.push(move);
+          }
+        }
+      }
+      return captureMoves.length ? captureMoves : quietMoves;
+    }
+
+    function movesForSelection(row, col) {
+      const piece = board[row][col];
+      if (!piece || piece.side !== turn) return [];
+      if (chainPiece && (chainPiece.row !== row || chainPiece.col !== col)) return [];
+      const all = chainPiece ? getPieceMoves(row, col, true) : getAllMoves(turn);
+      return all.filter((move) => move.from.row === row && move.from.col === col);
+    }
+
+    function selectSquare(row, col) {
+      if (gameOver || (modeEl.value === AI_MODE && turn === DARK)) return;
+      const piece = board[row][col];
+      const destination = legalMoves.find((move) => move.to.row === row && move.to.col === col);
+      if (destination) {
+        applyMove(destination);
+        return;
+      }
+      if (!piece || piece.side !== turn) {
+        selected = null;
+        legalMoves = [];
+        render();
+        return;
+      }
+      legalMoves = movesForSelection(row, col);
+      selected = legalMoves.length ? { row, col } : null;
+      if (!legalMoves.length) {
+        setMessage("ตัวนี้ยังเดินไม่ได้ในตานี้ ถ้ามีตัวอื่นกินได้ ต้องเลือกตัวที่กินได้");
+      }
+      render();
+    }
+
+    function applyMove(move, ai = false) {
+      history.push({
+        board: cloneBoard(board),
+        turn,
+        selected,
+        legalMoves,
+        chainPiece,
+        gameOver,
+        log: [...log]
+      });
+
+      const piece = board[move.from.row][move.from.col];
+      board[move.from.row][move.from.col] = null;
+      for (const captured of move.captures) {
+        board[captured.row][captured.col] = null;
+      }
+      const promoted = !piece.king && isPromotionRow(piece.side, move.to.row);
+      board[move.to.row][move.to.col] = { ...piece, king: piece.king || promoted };
+
+      const text = `${piece.side === LIGHT ? "ขาว" : "ดำ"} ${move.captures.length ? "กิน" : "เดิน"} ${coord(move.from)} → ${coord(move.to)}${promoted ? " และเข้าฮอส" : ""}`;
+      log.unshift(text);
+      log = log.slice(0, 8);
+
+      selected = null;
+      legalMoves = [];
+
+      if (move.captures.length && !promoted) {
+        const continuing = getPieceMoves(move.to.row, move.to.col, true);
+        if (continuing.length) {
+          chainPiece = { row: move.to.row, col: move.to.col };
+          turn = piece.side;
+          selected = { ...chainPiece };
+          legalMoves = continuing;
+          setMessage(`${piece.side === LIGHT ? "ฝ่ายขาว" : "ฝ่ายดำ"} ต้องกินติดด้วยตัวเดิม`);
+          render();
+          if (ai && modeEl.value === AI_MODE && turn === DARK) window.setTimeout(aiMove, 450);
+          return;
+        }
+      }
+
+      chainPiece = null;
+      turn = turn === LIGHT ? DARK : LIGHT;
+      checkGameEnd();
+      render();
+      if (!gameOver && modeEl.value === AI_MODE && turn === DARK) window.setTimeout(aiMove, 550);
+    }
+
+    function checkGameEnd() {
+      const lightPieces = countPieces(LIGHT);
+      const darkPieces = countPieces(DARK);
+      if (!lightPieces || !darkPieces) {
+        gameOver = true;
+        setMessage(`${lightPieces ? "ฝ่ายขาว" : "ฝ่ายดำ"} ชนะ เพราะกินหมากอีกฝ่ายหมด`);
+        return;
+      }
+      const moves = getAllMoves(turn);
+      if (!moves.length) {
+        gameOver = true;
+        const winner = turn === LIGHT ? "ฝ่ายดำ" : "ฝ่ายขาว";
+        setMessage(`${winner} ชนะ เพราะอีกฝ่ายไม่มีตาเดิน`);
+      } else {
+        setMessage(`${turn === LIGHT ? "ฝ่ายขาว" : "ฝ่ายดำ"} เลือกหมากเพื่อเดิน`);
+      }
+    }
+
+    function aiMove() {
+      if (gameOver || modeEl.value !== AI_MODE || turn !== DARK) return;
+      const moves = chainPiece
+        ? movesForSelection(chainPiece.row, chainPiece.col)
+        : getAllMoves(DARK);
+      if (!moves.length) {
+        checkGameEnd();
+        render();
+        return;
+      }
+      const ranked = moves
+        .map((move) => ({ move, score: scoreMove(move) + Math.random() * 0.2 }))
+        .sort((a, b) => b.score - a.score);
+      applyMove(ranked[0].move, true);
+    }
+
+    function scoreMove(move) {
+      const piece = board[move.from.row][move.from.col];
+      let score = 0;
+      score += move.captures.length * 100;
+      if (!piece.king && isPromotionRow(piece.side, move.to.row)) score += 70;
+      score += piece.side === DARK ? move.to.row * 2 : (7 - move.to.row) * 2;
+      const center = 6 - Math.abs(3.5 - move.to.col) - Math.abs(3.5 - move.to.row);
+      score += center;
+      return score;
+    }
+
+    function countPieces(side) {
+      return board.flat().filter((piece) => piece && piece.side === side).length;
+    }
+
+    function coord(pos) {
+      return `${String.fromCharCode(65 + pos.col)}${8 - pos.row}`;
+    }
+
+    function setMessage(text) {
+      messageEl.textContent = text;
+    }
+
+    function undo() {
+      const last = history.pop();
+      if (!last) return;
+      board = cloneBoard(last.board);
+      turn = last.turn;
+      selected = last.selected;
+      legalMoves = last.legalMoves;
+      chainPiece = last.chainPiece;
+      gameOver = last.gameOver;
+      log = last.log;
+      if (modeEl.value === AI_MODE && turn === DARK && history.length) {
+        undo();
+        return;
+      }
+      render();
+    }
+
+    function render() {
+      boardEl.innerHTML = "";
+      const legalKeys = new Map(legalMoves.map((move) => [`${move.to.row}-${move.to.col}`, move]));
+      const selectedKey = selected ? `${selected.row}-${selected.col}` : "";
+      const rows = flipped ? [...Array(SIZE).keys()].reverse() : [...Array(SIZE).keys()];
+      const cols = flipped ? [...Array(SIZE).keys()].reverse() : [...Array(SIZE).keys()];
+
+      for (const row of rows) {
+        for (const col of cols) {
+          const square = document.createElement("button");
+          const darkSquare = (row + col) % 2 === 1;
+          const key = `${row}-${col}`;
+          const move = legalKeys.get(key);
+          square.className = `sq ${darkSquare ? "dark" : "light"}`;
+          if (selectedKey === key) square.classList.add("selected");
+          if (move) square.classList.add(move.captures.length ? "capture" : "legal");
+          square.dataset.row = row;
+          square.dataset.col = col;
+          square.setAttribute("aria-label", `ช่อง ${coord({ row, col })}`);
+          const piece = board[row][col];
+          if (piece) {
+            square.classList.add("playable");
+            const pieceEl = document.createElement("span");
+            pieceEl.className = `piece ${piece.side === LIGHT ? "light-piece" : "dark-piece"} ${piece.king ? "king" : ""}`;
+            square.appendChild(pieceEl);
+          }
+          if (move) square.classList.add("playable");
+          square.addEventListener("click", () => selectSquare(row, col));
+          boardEl.appendChild(square);
+        }
+      }
+
+      const forced = getAllMoves(turn).some((move) => move.captures.length);
+      turnLabel.textContent = gameOver ? "จบเกม" : `ตา${turn === LIGHT ? "ฝ่ายขาว" : "ฝ่ายดำ"}${forced ? " | ต้องกิน" : ""}`;
+      lightCountEl.textContent = countPieces(LIGHT);
+      darkCountEl.textContent = countPieces(DARK);
+      logEl.innerHTML = log.map((item) => `<div>${item}</div>`).join("");
+    }
+
+    document.getElementById("newGame").addEventListener("click", resetGame);
+    document.getElementById("undo").addEventListener("click", undo);
+    document.getElementById("flipBoard").addEventListener("click", () => {
+      flipped = !flipped;
+      render();
+    });
+    modeEl.addEventListener("change", () => {
+      resetGame();
+    });
+
+    resetGame();
+  </script>
+</body>
+</html>
