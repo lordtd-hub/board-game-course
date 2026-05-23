@@ -65,7 +65,7 @@
     .lesson-grid {
       display: grid;
       gap: 16px;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-columns: repeat(3, minmax(0, 1fr));
     }
 
     .lesson-card {
@@ -84,7 +84,8 @@
       line-height: 1.1;
     }
 
-    .lesson-card:first-child a {
+    .lesson-card:first-child a,
+    .lesson-card:nth-child(2) a {
       background: var(--gold);
       color: #2c2112;
     }
@@ -106,6 +107,11 @@
         <strong>สอนเล่น Splendor</strong>
         <p>สไลด์ teach-to-play พร้อมผังโต๊ะ การ์ดจำลอง simulator และ quick check</p>
         <a href="slides/splendor-teach/">เปิดสไลด์สอนเล่น</a>
+      </article>
+      <article class="lesson-card">
+        <strong>สอนเล่นหมากฮอสไทย</strong>
+        <p>สไลด์ teach-to-play พร้อมกระดาน interactive กฎกินติด เข้าฮอส และแบบทดสอบ</p>
+        <a href="slides/makhos-teach/">เปิดสไลด์หมากฮอสไทย</a>
       </article>
       <article class="lesson-card">
         <strong>Week 1: Strategic Thinking</strong>
