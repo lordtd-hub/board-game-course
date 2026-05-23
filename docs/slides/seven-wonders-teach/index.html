@@ -1,0 +1,826 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>7 Wonders Teach-to-Play Interactive Slides</title>
+  <style>
+    :root {
+      --sand: #fff4dc;
+      --paper: #fffaf0;
+      --ink: #241d16;
+      --muted: #6d5f4d;
+      --line: #ddbf82;
+      --wood: #8a4f28;
+      --stone: #81858c;
+      --clay: #b85f3d;
+      --ore: #2d3747;
+      --glass: #56b9c9;
+      --papyrus: #e0c470;
+      --cloth: #9b63c7;
+      --coin: #d9a43b;
+      --military: #c9453d;
+      --science: #16855e;
+      --civil: #2462a7;
+      --guild: #7a4aa0;
+      --teal: #0f6f72;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      background:
+        radial-gradient(circle at 12% 10%, rgba(217, 164, 59, .24), transparent 28%),
+        radial-gradient(circle at 86% 12%, rgba(36, 98, 167, .14), transparent 24%),
+        linear-gradient(135deg, #281911, #112e35 58%, #3b243f);
+      color: var(--ink);
+      font-family: Arial, "Noto Sans Thai", sans-serif;
+      margin: 0;
+      min-height: 100vh;
+    }
+
+    button, input { font: inherit; }
+
+    .frame {
+      background:
+        linear-gradient(135deg, rgba(255, 244, 220, .99), rgba(255, 250, 236, .98)),
+        repeating-linear-gradient(90deg, rgba(138, 79, 40, .035), rgba(138, 79, 40, .035) 2px, transparent 2px, transparent 30px);
+      min-height: 100vh;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .progress {
+      background: linear-gradient(90deg, var(--wood), var(--coin), var(--military), var(--science), var(--civil), var(--guild));
+      height: 8px;
+      left: 0;
+      position: absolute;
+      top: 0;
+      transition: width 160ms ease;
+      z-index: 3;
+    }
+
+    .meta {
+      color: var(--muted);
+      display: flex;
+      font-size: clamp(11px, 1.1vw, 14px);
+      font-weight: 900;
+      justify-content: space-between;
+      left: clamp(24px, 4vw, 70px);
+      position: absolute;
+      right: clamp(24px, 4vw, 70px);
+      top: clamp(18px, 2.3vw, 32px);
+      z-index: 4;
+    }
+
+    .slide {
+      display: none;
+      min-height: 100vh;
+      padding: clamp(72px, 8vw, 112px) clamp(42px, 7vw, 120px) clamp(76px, 7vw, 108px);
+    }
+
+    .slide.active { display: grid; }
+
+    .layout {
+      align-content: center;
+      display: grid;
+      gap: clamp(18px, 2.1vw, 28px);
+      min-height: calc(100vh - 180px);
+    }
+
+    .split {
+      align-items: center;
+      grid-template-columns: minmax(0, .95fr) minmax(460px, 1fr);
+    }
+
+    .wide-split {
+      align-items: center;
+      grid-template-columns: minmax(480px, 1fr) minmax(0, .9fr);
+    }
+
+    .eyebrow {
+      color: var(--teal);
+      font-size: clamp(15px, 1.5vw, 22px);
+      font-weight: 900;
+      margin: 0;
+      text-transform: uppercase;
+    }
+
+    h1, h2 {
+      letter-spacing: 0;
+      line-height: 1.04;
+      margin: 0;
+    }
+
+    h1 { font-size: clamp(54px, 7vw, 108px); max-width: 1180px; }
+    h2 { font-size: clamp(34px, 5vw, 70px); max-width: 1200px; }
+
+    p, li {
+      font-size: clamp(18px, 1.85vw, 27px);
+      line-height: 1.35;
+      margin: 0;
+    }
+
+    ul, ol { display: grid; gap: 12px; margin: 0; padding-left: 1.12em; }
+
+    .lead {
+      color: #3b3025;
+      font-size: clamp(23px, 2.55vw, 38px);
+      line-height: 1.28;
+      max-width: 1120px;
+    }
+
+    .note {
+      color: var(--muted);
+      font-size: clamp(14px, 1.25vw, 18px);
+    }
+
+    .card-grid, .two-grid, .three-grid {
+      display: grid;
+      gap: 14px;
+    }
+
+    .card-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .two-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .three-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+
+    .panel, .mini-card, .wonder-board {
+      background: rgba(255,255,255,.8);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: 0 16px 42px rgba(91, 54, 28, .12);
+      padding: 18px;
+    }
+
+    .mini-card {
+      display: grid;
+      gap: 10px;
+      min-height: 140px;
+    }
+
+    .mini-card strong, .panel strong {
+      font-size: clamp(22px, 2vw, 30px);
+      line-height: 1.08;
+    }
+
+    .mini-card p, .panel p, .choice {
+      color: #584c3e;
+      font-size: clamp(16px, 1.32vw, 20px);
+    }
+
+    .sample-card {
+      border-top: 16px solid var(--civil);
+      min-height: 180px;
+      position: relative;
+    }
+
+    .sample-card.brown { border-top-color: var(--wood); }
+    .sample-card.grey { border-top-color: #91969e; }
+    .sample-card.yellow { border-top-color: var(--coin); }
+    .sample-card.red { border-top-color: var(--military); }
+    .sample-card.green { border-top-color: var(--science); }
+    .sample-card.purple { border-top-color: var(--guild); }
+
+    .icon-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .icon {
+      align-items: center;
+      background: white;
+      border: 2px solid rgba(36,29,22,.12);
+      border-radius: 8px;
+      display: inline-grid;
+      height: 74px;
+      justify-items: center;
+      padding: 8px;
+      position: relative;
+      width: 74px;
+    }
+
+    .icon svg {
+      display: block;
+      height: 46px;
+      width: 46px;
+    }
+
+    .brown-outline { border-color: rgba(138, 79, 40, .45); }
+    .grey-outline { border-color: rgba(129, 133, 140, .55); }
+    .yellow-outline { border-color: rgba(217, 164, 59, .55); }
+    .red-outline { border-color: rgba(201, 69, 61, .55); }
+    .blue-outline { border-color: rgba(36, 98, 167, .55); }
+    .green-outline { border-color: rgba(22, 133, 94, .55); }
+    .purple-outline { border-color: rgba(122, 74, 160, .55); }
+
+    .turn-flow {
+      display: grid;
+      gap: 12px;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .step {
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 18px;
+    }
+
+    .step strong {
+      color: var(--teal);
+      display: block;
+      font-size: clamp(26px, 2.8vw, 42px);
+      margin-bottom: 8px;
+    }
+
+    .choice-grid {
+      display: grid;
+      gap: 12px;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .choice {
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      color: var(--ink);
+      cursor: pointer;
+      font-weight: 900;
+      padding: 14px;
+      text-align: left;
+    }
+
+    .choice.correct { border-color: var(--science); box-shadow: inset 0 0 0 3px rgba(22,133,94,.22); }
+    .choice.wrong { border-color: var(--military); box-shadow: inset 0 0 0 3px rgba(201,69,61,.22); }
+
+    .feedback, .result {
+      background: #e7f7ef;
+      border: 1px solid #b6dfc8;
+      border-radius: 8px;
+      color: #0f5d45;
+      font-size: clamp(18px, 1.7vw, 24px);
+      font-weight: 900;
+      min-height: 54px;
+      padding: 14px;
+    }
+
+    .sim-controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .sim-controls button,
+    .nav button,
+    .fullscreen {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      color: var(--ink);
+      cursor: pointer;
+      font-weight: 900;
+      min-height: 42px;
+      padding: 10px 14px;
+    }
+
+    .sim-controls button.primary {
+      background: var(--teal);
+      border-color: var(--teal);
+      color: white;
+    }
+
+    .resource-bar {
+      align-items: center;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .coin {
+      align-items: center;
+      background: var(--coin);
+      border-radius: 999px;
+      color: #5d3b08;
+      display: inline-flex;
+      font-weight: 900;
+      height: 38px;
+      justify-content: center;
+      width: 38px;
+    }
+
+    .wonder-board {
+      background:
+        linear-gradient(135deg, rgba(247,226,184,.94), rgba(255,250,240,.9)),
+        linear-gradient(90deg, rgba(138,79,40,.12), transparent);
+      display: grid;
+      gap: 14px;
+    }
+
+    .stage-row {
+      display: grid;
+      gap: 12px;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .stage {
+      background: rgba(255,255,255,.82);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 14px;
+    }
+
+    .score-table {
+      border-collapse: collapse;
+      font-size: clamp(16px, 1.45vw, 22px);
+      width: 100%;
+    }
+
+    .score-table th, .score-table td {
+      border-bottom: 1px solid var(--line);
+      padding: 10px;
+      text-align: left;
+    }
+
+    .nav {
+      bottom: clamp(18px, 2vw, 28px);
+      display: flex;
+      gap: 10px;
+      position: absolute;
+      right: clamp(24px, 4vw, 70px);
+      z-index: 6;
+    }
+
+    .fullscreen {
+      bottom: clamp(18px, 2vw, 28px);
+      left: clamp(24px, 4vw, 70px);
+      position: absolute;
+      z-index: 6;
+    }
+
+    a { color: #164e8a; font-weight: 900; }
+
+    @media (max-width: 980px) {
+      .frame { overflow: auto; }
+      .slide { padding: 72px 22px 82px; }
+      .meta span:last-child { display: none; }
+      .split, .wide-split, .card-grid, .two-grid, .three-grid, .turn-flow, .choice-grid, .stage-row { grid-template-columns: 1fr; }
+      h1 { font-size: clamp(44px, 13vw, 78px); }
+      h2 { font-size: clamp(32px, 10vw, 56px); }
+      p, li { font-size: 18px; }
+      .lead { font-size: 24px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="frame" id="frame">
+    <div class="progress" id="progress"></div>
+    <div class="meta">
+      <span>7 Wonders Teach-to-Play</span>
+      <span id="counter">1/15</span>
+      <span>เป้าหมาย: เริ่มเล่นได้โดยไม่หลงสัญลักษณ์</span>
+    </div>
+
+    <section class="slide active">
+      <div class="layout split">
+        <div>
+          <p class="eyebrow">SMA2106 Board Game Course</p>
+          <h1>สอนเล่น 7 Wonders</h1>
+          <p class="lead">เกมดราฟต์การ์ดที่ผู้เล่นสร้างอารยธรรมพร้อมกัน ทุกคนเลือกไพ่พร้อมกัน เล่นเร็ว แต่ต้องอ่านสัญลักษณ์อย่างเป็นระบบ</p>
+        </div>
+        <div class="wonder-board">
+          <strong>ประโยคเปิดเกม</strong>
+          <p>“ในแต่ละตา เราเลือกไพ่ 1 ใบ แล้วตัดสินใจว่าจะสร้างอาคาร สร้าง Wonder หรือขายเอาเงิน”</p>
+          <div class="icon-row">
+            <span class="icon brown-outline" data-icon="wood"></span>
+            <span class="icon yellow-outline" data-icon="coin"></span>
+            <span class="icon red-outline" data-icon="shield"></span>
+            <span class="icon green-outline" data-icon="science"></span>
+          </div>
+          <p class="note">ไอคอนในเด็คนี้เป็นภาพประกอบที่วาดใหม่ ไม่ใช่ artwork official ของ 7 Wonders</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="layout">
+        <p class="eyebrow">Learning Path</p>
+        <h2>อย่าสอนทุกสัญลักษณ์ก่อนเล่น</h2>
+        <div class="turn-flow">
+          <div class="step"><strong>1</strong><p>เข้าใจ loop การเลือกไพ่</p></div>
+          <div class="step"><strong>2</strong><p>อ่านสีการ์ดว่าทำหน้าที่อะไร</p></div>
+          <div class="step"><strong>3</strong><p>อ่าน cost และ resource payment</p></div>
+          <div class="step"><strong>4</strong><p>เล่น Age I แบบ guided แล้วค่อยปล่อยให้เร็วขึ้น</p></div>
+        </div>
+        <p class="lead">แนวสอนที่ดีที่สุดคือ “เล่นก่อน เปิด symbol guide เมื่อเจอสัญลักษณ์จริง”</p>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="layout">
+        <p class="eyebrow">Setup</p>
+        <h2>ตั้งโต๊ะให้ผู้เล่นไม่หลงตั้งแต่แรก</h2>
+        <div class="three-grid">
+          <div class="mini-card"><strong>Wonder board</strong><p>แจกคนละ 1 แผ่น ใช้ด้าน A/Day สำหรับเกมแรก</p></div>
+          <div class="mini-card"><strong>Coins</strong><p>เริ่มต้นคนละ 3 coins</p><span class="coin">3</span></div>
+          <div class="mini-card"><strong>Age decks</strong><p>เล่น Age I, II, III ตามลำดับ ไพ่ส่งทิศสลับกันตาม Age</p></div>
+          <div class="mini-card"><strong>Neighbors</strong><p>ซื้อทรัพยากรได้จากคนซ้ายและขวาเท่านั้น</p></div>
+          <div class="mini-card"><strong>Starting resource</strong><p>ทรัพยากรบน Wonder board ใช้เหมือน resource symbol ตลอดเกม</p></div>
+          <div class="mini-card"><strong>Goal</strong><p>จบ Age III แล้วนับคะแนนหลายหมวด ใครคะแนนสูงสุดชนะ</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="layout split">
+        <div>
+          <p class="eyebrow">Turn Loop</p>
+          <h2>หนึ่งตาเล่นพร้อมกันทั้งโต๊ะ</h2>
+          <ol>
+            <li>ดูไพ่ในมือและเลือก 1 ใบ</li>
+            <li>วางคว่ำพร้อมกัน</li>
+            <li>เปิดพร้อมกัน แล้วทำ action</li>
+            <li>ส่งไพ่ที่เหลือให้คนข้าง ๆ</li>
+          </ol>
+        </div>
+        <div class="panel">
+          <strong>Interactive: ตาหนึ่งทำอะไร?</strong>
+          <div class="sim-controls">
+            <button class="primary" data-turn="choose">เลือกไพ่</button>
+            <button data-turn="act">ทำ action</button>
+            <button data-turn="pass">ส่งไพ่</button>
+          </div>
+          <div class="result" id="turnResult">กดปุ่มเพื่อดูจังหวะของ 1 turn</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="layout">
+        <p class="eyebrow">Card Anatomy</p>
+        <h2>อ่านการ์ด 3 จุด</h2>
+        <div class="three-grid">
+          <div class="mini-card sample-card yellow"><strong>1. สีการ์ด</strong><p>บอกหน้าที่หลัก เช่น เหลือง = เงิน/การค้า, แดง = ทหาร</p></div>
+          <div class="mini-card sample-card"><strong>2. Cost</strong><p>มุมบนซ้ายบอกว่าต้องจ่าย resource/coin อะไร หรืออาจสร้างฟรีด้วย chain symbol</p></div>
+          <div class="mini-card sample-card green"><strong>3. Effect</strong><p>ตรงกลางบอกผลที่ได้ทันที หรือคะแนน/เงื่อนไขปลายเกม</p></div>
+        </div>
+        <p class="lead">สูตรพูดในห้อง: “ดูสี ดูค่าจ่าย ดูผล”</p>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="layout">
+        <p class="eyebrow">Card Colors</p>
+        <h2>สีการ์ดคือแผนที่นำทาง</h2>
+        <div class="card-grid">
+          <div class="mini-card sample-card brown"><strong>Brown/Grey</strong><div class="icon-row"><span class="icon brown-outline" data-icon="wood"></span><span class="icon grey-outline" data-icon="glass"></span></div><p>ผลิต resource</p></div>
+          <div class="mini-card sample-card yellow"><strong>Yellow</strong><div class="icon-row"><span class="icon yellow-outline" data-icon="coin"></span><span class="icon yellow-outline" data-icon="trade"></span></div><p>เงิน การค้า ส่วนลด</p></div>
+          <div class="mini-card sample-card red"><strong>Red</strong><div class="icon-row"><span class="icon red-outline" data-icon="shield"></span></div><p>ทหาร เทียบซ้ายขวา</p></div>
+          <div class="mini-card sample-card"><strong>Blue</strong><div class="icon-row"><span class="icon blue-outline" data-icon="vp"></span></div><p>คะแนนตรง ๆ</p></div>
+          <div class="mini-card sample-card green"><strong>Green</strong><div class="icon-row"><span class="icon green-outline" data-icon="gear"></span><span class="icon green-outline" data-icon="tablet"></span><span class="icon green-outline" data-icon="compass"></span></div><p>วิทยาศาสตร์</p></div>
+          <div class="mini-card sample-card purple"><strong>Purple</strong><div class="icon-row"><span class="icon purple-outline" data-icon="guild"></span></div><p>Guild คะแนนปลายเกม</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="layout wide-split">
+        <div class="panel">
+          <strong>Resource puzzle</strong>
+          <p>เรามี wood + stone เอง และซื้อ clay จากเพื่อนขวาได้ 2 coins จะสร้างการ์ดที่ต้องใช้ wood + stone + clay ได้ไหม?</p>
+          <div class="resource-bar">
+            <span class="icon brown-outline" data-icon="wood"></span>
+            <span class="icon brown-outline" data-icon="stone"></span>
+            <span class="coin">2</span>
+            <span>→</span>
+            <span class="icon brown-outline" data-icon="clay"></span>
+          </div>
+          <div class="choice-grid">
+            <button class="choice" data-pay="yes">ได้ เพราะซื้อ clay จากข้างบ้านได้</button>
+            <button class="choice" data-pay="no">ไม่ได้ เพราะ resource ใช้แล้วหมด</button>
+          </div>
+          <div class="feedback" id="payFeedback">เลือกคำตอบเพื่อดู feedback</div>
+        </div>
+        <div>
+          <p class="eyebrow">Payment</p>
+          <h2>Resource ใช้แล้วไม่หมด</h2>
+          <ul>
+            <li>ทรัพยากรเป็นกำลังผลิต ใช้ได้ทุก turn</li>
+            <li>ซื้อจากซ้าย/ขวาได้ถ้าเป็น starting, brown, grey</li>
+            <li>จ่าย coins ให้เพื่อน แต่เพื่อนไม่เสีย resource</li>
+            <li>ห้ามสร้างอาคารชื่อซ้ำ</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="layout">
+        <p class="eyebrow">Three Actions</p>
+        <h2>ไพ่ 1 ใบ ทำได้ 3 ทาง</h2>
+        <div class="three-grid">
+          <div class="mini-card"><strong>สร้างอาคาร</strong><p>จ่าย cost แล้ววางการ์ดเปิดหน้า ได้ effect ตามการ์ด</p></div>
+          <div class="mini-card"><strong>สร้าง Wonder stage</strong><p>จ่าย cost ของ stage แล้วคว่ำไพ่ใต้ Wonder เอฟเฟกต์ของไพ่ไม่ทำงาน</p></div>
+          <div class="mini-card"><strong>ขายไพ่</strong><p>ทิ้งไพ่เพื่อรับ 3 coins ใช้เมื่อสร้างไม่ได้หรือไม่อยากให้คนอื่นได้ไพ่ใบนั้น</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="layout split">
+        <div>
+          <p class="eyebrow">Wonder Board</p>
+          <h2>Wonder คือแผนระยะกลางของเรา</h2>
+          <ul>
+            <li>แต่ละ stage มี cost และ reward ของตัวเอง</li>
+            <li>สร้างตามลำดับซ้ายไปขวา</li>
+            <li>ใช้ไพ่ใบใดก็ได้คว่ำเป็น stage</li>
+            <li>เกมแรกให้ใช้ Wonder เป็น “แผนสำรอง” เมื่อไพ่ในมือไม่เข้ากับเมืองเรา</li>
+          </ul>
+        </div>
+        <div class="wonder-board">
+          <strong>ตัวอย่าง Wonder stage</strong>
+          <div class="stage-row">
+            <div class="stage"><div class="icon-row"><span class="icon brown-outline" data-icon="wood"></span></div><p>จ่าย wood → ได้ 3 VP</p></div>
+            <div class="stage"><div class="icon-row"><span class="icon brown-outline" data-icon="stone"></span><span class="icon brown-outline" data-icon="clay"></span></div><p>จ่าย resource → ได้ effect</p></div>
+            <div class="stage"><div class="icon-row"><span class="icon yellow-outline" data-icon="coin"></span><span class="icon blue-outline" data-icon="vp"></span></div><p>ได้เงิน/คะแนนท้ายเกม</p></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="layout split">
+        <div class="panel">
+          <strong>Military resolver</strong>
+          <p>ท้าย Age: เรามี 3 โล่, ซ้ายมี 1, ขวามี 4 ใน Age I ผลคืออะไร?</p>
+          <div class="choice-grid">
+            <button class="choice" data-military="winlose">ชนะซ้าย แพ้ขวา</button>
+            <button class="choice" data-military="winwin">ชนะทั้งสองข้าง</button>
+            <button class="choice" data-military="lose">แพ้ทั้งสองข้าง</button>
+            <button class="choice" data-military="none">ยังไม่นับจนจบเกม</button>
+          </div>
+          <div class="feedback" id="militaryFeedback">เลือกคำตอบเพื่อดู feedback</div>
+        </div>
+        <div>
+          <p class="eyebrow">Military</p>
+          <h2>แดงไม่ได้ตีทั้งโต๊ะ เทียบแค่ซ้ายและขวา</h2>
+          <ul>
+            <li>นับท้ายแต่ละ Age</li>
+            <li>เทียบจำนวนโล่กับเพื่อนซ้ายและขวาแยกกัน</li>
+            <li>ชนะได้ victory token แพ้ได้ defeat token</li>
+            <li>เสมอไม่มีอะไรเกิดขึ้น</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="layout split">
+        <div>
+          <p class="eyebrow">Science</p>
+          <h2>วิทยาศาสตร์ใช้ calculator ช่วยได้</h2>
+          <p class="lead">คะแนน = จำนวนแต่ละ symbol ยกกำลังสอง + ชุดครบ 3 แบบชุดละ 7</p>
+          <div class="icon-row">
+            <span class="icon green-outline" data-icon="gear"></span>
+            <span class="icon green-outline" data-icon="tablet"></span>
+            <span class="icon green-outline" data-icon="compass"></span>
+          </div>
+        </div>
+        <div class="panel">
+          <strong>Science mini calculator</strong>
+          <p>กรอกจำนวน gear / tablet / compass</p>
+          <div class="sim-controls">
+            <label>Gear <input id="gearCount" type="number" min="0" max="8" value="2" /></label>
+            <label>Tablet <input id="tabletCount" type="number" min="0" max="8" value="1" /></label>
+            <label>Compass <input id="compassCount" type="number" min="0" max="8" value="1" /></label>
+          </div>
+          <div class="result" id="scienceResult">คะแนนวิทยาศาสตร์: 13</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="layout">
+        <p class="eyebrow">End Game</p>
+        <h2>นับคะแนนเป็นหมวด ไม่ต้องจำจากหัว</h2>
+        <table class="score-table">
+          <tr><th>หมวด</th><th>ถามผู้เล่นว่าอะไร</th></tr>
+          <tr><td>Military</td><td>รวม victory/defeat tokens</td></tr>
+          <tr><td>Coins</td><td>ทุก 3 coins = 1 VP</td></tr>
+          <tr><td>Wonder</td><td>คะแนนจาก stage ที่สร้างแล้ว</td></tr>
+          <tr><td>Blue cards</td><td>คะแนนตรงบนการ์ด</td></tr>
+          <tr><td>Yellow/Purple</td><td>คะแนนตามเงื่อนไขของการ์ด</td></tr>
+          <tr><td>Science</td><td>ใช้สูตร/เครื่องคิดเลข</td></tr>
+        </table>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="layout">
+        <p class="eyebrow">Guided First Age</p>
+        <h2>กิจกรรมสอนเล่น 25 นาทีแรก</h2>
+        <div class="three-grid">
+          <div class="mini-card"><strong>Turn 1-2</strong><p>หยุดทุกโต๊ะ ให้ทุกคนพูดว่า “ฉันสร้าง/ขาย/สร้าง Wonder เพราะอะไร”</p></div>
+          <div class="mini-card"><strong>Turn 3-4</strong><p>ให้เริ่มซื้อ resource จากซ้าย/ขวาอย่างน้อย 1 ตัวอย่าง</p></div>
+          <div class="mini-card"><strong>Turn 5-6</strong><p>สังเกตว่าใครเน้นเงิน ทหาร วิทยาศาสตร์ หรือคะแนนตรง</p></div>
+          <div class="mini-card"><strong>End Age I</strong><p>หยุด resolve ทหารพร้อมกันทั้งห้อง</p></div>
+          <div class="mini-card"><strong>Reflection</strong><p>ถามว่า “สัญลักษณ์ไหนยังงงที่สุด” แล้วเปิด symbol guide เฉพาะจุด</p></div>
+          <div class="mini-card"><strong>Age II onward</strong><p>ปล่อยให้เร็วขึ้น อาจารย์เดินดู resource payment และ duplicate card</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="layout">
+        <p class="eyebrow">Quick Check</p>
+        <h2>ก่อนเริ่มเล่นจริง</h2>
+        <div class="panel">
+          <p class="lead" id="quizQuestion">ข้อ 1: ใน 1 turn ผู้เล่นทำอะไรพร้อมกัน?</p>
+          <div class="choice-grid" id="quizChoices"></div>
+          <div class="feedback" id="quizFeedback">เลือกคำตอบเพื่อดู feedback</div>
+          <button class="choice" id="nextQuiz">ข้อถัดไป</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="layout">
+        <p class="eyebrow">Teaching Script</p>
+        <h2>สคริปต์สั้นสำหรับอาจารย์</h2>
+        <div class="two-grid">
+          <div class="mini-card"><strong>เปิดคาบ</strong><p>“เกมนี้ชนะจากการสร้างเมือง ไม่ใช่ทำทุกอย่างพร้อมกัน เลือกทางที่เมืองเราถนัด”</p></div>
+          <div class="mini-card"><strong>ตอนเจอสัญลักษณ์ใหม่</strong><p>“ดูสีของการ์ดก่อน แล้วถามว่า effect นี้เกิดทันทีหรือปลายเกม”</p></div>
+          <div class="mini-card"><strong>ตอนผู้เล่นงง resource</strong><p>“resource เป็นโรงงาน ใช้แล้วไม่หาย แต่ 1 symbol ใช้ได้ครั้งเดียวต่อ turn”</p></div>
+          <div class="mini-card"><strong>ตอนจบ Age I</strong><p>“ตอนนี้ทุกคนเล่นเป็นแล้ว ที่เหลือคือเลือกแผนให้ชัดขึ้น”</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="layout">
+        <p class="eyebrow">Reference</p>
+        <h2>ใช้คู่กับ Symbol Guide และกติกาจริง</h2>
+        <div class="three-grid">
+          <div class="mini-card"><strong>สไลด์นี้</strong><p>ใช้สอน flow การเล่นและจังหวะตัดสินใจ</p></div>
+          <div class="mini-card"><strong>Symbol Guide</strong><p><a href="../seven-wonders-symbols/">เปิดชีทสัญลักษณ์</a> เมื่อผู้เรียนเจอ icon ที่ยังไม่คุ้น</p></div>
+          <div class="mini-card"><strong>Official References</strong><p><a href="https://cdn.svc.asmodee.net/production-rprod/storage/downloads/games/7wonders/en/sev-en02-rules-1716388903zBEZx.pdf">Rules</a> | <a href="https://aadl.org/files/catalog_guides/sev-en02-effects-description-159888854029keu.pdf">Effects sheet</a> | <a href="https://www.rprod.com/en/7-wonders/faq">FAQ</a></p></div>
+        </div>
+        <p class="note">ไอคอนในเด็คนี้เป็นภาพประกอบการสอนที่วาดใหม่เพื่ออธิบายความหมาย ไม่ใช่ artwork official ของเกม</p>
+      </div>
+    </section>
+
+    <button class="fullscreen" id="fullscreen">เต็มจอ</button>
+    <div class="nav">
+      <button id="prev" aria-label="previous slide">‹</button>
+      <button id="next" aria-label="next slide">›</button>
+    </div>
+  </main>
+
+  <script>
+    const iconTemplates = {
+      wood: '<svg viewBox="0 0 64 64" aria-hidden="true"><rect x="13" y="22" width="38" height="20" rx="10" fill="var(--wood)"/><path d="M18 32h28M24 25c6 5 6 9 0 14M38 25c-6 5-6 9 0 14" stroke="#f1c18b" stroke-width="4" fill="none" stroke-linecap="round"/></svg>',
+      stone: '<svg viewBox="0 0 64 64" aria-hidden="true"><path d="M13 42 20 19h25l8 17-12 12H22z" fill="var(--stone)"/><path d="M20 19 31 32l14-13M31 32l-9 16M31 32l22 4" stroke="#cfd2d6" stroke-width="4" fill="none" stroke-linecap="round"/></svg>',
+      clay: '<svg viewBox="0 0 64 64" aria-hidden="true"><path d="M17 20h30l7 12-11 15H20L10 34z" fill="var(--clay)"/><path d="M20 30h24M24 40h17" stroke="#f3b08c" stroke-width="5" stroke-linecap="round"/></svg>',
+      ore: '<svg viewBox="0 0 64 64" aria-hidden="true"><path d="M15 42 22 15l18 6 10 17-17 13z" fill="var(--ore)"/><path d="M24 20 34 50M18 39l29-8" stroke="#8792a4" stroke-width="5" stroke-linecap="round"/></svg>',
+      glass: '<svg viewBox="0 0 64 64" aria-hidden="true"><path d="M32 8 52 32 32 56 12 32z" fill="var(--glass)" opacity=".9"/><path d="M32 8v48M12 32h40" stroke="#d8fbff" stroke-width="4" stroke-linecap="round"/></svg>',
+      coin: '<svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="22" fill="var(--coin)"/><circle cx="32" cy="32" r="15" fill="none" stroke="#fff0b5" stroke-width="4"/><text x="32" y="40" text-anchor="middle" font-size="24" font-weight="900" fill="#5a3b08">$</text></svg>',
+      trade: '<svg viewBox="0 0 64 64" aria-hidden="true"><path d="M16 22h29l-7-7M48 42H19l7 7" fill="none" stroke="var(--coin)" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+      shield: '<svg viewBox="0 0 64 64" aria-hidden="true"><path d="M32 8 51 16v16c0 12-8 20-19 24C21 52 13 44 13 32V16z" fill="var(--military)"/><path d="M32 13v36" stroke="#ffd2ca" stroke-width="5" stroke-linecap="round"/></svg>',
+      vp: '<svg viewBox="0 0 64 64" aria-hidden="true"><path d="M12 16h40v34H12z" rx="6" fill="var(--civil)"/><text x="32" y="40" text-anchor="middle" font-size="24" font-weight="900" fill="white">VP</text></svg>',
+      science: '<svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="22" fill="var(--science)"/><path d="M20 40c8-18 16-18 24 0M24 24h16" stroke="#d9ffe9" stroke-width="5" fill="none" stroke-linecap="round"/></svg>',
+      gear: '<svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="17" fill="none" stroke="var(--science)" stroke-width="8"/><circle cx="32" cy="32" r="5" fill="var(--science)"/><path d="M32 7v10M32 47v10M7 32h10M47 32h10M14 14l7 7M43 43l7 7M50 14l-7 7M21 43l-7 7" stroke="var(--science)" stroke-width="6" stroke-linecap="round"/></svg>',
+      tablet: '<svg viewBox="0 0 64 64" aria-hidden="true"><rect x="17" y="10" width="30" height="44" rx="5" fill="var(--science)"/><path d="M24 22h16M24 32h16M24 42h11" stroke="#d9ffe9" stroke-width="4" stroke-linecap="round"/></svg>',
+      compass: '<svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="22" fill="none" stroke="var(--science)" stroke-width="6"/><path d="M38 14 33 34 18 46l13-20z" fill="var(--science)"/></svg>',
+      guild: '<svg viewBox="0 0 64 64" aria-hidden="true"><path d="M16 24 32 12l16 12v24H16z" fill="var(--guild)"/><path d="M24 48V32h16v16" fill="#e6d7ff"/><path d="M20 24h24" stroke="#e6d7ff" stroke-width="5" stroke-linecap="round"/></svg>'
+    };
+
+    document.querySelectorAll("[data-icon]").forEach((el) => {
+      el.insertAdjacentHTML("afterbegin", iconTemplates[el.dataset.icon] || "");
+    });
+
+    const slides = [...document.querySelectorAll(".slide")];
+    const progress = document.getElementById("progress");
+    const counter = document.getElementById("counter");
+    let current = 0;
+
+    function showSlide(index) {
+      current = Math.max(0, Math.min(slides.length - 1, index));
+      slides.forEach((slide, i) => slide.classList.toggle("active", i === current));
+      progress.style.width = `${((current + 1) / slides.length) * 100}%`;
+      counter.textContent = `${current + 1}/${slides.length}`;
+    }
+
+    document.querySelectorAll("[data-turn]").forEach((button) => {
+      button.addEventListener("click", () => {
+        const text = {
+          choose: "ทุกคนเลือกไพ่ 1 ใบจากมือ แล้ววางคว่ำไว้ ยังไม่ส่งไพ่ทันที",
+          act: "เปิดไพ่พร้อมกัน แล้วเลือกว่าจะสร้างอาคาร สร้าง Wonder หรือขายเอา 3 coins",
+          pass: "หลังทำ action แล้ว จึงส่งไพ่ที่เหลือให้คนข้าง ๆ ตามทิศของ Age"
+        };
+        document.getElementById("turnResult").textContent = text[button.dataset.turn];
+      });
+    });
+
+    document.querySelectorAll("[data-pay]").forEach((button) => {
+      button.addEventListener("click", () => {
+        const correct = button.dataset.pay === "yes";
+        document.querySelectorAll("[data-pay]").forEach((item) => item.classList.remove("correct", "wrong"));
+        button.classList.add(correct ? "correct" : "wrong");
+        document.getElementById("payFeedback").textContent = correct
+          ? "ถูกต้อง ซื้อ clay จากเพื่อนข้าง ๆ ได้โดยจ่าย coins ให้เพื่อน และ resource ของเราไม่หาย"
+          : "ยังไม่ใช่ resource เป็นกำลังผลิต ใช้แล้วไม่หมดในระยะยาว แต่ใช้ได้ตามจำนวน symbol ต่อ turn";
+      });
+    });
+
+    document.querySelectorAll("[data-military]").forEach((button) => {
+      button.addEventListener("click", () => {
+        const correct = button.dataset.military === "winlose";
+        document.querySelectorAll("[data-military]").forEach((item) => item.classList.remove("correct", "wrong"));
+        button.classList.add(correct ? "correct" : "wrong");
+        document.getElementById("militaryFeedback").textContent = correct
+          ? "ถูกต้อง เราชนะซ้ายเพราะ 3 > 1 และแพ้ขวาเพราะ 3 < 4"
+          : "ยังไม่ใช่ ทหารเทียบซ้ายและขวาแยกกันตอนท้ายแต่ละ Age";
+      });
+    });
+
+    function updateScience() {
+      const gear = Number(document.getElementById("gearCount").value || 0);
+      const tablet = Number(document.getElementById("tabletCount").value || 0);
+      const compass = Number(document.getElementById("compassCount").value || 0);
+      const sets = Math.min(gear, tablet, compass);
+      const score = gear * gear + tablet * tablet + compass * compass + sets * 7;
+      document.getElementById("scienceResult").textContent = `คะแนนวิทยาศาสตร์: ${score} (${gear}² + ${tablet}² + ${compass}² + ${sets} ชุด x 7)`;
+    }
+
+    ["gearCount", "tabletCount", "compassCount"].forEach((id) => {
+      document.getElementById(id).addEventListener("input", updateScience);
+    });
+
+    const quizItems = [
+      {
+        prompt: "ข้อ 1: ใน 1 turn ผู้เล่นทำอะไรพร้อมกัน?",
+        choices: ["เลือกไพ่ 1 ใบ", "นับคะแนนทันที", "สู้ทหารทุกคน", "หยิบ resource ออกจากคลัง"],
+        answer: 0,
+        feedback: "ถูกต้อง ทุกคนเลือกไพ่ 1 ใบพร้อมกัน แล้วค่อยเปิดทำ action"
+      },
+      {
+        prompt: "ข้อ 2: ไพ่ที่ใช้สร้าง Wonder stage ทำงานไหม?",
+        choices: ["ทำงานเต็ม effect", "ทำงานครึ่งหนึ่ง", "ไม่ทำงาน เป็นแค่ไพ่คว่ำใต้ Wonder", "กลายเป็นเหรียญ 3 coins"],
+        answer: 2,
+        feedback: "ถูกต้อง เอฟเฟกต์ของไพ่ใบนั้นไม่ทำงาน เพราะใช้เป็นวัสดุสร้าง Wonder stage"
+      },
+      {
+        prompt: "ข้อ 3: Resource ในเมืองใช้แล้วหมดไหม?",
+        choices: ["หมดถาวร", "ไม่หมด แต่ใช้ตามจำนวน symbol ต่อ turn", "หมดเฉพาะ Age III", "ใช้ได้เฉพาะถ้าจ่าย coin"],
+        answer: 1,
+        feedback: "ถูกต้อง resource เป็นกำลังผลิตของเมือง"
+      }
+    ];
+    let quizIndex = 0;
+
+    function renderQuiz() {
+      const item = quizItems[quizIndex];
+      const choicesEl = document.getElementById("quizChoices");
+      document.getElementById("quizQuestion").textContent = item.prompt;
+      document.getElementById("quizFeedback").textContent = "เลือกคำตอบเพื่อดู feedback";
+      choicesEl.innerHTML = "";
+      item.choices.forEach((choice, index) => {
+        const button = document.createElement("button");
+        button.className = "choice";
+        button.textContent = choice;
+        button.addEventListener("click", () => {
+          [...choicesEl.children].forEach((child) => child.classList.remove("correct", "wrong"));
+          button.classList.add(index === item.answer ? "correct" : "wrong");
+          if (index !== item.answer) choicesEl.children[item.answer].classList.add("correct");
+          document.getElementById("quizFeedback").textContent = index === item.answer ? item.feedback : `ยังไม่ใช่: ${item.feedback}`;
+        });
+        choicesEl.appendChild(button);
+      });
+    }
+
+    document.getElementById("nextQuiz").addEventListener("click", () => {
+      quizIndex = (quizIndex + 1) % quizItems.length;
+      renderQuiz();
+    });
+
+    document.getElementById("prev").addEventListener("click", () => showSlide(current - 1));
+    document.getElementById("next").addEventListener("click", () => showSlide(current + 1));
+    document.getElementById("fullscreen").addEventListener("click", () => {
+      if (!document.fullscreenElement) document.getElementById("frame").requestFullscreen();
+      else document.exitFullscreen();
+    });
+    window.addEventListener("keydown", (event) => {
+      if (event.key === "ArrowRight" || event.key === "PageDown" || event.key === " ") showSlide(current + 1);
+      if (event.key === "ArrowLeft" || event.key === "PageUp") showSlide(current - 1);
+      if (event.key === "Home") showSlide(0);
+      if (event.key === "End") showSlide(slides.length - 1);
+    });
+
+    renderQuiz();
+    updateScience();
+    const requestedSlide = Number.parseInt(new URLSearchParams(window.location.search).get("slide") || "1", 10) - 1;
+    showSlide(Number.isFinite(requestedSlide) ? requestedSlide : 0);
+  </script>
+</body>
+</html>
