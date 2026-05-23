@@ -1,0 +1,888 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Othello Teach-to-Play Interactive Slides</title>
+  <style>
+    :root {
+      --felt: #0f513f;
+      --felt-dark: #07342d;
+      --paper: #fff8e8;
+      --ink: #191816;
+      --muted: #6e685d;
+      --line: #dfcfaa;
+      --amber: #e7aa35;
+      --coral: #e96558;
+      --blue: #1f3f7a;
+      --white-disc: #f6f0df;
+      --black-disc: #171b22;
+      --legal: #92e3b6;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background:
+        radial-gradient(circle at 14% 12%, rgba(231, 170, 53, .22), transparent 24%),
+        radial-gradient(circle at 90% 15%, rgba(233, 101, 88, .16), transparent 22%),
+        linear-gradient(135deg, #10151d, #07342d 52%, #122a47);
+      color: var(--ink);
+      font-family: Arial, "Noto Sans Thai", sans-serif;
+      min-height: 100vh;
+    }
+
+    button { font: inherit; }
+
+    .deck { min-height: 100vh; }
+
+    .frame {
+      background:
+        linear-gradient(135deg, rgba(255, 248, 232, .99), rgba(251, 253, 246, .985)),
+        radial-gradient(circle at 88% 82%, rgba(15, 81, 63, .1), transparent 28%);
+      height: 100vh;
+      overflow: hidden;
+      position: relative;
+      width: 100vw;
+    }
+
+    .progress {
+      background: linear-gradient(90deg, var(--felt), var(--amber), var(--coral), var(--blue));
+      height: 8px;
+      left: 0;
+      position: absolute;
+      top: 0;
+      transition: width 160ms ease;
+      z-index: 4;
+    }
+
+    .meta {
+      color: var(--muted);
+      display: flex;
+      font-size: clamp(11px, 1.12vw, 14px);
+      font-weight: 900;
+      justify-content: space-between;
+      left: clamp(28px, 4vw, 72px);
+      position: absolute;
+      right: clamp(28px, 4vw, 72px);
+      top: clamp(18px, 2.4vw, 34px);
+      z-index: 4;
+    }
+
+    .slide {
+      display: none;
+      height: 100%;
+      padding: clamp(72px, 8vw, 118px) clamp(52px, 8vw, 132px) clamp(72px, 7vw, 108px);
+    }
+
+    .slide.active { display: grid; }
+
+    .layout {
+      align-content: center;
+      display: grid;
+      gap: clamp(18px, 2.3vw, 30px);
+      height: 100%;
+    }
+
+    .split {
+      align-items: center;
+      grid-template-columns: minmax(0, 1fr) minmax(420px, .92fr);
+    }
+
+    .wide-split {
+      align-items: center;
+      grid-template-columns: minmax(440px, .95fr) minmax(0, 1fr);
+    }
+
+    .eyebrow {
+      color: var(--felt);
+      font-size: clamp(15px, 1.5vw, 22px);
+      font-weight: 900;
+      margin: 0;
+      text-transform: uppercase;
+    }
+
+    h1, h2 {
+      letter-spacing: 0;
+      line-height: 1.05;
+      margin: 0;
+    }
+
+    h1 { font-size: clamp(56px, 7.2vw, 108px); max-width: 1260px; }
+    h2 { font-size: clamp(36px, 5.2vw, 72px); max-width: 1180px; }
+
+    p, li, span {
+      font-size: clamp(18px, 1.9vw, 28px);
+      line-height: 1.35;
+    }
+
+    p { margin: 0; }
+    ul { display: grid; gap: 14px; margin: 0; padding-left: 1.15em; }
+
+    .lead {
+      color: #37322b;
+      font-size: clamp(24px, 2.75vw, 42px);
+      line-height: 1.28;
+      max-width: 1120px;
+    }
+
+    .note {
+      color: var(--muted);
+      font-size: clamp(15px, 1.4vw, 20px);
+    }
+
+    .panel {
+      background: rgba(255,255,255,.76);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: 0 18px 44px rgba(15, 81, 63, .12);
+      padding: clamp(18px, 2.2vw, 30px);
+    }
+
+    .rule-grid, .quiz-grid, .tile-grid {
+      display: grid;
+      gap: 16px;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .rule-card, .choice, .tile {
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 18px;
+    }
+
+    .rule-card strong, .tile strong {
+      color: var(--felt);
+      display: block;
+      font-size: clamp(22px, 2.2vw, 32px);
+      line-height: 1.1;
+      margin-bottom: 8px;
+    }
+
+    .choice {
+      color: var(--ink);
+      cursor: pointer;
+      font-weight: 800;
+      text-align: left;
+    }
+
+    .choice.correct { border-color: #15845d; box-shadow: inset 0 0 0 3px rgba(21,132,93,.22); }
+    .choice.wrong { border-color: var(--coral); box-shadow: inset 0 0 0 3px rgba(233,101,88,.24); }
+
+    .board-wrap {
+      display: grid;
+      gap: 12px;
+      justify-items: center;
+    }
+
+    .board {
+      aspect-ratio: 1;
+      background: #0a3d30;
+      border: 12px solid #5a3a1e;
+      border-radius: 10px;
+      box-shadow: 0 18px 44px rgba(0,0,0,.24);
+      display: grid;
+      grid-template-columns: repeat(8, 1fr);
+      overflow: hidden;
+      width: min(50vw, 560px);
+    }
+
+    .cell {
+      align-items: center;
+      background: #147057;
+      border: 1px solid rgba(4, 44, 36, .75);
+      display: flex;
+      justify-content: center;
+      position: relative;
+    }
+
+    .cell::after {
+      color: rgba(255,255,255,.35);
+      content: attr(data-coord);
+      font-size: clamp(9px, .9vw, 13px);
+      font-weight: 800;
+      left: 6px;
+      position: absolute;
+      top: 4px;
+    }
+
+    .disc {
+      border-radius: 999px;
+      box-shadow: inset -7px -9px 14px rgba(0,0,0,.22), 0 6px 12px rgba(0,0,0,.24);
+      height: 68%;
+      width: 68%;
+    }
+
+    .disc.black { background: radial-gradient(circle at 32% 26%, #4d5665, var(--black-disc) 56%); }
+    .disc.white { background: radial-gradient(circle at 34% 26%, #fffdf2, var(--white-disc) 62%); }
+
+    .cell.legal {
+      cursor: pointer;
+      outline: 4px solid rgba(146, 227, 182, .82);
+      outline-offset: -6px;
+    }
+
+    .cell.legal::before {
+      background: rgba(146, 227, 182, .95);
+      border-radius: 999px;
+      content: "";
+      height: 22%;
+      position: absolute;
+      width: 22%;
+    }
+
+    .cell.flipped { animation: pop 360ms ease; }
+
+    @keyframes pop {
+      0% { transform: scale(.88); }
+      65% { transform: scale(1.08); }
+      100% { transform: scale(1); }
+    }
+
+    .mini-board {
+      border-width: 8px;
+      width: min(34vw, 380px);
+    }
+
+    .demo-controls, .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+    }
+
+    .demo-controls button, .controls button, .fullscreen {
+      background: var(--felt);
+      border: 0;
+      border-radius: 8px;
+      color: white;
+      cursor: pointer;
+      font-weight: 900;
+      padding: 12px 16px;
+    }
+
+    .demo-controls button.secondary, .controls button.secondary {
+      background: #f2e5c8;
+      color: #2b251d;
+    }
+
+    .status {
+      background: #e8f7ef;
+      border: 1px solid #b9e3cf;
+      border-radius: 8px;
+      color: #0f513f;
+      font-size: clamp(16px, 1.45vw, 22px);
+      font-weight: 900;
+      min-height: 48px;
+      padding: 12px 16px;
+      text-align: center;
+      width: 100%;
+    }
+
+    .big-number {
+      color: var(--felt);
+      font-size: clamp(60px, 9vw, 130px);
+      font-weight: 900;
+      line-height: .9;
+    }
+
+    .danger {
+      background: #fff0ec;
+      border-color: #f0b8ad;
+    }
+
+    .source-list a {
+      color: var(--blue);
+      overflow-wrap: anywhere;
+    }
+
+    .nav {
+      bottom: clamp(18px, 2vw, 28px);
+      display: flex;
+      gap: 10px;
+      position: absolute;
+      right: clamp(28px, 4vw, 72px);
+      z-index: 5;
+    }
+
+    .nav button {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      color: var(--ink);
+      cursor: pointer;
+      font-weight: 900;
+      min-width: 46px;
+      padding: 10px 14px;
+    }
+
+    .fullscreen {
+      bottom: clamp(18px, 2vw, 28px);
+      left: clamp(28px, 4vw, 72px);
+      position: absolute;
+      z-index: 5;
+    }
+
+    @media (max-width: 900px) {
+      .slide { padding: 72px 24px 82px; }
+      .meta {
+        align-items: flex-start;
+        gap: 8px;
+        left: 28px;
+        right: 28px;
+      }
+      .meta span:first-child { max-width: 132px; }
+      .meta span:last-child { display: none; }
+      .split, .wide-split, .rule-grid, .quiz-grid, .tile-grid { grid-template-columns: 1fr; }
+      .board { width: min(92vw, 520px); }
+      .mini-board { width: min(72vw, 380px); }
+      h1 { font-size: clamp(44px, 13vw, 76px); }
+      h2 { font-size: clamp(32px, 10vw, 56px); }
+      p, li, span { font-size: 18px; }
+      .lead { font-size: 24px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="deck">
+    <div class="frame" id="frame">
+      <div class="progress" id="progress"></div>
+      <div class="meta">
+        <span>Othello Teach-to-Play</span>
+        <span id="counter">1/15</span>
+        <span>เป้าหมาย: เล่นจริงได้ในคาบนี้</span>
+      </div>
+
+      <section class="slide active">
+        <div class="layout split">
+          <div>
+            <p class="eyebrow">SMA2106 Board Game Course</p>
+            <h1>สอนเล่น Othello ให้เล่นเป็น</h1>
+            <p class="lead">เกมที่กติกาสั้นมาก แต่ความคิดเชิงกลยุทธ์ซ่อนอยู่ในทุกช่องที่เราวางหมาก</p>
+          </div>
+          <div class="board-wrap">
+            <div class="board mini-board" data-static="start"></div>
+            <p class="note">ดำเริ่มก่อน | วางเพื่อหนีบ | พลิกหมาก | นับสีตอนจบ</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide">
+        <div class="layout">
+          <p class="eyebrow">Learning Target</p>
+          <h2>หลังจบชุดนี้ นักศึกษาต้องเริ่มเล่นกับเพื่อนได้ทันที</h2>
+          <div class="rule-grid">
+            <div class="rule-card"><strong>1. ตั้งกระดานได้</strong><p>รู้ตำแหน่งหมาก 4 ตัวแรก และรู้ว่าฝ่ายดำเริ่มก่อน</p></div>
+            <div class="rule-card"><strong>2. หา legal move ได้</strong><p>วางหมากเฉพาะช่องที่หนีบหมากคู่แข่งได้อย่างน้อย 1 แนว</p></div>
+            <div class="rule-card"><strong>3. พลิกหมากถูก</strong><p>พลิกทุกแนวที่ถูกหนีบพร้อมกัน แต่ไม่มี chain reaction</p></div>
+            <div class="rule-card"><strong>4. เล่นอย่างมีแผน</strong><p>รู้ว่ามุมสำคัญ ช่องติดมุมอันตราย และหมากเยอะตอนต้นไม่ใช่คำตอบเสมอไป</p></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide">
+        <div class="layout wide-split">
+          <div class="board-wrap">
+            <div class="board mini-board" data-static="start"></div>
+          </div>
+          <div>
+            <p class="eyebrow">Setup</p>
+            <h2>เริ่มจากหมาก 4 ตัวกลางกระดาน</h2>
+            <ul>
+              <li>กระดาน 8 x 8 ช่อง ใช้หมากสองหน้า ดำ/ขาว</li>
+              <li>กลางกระดานมีหมากดำ 2 ตัว และขาว 2 ตัววางสลับทแยง</li>
+              <li>ฝ่ายดำเริ่มก่อนเสมอในกติกา Othello</li>
+              <li>เป้าหมายสุดท้าย: เมื่อเกมจบ ให้มีหมากสีเรามากกว่าอีกฝ่าย</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide">
+        <div class="layout split">
+          <div>
+            <p class="eyebrow">Core Rule</p>
+            <h2>วางหมากได้เมื่อ “หนีบ” หมากคู่แข่ง</h2>
+            <p class="lead">หมากที่อยู่ระหว่างหมากใหม่ของเราและหมากเดิมของเรา จะถูกพลิกเป็นสีเรา</p>
+            <ul>
+              <li>หนีบได้ 8 ทิศ: แนวนอน แนวตั้ง และทแยง</li>
+              <li>ต้องมีหมากคู่แข่งอย่างน้อย 1 ตัวคั่นกลาง</li>
+              <li>ถ้าวางแล้วไม่พลิกอะไรเลย ถือว่าเดินไม่ได้</li>
+            </ul>
+          </div>
+          <div class="panel">
+            <div class="board-wrap">
+              <div class="board mini-board" id="flipDemo"></div>
+              <div class="demo-controls">
+                <button data-demo="horizontal">แนวนอน</button>
+                <button data-demo="diagonal">ทแยง</button>
+                <button data-demo="multi">หลายทิศ</button>
+              </div>
+              <div class="status" id="flipStatus">กดปุ่มเพื่อดูตัวอย่างการหนีบและพลิกหมาก</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide">
+        <div class="layout split">
+          <div>
+            <p class="eyebrow">Try It</p>
+            <h2>จากตำแหน่งเริ่มต้น ดำลงได้ช่องไหน?</h2>
+            <p class="lead">คลิกจุดสีเขียว 1 จุด แล้วดูว่าหมากขาวตัวไหนถูกพลิก</p>
+            <div class="controls">
+              <button id="resetLab" class="secondary">รีเซ็ตกระดาน</button>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="board-wrap">
+              <div class="board" id="startLab"></div>
+              <div class="status" id="labStatus">เลือก legal move ของฝ่ายดำ</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide">
+        <div class="layout">
+          <p class="eyebrow">Misconception Check</p>
+          <h2>อะไรที่ “ไม่ใช่” legal move?</h2>
+          <div class="rule-grid">
+            <div class="rule-card danger"><strong>วางติดหมากตัวเองเฉย ๆ</strong><p>ถ้าไม่มีหมากคู่แข่งถูกคั่นอยู่ตรงกลาง จะไม่เกิดการหนีบ</p></div>
+            <div class="rule-card danger"><strong>ข้ามช่องว่างไปหนีบ</strong><p>แนวที่หนีบต้องต่อเนื่อง ไม่มีช่องว่างแทรก</p></div>
+            <div class="rule-card danger"><strong>วางช่องที่ไม่พลิกหมาก</strong><p>Othello บังคับให้ทุก move ต้องพลิกหมากอย่างน้อย 1 ตัว</p></div>
+            <div class="rule-card danger"><strong>พลิกต่อเป็นลูกโซ่</strong><p>พลิกเฉพาะแนวที่ถูกหนีบจากหมากใหม่เท่านั้น ไม่พลิกเพราะหมากที่เพิ่งเปลี่ยนสีไปหนีบต่อ</p></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide">
+        <div class="layout split">
+          <div>
+            <p class="eyebrow">Turn Flow</p>
+            <h2>หนึ่งตาเดินมี 3 ขั้น</h2>
+            <div class="tile-grid">
+              <div class="tile"><strong>1</strong><p>มองหาช่องที่วางแล้วหนีบได้</p></div>
+              <div class="tile"><strong>2</strong><p>วางหมากสีของเราในช่องนั้น</p></div>
+              <div class="tile"><strong>3</strong><p>พลิกหมากคู่แข่งทุกแนวที่ถูกหนีบ</p></div>
+              <div class="tile"><strong>ผ่านตา</strong><p>ถ้าไม่มี legal move ต้อง pass ให้คู่แข่งเดินต่อ</p></div>
+            </div>
+          </div>
+          <div class="panel">
+            <p class="big-number">8</p>
+            <p class="lead">ทิศที่ต้องตรวจทุกครั้ง</p>
+            <p>ซ้าย ขวา บน ล่าง และทแยงทั้ง 4 ทิศ</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide">
+        <div class="layout">
+          <p class="eyebrow">Scoring</p>
+          <h2>เกมจบเมื่อทั้งสองฝ่ายเดินไม่ได้</h2>
+          <div class="rule-grid">
+            <div class="rule-card"><strong>จบปกติ</strong><p>กระดานเต็ม หรือไม่มีฝ่ายใดมี legal move เหลือ</p></div>
+            <div class="rule-card"><strong>นับคะแนน</strong><p>นับจำนวนหมากสีดำและสีขาวบนกระดาน สีที่มากกว่าชนะ</p></div>
+            <div class="rule-card"><strong>ถ้าเดินไม่ได้</strong><p>ไม่ได้แพ้ทันที แต่ต้อง pass จนกว่าจะมี legal move หรือเกมจบ</p></div>
+            <div class="rule-card"><strong>บทเรียนสำคัญ</strong><p>ชนะตอนจบ ไม่ใช่ชนะตอนกลางเกม ดังนั้นอย่าเพิ่งดีใจเพราะหมากเยอะเร็ว</p></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide">
+        <div class="layout split">
+          <div>
+            <p class="eyebrow">Beginner Strategy</p>
+            <h2>มุมคือพื้นที่ทองคำ</h2>
+            <p class="lead">หมากที่มุมไม่ถูกหนีบจากด้านนอกได้ จึงเป็นฐานให้สร้างขอบที่มั่นคง</p>
+            <ul>
+              <li>ถ้ามีโอกาสได้มุม มักเป็นโอกาสใหญ่</li>
+              <li>หลังได้มุม ให้ต่อยอดตามขอบเพื่อสร้าง stable discs</li>
+              <li>อย่าเปิดมุมให้คู่แข่งง่าย ๆ</li>
+            </ul>
+          </div>
+          <div class="board-wrap">
+            <div class="board mini-board" data-static="corners"></div>
+            <p class="note">มุมทั้ง 4 ช่องคือพื้นที่ที่ผู้เริ่มต้นควรสังเกตเสมอ</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide">
+        <div class="layout split">
+          <div class="board-wrap">
+            <div class="board mini-board" data-static="danger"></div>
+          </div>
+          <div>
+            <p class="eyebrow">Danger Squares</p>
+            <h2>ช่องติดมุมอาจเป็นกับดัก</h2>
+            <p class="lead">ช่อง X และ C รอบมุม ถ้าเล่นผิดเวลา อาจยื่นมุมให้คู่แข่งทันที</p>
+            <ul>
+              <li>X-square: ช่องทแยงติดมุม เช่น B2</li>
+              <li>C-square: ช่องข้างมุม เช่น A2 หรือ B1</li>
+              <li>ไม่ใช่ห้ามลงตลอดไป แต่ต้องรู้ว่าลงแล้วเปิดอะไรให้คู่แข่ง</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide">
+        <div class="layout">
+          <p class="eyebrow">Three Rules of Thumb</p>
+          <h2>สูตรจำง่ายสำหรับเกมแรก</h2>
+          <div class="rule-grid">
+            <div class="rule-card"><strong>อย่าโลภหมากเยอะต้นเกม</strong><p>บาง move พลิกเยอะตอนนี้ แต่เปิดช่องดีให้คู่แข่งในตาถัดไป</p></div>
+            <div class="rule-card"><strong>รักษาทางเลือก</strong><p>พยายามให้เรามี legal move หลายทาง และบีบให้คู่แข่งมีทางเลือกน้อย</p></div>
+            <div class="rule-card"><strong>ดูมุมก่อนเสมอ</strong><p>ถามตัวเองว่า move นี้เปิดมุมให้ใครหรือไม่</p></div>
+            <div class="rule-card"><strong>คิดหนึ่งตาล่วงหน้า</strong><p>หลังเราวาง คู่แข่งมีช่องไหนที่ดีมากขึ้นทันทีหรือเปล่า</p></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide">
+        <div class="layout split">
+          <div>
+            <p class="eyebrow">Class Activity</p>
+            <h2>กิจกรรม 12 นาที: เล่นเปิดเกม 12 ตา</h2>
+            <ul>
+              <li>จับคู่ เล่นจากกระดานเริ่มต้น</li>
+              <li>ทุกครั้งก่อนวาง ให้พูดว่า “ฉันหนีบแนวไหน”</li>
+              <li>หลังเดินครบ 12 ตา หยุดและวง 2 ช่องที่น่ากลัวที่สุดบนกระดาน</li>
+              <li>สลับคู่ อธิบายว่าใครเปิดมุมให้ใครหรือไม่</li>
+            </ul>
+          </div>
+          <div class="panel">
+            <p class="big-number">12</p>
+            <p class="lead">ตาแรกคือห้องทดลอง</p>
+            <p>เป้าหมายไม่ใช่ชนะทันที แต่คืออ่าน legal move และเห็นผลของการเปิดมุม</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide">
+        <div class="layout">
+          <p class="eyebrow">Quick Check</p>
+          <h2>เช็กก่อนเริ่มเล่นจริง</h2>
+          <div class="panel">
+            <p class="lead" id="quizQuestion">ข้อ 1: Othello วางหมากได้เมื่อใด?</p>
+            <div class="quiz-grid" id="quizChoices"></div>
+            <div class="status" id="quizFeedback">เลือกคำตอบเพื่อดู feedback</div>
+            <div class="controls">
+              <button id="nextQuiz" class="secondary">ข้อถัดไป</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide">
+        <div class="layout">
+          <p class="eyebrow">Teacher Guide</p>
+          <h2>ลำดับสอนแบบเร็วสำหรับคนไม่เคยเล่น</h2>
+          <div class="tile-grid">
+            <div class="tile"><strong>3 นาที</strong><p>ตั้งกระดาน + เป้าหมายเกม</p></div>
+            <div class="tile"><strong>7 นาที</strong><p>สาธิตหนีบ/พลิก 3 แบบ และให้ตอบว่าช่องไหนเดินได้</p></div>
+            <div class="tile"><strong>12 นาที</strong><p>จับคู่เล่น 12 ตาแรก พร้อมพูดแนวที่หนีบก่อนวาง</p></div>
+            <div class="tile"><strong>8 นาที</strong><p>สรุปมุม ช่องอันตราย และให้เล่นต่อจนจบเกม</p></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide">
+        <div class="layout">
+          <p class="eyebrow">Wrap Up</p>
+          <h2>จำ 4 ประโยคนี้แล้วเริ่มเล่นได้</h2>
+          <div class="rule-grid">
+            <div class="rule-card"><strong>ดำเริ่มก่อน</strong><p>กลางกระดานมีหมาก 4 ตัวสลับทแยง</p></div>
+            <div class="rule-card"><strong>ต้องหนีบถึงวางได้</strong><p>วางแล้วต้องพลิกหมากอย่างน้อย 1 ตัว</p></div>
+            <div class="rule-card"><strong>พลิกทุกแนว</strong><p>แนวนอน แนวตั้ง และทแยงที่ถูกหนีบจากหมากใหม่</p></div>
+            <div class="rule-card"><strong>มุมสำคัญมาก</strong><p>อย่าโลภหมากต้นเกมจนเปิดมุมให้คู่แข่ง</p></div>
+          </div>
+          <p class="note source-list">อ้างอิง: <a href="https://www.worldothello.org/about/about-othello/othello-rules/official-rules/english">World Othello Federation: Official rules</a> และ <a href="https://www.worldothello.org/download_file/view/58058c57-3cc5-409e-8cac-8d1cdb18360b/590">Othello: From Beginner to Master</a></p>
+        </div>
+      </section>
+
+      <button class="fullscreen" id="fullscreen">เต็มจอ</button>
+      <div class="nav">
+        <button id="prev" aria-label="previous slide">‹</button>
+        <button id="next" aria-label="next slide">›</button>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const slides = [...document.querySelectorAll(".slide")];
+    const progress = document.getElementById("progress");
+    const counter = document.getElementById("counter");
+    let current = 0;
+
+    const EMPTY = 0;
+    const BLACK = 1;
+    const WHITE = 2;
+    const dirs = [[-1,-1],[-1,0],[-1,1],[0,-1],[0,1],[1,-1],[1,0],[1,1]];
+
+    function showSlide(index) {
+      current = Math.max(0, Math.min(slides.length - 1, index));
+      slides.forEach((slide, i) => slide.classList.toggle("active", i === current));
+      progress.style.width = `${((current + 1) / slides.length) * 100}%`;
+      counter.textContent = `${current + 1}/${slides.length}`;
+    }
+
+    function makeStartBoard() {
+      const board = Array.from({ length: 8 }, () => Array(8).fill(EMPTY));
+      board[3][3] = WHITE;
+      board[3][4] = BLACK;
+      board[4][3] = BLACK;
+      board[4][4] = WHITE;
+      return board;
+    }
+
+    function coord(row, col) {
+      return `${String.fromCharCode(65 + col)}${8 - row}`;
+    }
+
+    function drawBoard(el, board, options = {}) {
+      el.innerHTML = "";
+      const legalMap = new Map((options.legal || []).map((move) => [`${move.row}-${move.col}`, move]));
+      for (let row = 0; row < 8; row++) {
+        for (let col = 0; col < 8; col++) {
+          const cell = document.createElement("button");
+          cell.className = "cell";
+          cell.dataset.coord = coord(row, col);
+          const legal = legalMap.get(`${row}-${col}`);
+          if (legal) {
+            cell.classList.add("legal");
+            cell.addEventListener("click", () => options.onMove && options.onMove(legal));
+          }
+          if (options.markCorners && ((row === 0 || row === 7) && (col === 0 || col === 7))) {
+            cell.style.background = "#e7aa35";
+          }
+          if (options.markDanger && ((row <= 1 || row >= 6) && (col <= 1 || col >= 6)) && !((row === 0 || row === 7) && (col === 0 || col === 7))) {
+            cell.style.background = "#d95d4f";
+          }
+          if (board[row][col]) {
+            const disc = document.createElement("span");
+            disc.className = `disc ${board[row][col] === BLACK ? "black" : "white"}`;
+            cell.appendChild(disc);
+          }
+          el.appendChild(cell);
+        }
+      }
+    }
+
+    function inBounds(row, col) {
+      return row >= 0 && row < 8 && col >= 0 && col < 8;
+    }
+
+    function flipsForMove(board, row, col, color) {
+      if (board[row][col] !== EMPTY) return [];
+      const opponent = color === BLACK ? WHITE : BLACK;
+      const flips = [];
+      for (const [dr, dc] of dirs) {
+        const line = [];
+        let r = row + dr;
+        let c = col + dc;
+        while (inBounds(r, c) && board[r][c] === opponent) {
+          line.push({ row: r, col: c });
+          r += dr;
+          c += dc;
+        }
+        if (line.length && inBounds(r, c) && board[r][c] === color) flips.push(...line);
+      }
+      return flips;
+    }
+
+    function legalMoves(board, color) {
+      const moves = [];
+      for (let row = 0; row < 8; row++) {
+        for (let col = 0; col < 8; col++) {
+          const flips = flipsForMove(board, row, col, color);
+          if (flips.length) moves.push({ row, col, flips });
+        }
+      }
+      return moves;
+    }
+
+    function setupStaticBoards() {
+      document.querySelectorAll("[data-static]").forEach((el) => {
+        const board = makeStartBoard();
+        const type = el.dataset.static;
+        drawBoard(el, board, {
+          markCorners: type === "corners",
+          markDanger: type === "danger"
+        });
+      });
+    }
+
+    function setupFlipDemo() {
+      const el = document.getElementById("flipDemo");
+      const status = document.getElementById("flipStatus");
+      const demos = {
+        horizontal: {
+          text: "วางดำที่ F5 หนีบขาว E5 ระหว่าง D5 กับ F5",
+          move: { row: 3, col: 5 },
+          board: [
+            [0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,0],
+            [0,0,0,1,2,0,0,0],
+            [0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,0]
+          ]
+        },
+        diagonal: {
+          text: "วางดำที่ F3 หนีบขาว E4 ระหว่าง D5 กับ F3",
+          move: { row: 5, col: 5 },
+          board: [
+            [0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,0],
+            [0,0,0,1,0,0,0,0],
+            [0,0,0,0,2,0,0,0],
+            [0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,0]
+          ]
+        },
+        multi: {
+          text: "วางดำที่ F3 แล้วพลิกได้ทั้งแนวตั้งและแนวทแยงพร้อมกัน",
+          move: { row: 5, col: 5 },
+          board: [
+            [0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,0],
+            [0,0,0,1,0,1,0,0],
+            [0,0,0,0,2,2,0,0],
+            [0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,0]
+          ]
+        }
+      };
+
+      function runDemo(name) {
+        const demo = demos[name];
+        const board = demo.board.map((row) => [...row]);
+        drawBoard(el, board, {
+          legal: [{ ...demo.move, flips: flipsForMove(board, demo.move.row, demo.move.col, BLACK) }],
+          onMove: () => {}
+        });
+        status.textContent = demo.text;
+        window.setTimeout(() => {
+          const flips = flipsForMove(board, demo.move.row, demo.move.col, BLACK);
+          board[demo.move.row][demo.move.col] = BLACK;
+          flips.forEach((pos) => board[pos.row][pos.col] = BLACK);
+          drawBoard(el, board);
+        }, 520);
+      }
+
+      document.querySelectorAll("[data-demo]").forEach((button) => {
+        button.addEventListener("click", () => runDemo(button.dataset.demo));
+      });
+      runDemo("horizontal");
+    }
+
+    function setupStartLab() {
+      const el = document.getElementById("startLab");
+      const status = document.getElementById("labStatus");
+      let board = makeStartBoard();
+
+      function render() {
+        drawBoard(el, board, {
+          legal: legalMoves(board, BLACK),
+          onMove: (move) => {
+            board[move.row][move.col] = BLACK;
+            move.flips.forEach((pos) => board[pos.row][pos.col] = BLACK);
+            status.textContent = `ถูกต้อง: ดำวางที่ ${coord(move.row, move.col)} และพลิก ${move.flips.length} ตัว`;
+            drawBoard(el, board);
+          }
+        });
+      }
+
+      document.getElementById("resetLab").addEventListener("click", () => {
+        board = makeStartBoard();
+        status.textContent = "เลือก legal move ของฝ่ายดำ";
+        render();
+      });
+      render();
+    }
+
+    function setupQuiz() {
+      const questions = [
+        {
+          prompt: "ข้อ 1: Othello วางหมากได้เมื่อใด?",
+          choices: ["วางตรงไหนก็ได้ที่ว่าง", "วางแล้วต้องหนีบและพลิกหมากคู่แข่งได้", "วางติดหมากฝ่ายตัวเองเท่านั้น", "วางได้เฉพาะขอบกระดาน"],
+          answer: 1,
+          feedback: "ถูกต้อง ต้องวางในช่องที่ทำให้พลิกหมากคู่แข่งได้อย่างน้อย 1 ตัว"
+        },
+        {
+          prompt: "ข้อ 2: ถ้าผู้เล่นไม่มี legal move ต้องทำอย่างไร?",
+          choices: ["แพ้ทันที", "ข้ามตาและให้อีกฝ่ายเดิน", "หยิบหมากออกหนึ่งตัว", "เลือกวางช่องใดก็ได้"],
+          answer: 1,
+          feedback: "ถูกต้อง ถ้าไม่มี legal move ต้อง pass"
+        },
+        {
+          prompt: "ข้อ 3: ทำไมมุมจึงสำคัญมาก?",
+          choices: ["เพราะได้คะแนนสองเท่า", "เพราะหมากมุมมักพลิกกลับไม่ได้", "เพราะลงมุมแล้วชนะทันที", "เพราะมุมใช้ pass ได้"],
+          answer: 1,
+          feedback: "ถูกต้อง มุมเป็นฐานของ stable discs และยึดคืนยากมาก"
+        }
+      ];
+      let index = 0;
+      const questionEl = document.getElementById("quizQuestion");
+      const choicesEl = document.getElementById("quizChoices");
+      const feedbackEl = document.getElementById("quizFeedback");
+
+      function renderQuiz() {
+        const item = questions[index];
+        questionEl.textContent = item.prompt;
+        feedbackEl.textContent = "เลือกคำตอบเพื่อดู feedback";
+        choicesEl.innerHTML = "";
+        item.choices.forEach((choice, i) => {
+          const button = document.createElement("button");
+          button.className = "choice";
+          button.textContent = choice;
+          button.addEventListener("click", () => {
+            [...choicesEl.children].forEach((child) => child.classList.remove("correct", "wrong"));
+            button.classList.add(i === item.answer ? "correct" : "wrong");
+            if (i !== item.answer) choicesEl.children[item.answer].classList.add("correct");
+            feedbackEl.textContent = i === item.answer ? item.feedback : `ยังไม่ใช่: ${item.feedback}`;
+          });
+          choicesEl.appendChild(button);
+        });
+      }
+
+      document.getElementById("nextQuiz").addEventListener("click", () => {
+        index = (index + 1) % questions.length;
+        renderQuiz();
+      });
+      renderQuiz();
+    }
+
+    document.getElementById("prev").addEventListener("click", () => showSlide(current - 1));
+    document.getElementById("next").addEventListener("click", () => showSlide(current + 1));
+    document.getElementById("fullscreen").addEventListener("click", () => {
+      const frame = document.getElementById("frame");
+      if (!document.fullscreenElement) frame.requestFullscreen();
+      else document.exitFullscreen();
+    });
+
+    window.addEventListener("keydown", (event) => {
+      if (event.key === "ArrowRight" || event.key === "PageDown" || event.key === " ") showSlide(current + 1);
+      if (event.key === "ArrowLeft" || event.key === "PageUp") showSlide(current - 1);
+      if (event.key === "Home") showSlide(0);
+      if (event.key === "End") showSlide(slides.length - 1);
+    });
+
+    setupStaticBoards();
+    setupFlipDemo();
+    setupStartLab();
+    setupQuiz();
+    const requestedSlide = Number.parseInt(new URLSearchParams(window.location.search).get("slide") || "1", 10) - 1;
+    showSlide(Number.isFinite(requestedSlide) ? requestedSlide : 0);
+  </script>
+</body>
+</html>
