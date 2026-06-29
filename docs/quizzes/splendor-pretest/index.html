@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="en">
+<html lang="th">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Splendor Pretest | SMA2106</title>
+  <title>Splendor pretest | SMA2106</title>
   <style>
     :root {
       --velvet: #251614;
@@ -544,19 +544,19 @@
   <main class="page">
     <header class="topbar">
       <div class="brand">
-        <strong>Splendor Pretest</strong>
+        <strong>Splendor pretest</strong>
         <span>SMA2106 Board Game Course</span>
       </div>
-      <a class="home-link" href="../../">Back to materials</a>
+      <a class="home-link" href="../../">กลับหน้ารวมสื่อ</a>
     </header>
 
     <section class="panel" id="startPanel">
       <div class="hero">
         <div>
           <p class="kicker">Rule Accuracy Check</p>
-          <h1>Splendor Table-Ready Pretest</h1>
-          <p class="lead">Use this pretest to select the first 8 players by highest score. Everyone else can observe the table and help catch rule timing.</p>
-          <div class="notice">After submitting, screenshot the result page and send it in Google Classroom. This page does not upload data or use a database.</div>
+          <h1>pretest ก่อนลงโต๊ะ Splendor</h1>
+          <p class="lead">ใช้คัดผู้เล่น 8 คนแรกจากคะแนนสูงสุด ส่วนเพื่อนที่เหลือจะสังเกตการเล่นและช่วยจับจังหวะกติกา</p>
+          <div class="notice">ทำเสร็จแล้วให้แคปหน้าผลคะแนนส่งใน Google Classroom หน้านี้ไม่ส่งข้อมูลออกจากเครื่องและไม่มีฐานข้อมูลกลาง</div>
           <div class="gem-row" aria-hidden="true">
             <span class="gem emerald">G</span>
             <span class="gem sapphire">B</span>
@@ -567,15 +567,15 @@
           </div>
         </div>
         <div class="name-card">
-          <label for="studentName">Name shown on the result screen</label>
-          <input id="studentName" autocomplete="name" placeholder="e.g. Kittipong Jaidee" />
-          <button class="primary" id="startButton">Start pretest</button>
-          <p class="warning hidden" id="nameWarning">Please enter your name before starting.</p>
-          <p class="tiny">One attempt per name on this device. If the same name has already submitted, the previous result will be shown.</p>
+          <label for="studentName">ชื่อสำหรับแสดงในหน้าผลคะแนน</label>
+          <input id="studentName" autocomplete="name" placeholder="เช่น กิตติพงศ์ ใจดี" />
+          <button class="primary" id="startButton">เริ่มทำ pretest</button>
+          <p class="warning hidden" id="nameWarning">กรุณากรอกชื่อก่อนเริ่มทำ pretest</p>
+          <p class="tiny">หนึ่งชื่อทำได้หนึ่งครั้งในเครื่องนี้ ถ้าเคยส่งแล้ว ระบบจะแสดงผลเดิมทันที</p>
           <div class="stat-grid">
-            <div class="stat"><strong>20</strong><span>questions</span></div>
-            <div class="stat"><strong>100</strong><span>points</span></div>
-            <div class="stat"><strong>1</strong><span>attempt per name</span></div>
+            <div class="stat"><strong>20</strong><span>ข้อ</span></div>
+            <div class="stat"><strong>100</strong><span>คะแนนเต็ม</span></div>
+            <div class="stat"><strong>1</strong><span>ครั้งต่อชื่อ</span></div>
           </div>
         </div>
       </div>
@@ -584,9 +584,9 @@
     <section class="panel hidden" id="quizPanel">
       <div class="quiz-head">
         <div class="quiz-meta">
-          <span class="pill" id="studentPill">Player: -</span>
-          <span class="pill" id="questionPill">Question 1/20</span>
-          <span class="pill" id="answeredPill">Answered 0/20</span>
+          <span class="pill" id="studentPill">ผู้ทำ: -</span>
+          <span class="pill" id="questionPill">ข้อ 1/20</span>
+          <span class="pill" id="answeredPill">ตอบแล้ว 0/20</span>
         </div>
         <div class="progress-line" aria-hidden="true"><div class="progress-fill" id="progressFill"></div></div>
       </div>
@@ -597,12 +597,12 @@
         </div>
         <div class="choice-grid" id="choiceGrid"></div>
         <div class="question-nav">
-          <button class="nav-pill" id="prevButton">Previous question</button>
-          <button class="nav-pill" id="nextButton">Next question</button>
+          <button class="nav-pill" id="prevButton">ข้อก่อนหน้า</button>
+          <button class="nav-pill" id="nextButton">ข้อถัดไป</button>
         </div>
         <div class="submit-row">
-          <p class="warning" id="submitWarning">Answer all questions before submitting.</p>
-          <button class="primary" id="submitButton" disabled>Submit and view score</button>
+          <p class="warning" id="submitWarning">ตอบให้ครบทุกข้อก่อนส่งคะแนน</p>
+          <button class="primary" id="submitButton" disabled>ส่งคำตอบและดูคะแนน</button>
         </div>
       </div>
     </section>
@@ -615,25 +615,25 @@
           </div>
           <div>
             <p class="kicker">Screenshot Result</p>
-            <h2 id="readinessText">Pretest result</h2>
-            <p class="lead" id="readinessDetail">Screenshot this page and send it in Google Classroom.</p>
+            <h2 id="readinessText">ผล pretest</h2>
+            <p class="lead" id="readinessDetail">แคปหน้าจอนี้ส่งใน Google Classroom</p>
           </div>
         </div>
         <div class="result-grid">
-          <div class="result-item"><span>Name</span><strong id="resultName">-</strong></div>
-          <div class="result-item"><span>Submitted at</span><strong id="resultTime">-</strong></div>
-          <div class="result-item"><span>Correct answers</span><strong id="correctText">0/20</strong></div>
+          <div class="result-item"><span>ชื่อ</span><strong id="resultName">-</strong></div>
+          <div class="result-item"><span>เวลาส่ง</span><strong id="resultTime">-</strong></div>
+          <div class="result-item"><span>จำนวนข้อถูก</span><strong id="correctText">0/20</strong></div>
           <div class="result-item"><span>Result Code</span><strong id="resultCode">-</strong></div>
         </div>
         <div class="review-box">
-          <span>Review before playing</span>
+          <span>หมวดที่ควรทวนก่อนเล่นจริง</span>
           <p id="reviewText">-</p>
           <div class="review-tags" id="reviewTags"></div>
         </div>
-        <div class="notice">Your screenshot should clearly show your name, score, submitted time, and Result Code.</div>
+        <div class="notice">ส่งหลักฐานโดยแคปหน้าจอนี้ให้เห็นชื่อ คะแนน เวลาส่ง และ Result Code ครบถ้วน</div>
         <div class="submit-row">
-          <a class="secondary" href="../../" style="display:inline-grid; place-items:center; text-decoration:none;">Back to materials</a>
-          <button class="secondary" id="printButton">Print / save as PDF</button>
+          <a class="secondary" href="../../" style="display:inline-grid; place-items:center; text-decoration:none;">กลับหน้ารวมสื่อ</a>
+          <button class="secondary" id="printButton">พิมพ์ / บันทึกเป็น PDF</button>
         </div>
       </div>
     </section>
@@ -642,134 +642,134 @@
   <script>
     const STORAGE_KEY = "splendorPretestAttempts:v1";
     const categoryLabels = {
-      setup: "Setup",
-      turn: "Turn Structure",
-      tokens: "Token Rules",
+      setup: "จัดเกม",
+      turn: "โครงสร้างตา",
+      tokens: "กฎ token",
       reserve: "Reserve",
-      buying: "Buying Cards",
+      buying: "ซื้อการ์ด",
       noble: "Noble",
-      endgame: "End Game"
+      endgame: "จบเกม"
     };
 
     const questions = [
       {
         category: "setup",
-        prompt: "In a 3-player game, how many tokens of each color and how many gold tokens are used?",
-        choices: ["4 of each color and 5 gold", "5 of each color and 5 gold", "7 of each color and 5 gold", "5 of each color and 3 gold"],
+        prompt: "ถ้าเล่น 3 คน ต้องเตรียม token สีละกี่เม็ด และ gold กี่เม็ด?",
+        choices: ["สีละ 4 และ gold 5", "สีละ 5 และ gold 5", "สีละ 7 และ gold 5", "สีละ 5 และ gold 3"],
         answer: 1
       },
       {
         category: "setup",
-        prompt: "In a 4-player game, how many Noble tiles are revealed during setup?",
-        choices: ["3 Noble tiles", "4 Noble tiles", "5 Noble tiles", "As many as there are level III cards"],
+        prompt: "ถ้าเล่น 4 คน ต้องเปิดแผ่น Noble กี่ใบ?",
+        choices: ["3 ใบ", "4 ใบ", "5 ใบ", "เท่าจำนวนการ์ดระดับ III"],
         answer: 2
       },
       {
         category: "turn",
-        prompt: "What does a player do on one turn in Splendor?",
-        choices: ["Take tokens first, then buy a card if possible", "Choose exactly 1 legal action", "Reserve a card and buy it immediately on the same turn", "Buy as many cards as their tokens allow"],
+        prompt: "ในหนึ่งตาของ Splendor ผู้เล่นทำได้อย่างไร?",
+        choices: ["หยิบ token ก่อน แล้วซื้อการ์ดได้ถ้าพอ", "เลือกทำ 1 action ที่ถูกกติกา", "Reserve การ์ดแล้วซื้อใบนั้นได้ทันทีในตาเดียวกัน", "ซื้อการ์ดได้หลายใบเท่าที่ token พอจ่าย"],
         answer: 1
       },
       {
         category: "tokens",
-        prompt: "If you take 3 tokens as your action, what must be true?",
-        choices: ["They may be any 3 tokens", "They must be 3 different colors, 1 token each", "They must be 2 matching tokens plus 1 gold", "You may take gold if you are missing a color"],
+        prompt: "ถ้าใช้ action เพื่อหยิบ token 3 เม็ด ต้องหยิบแบบไหน?",
+        choices: ["หยิบสีใดก็ได้รวม 3 เม็ด", "หยิบ 3 สีต่างกัน สีละ 1 เม็ด", "หยิบ 2 สีเหมือนกันและ gold 1 เม็ด", "หยิบ gold ได้ถ้าขาดสีใดสีหนึ่ง"],
         answer: 1
       },
       {
         category: "tokens",
-        prompt: "The red token stack has 3 tokens before you take. Can you take 2 red tokens?",
-        choices: ["Yes, because there are at least 2 available", "Yes, if a visible card needs red", "No, the stack must have at least 4 before taking 2 of the same color", "No, taking 2 of the same color is never allowed"],
+        prompt: "กอง token สีแดงเหลือ 3 เม็ดก่อนหยิบ ผู้เล่นจะหยิบสีแดง 2 เม็ดได้ไหม?",
+        choices: ["ได้ เพราะยังมีพอให้หยิบ 2 เม็ด", "ได้ ถ้ามีการ์ดหงายที่ต้องใช้สีแดง", "ไม่ได้ เพราะกองนั้นต้องมีอย่างน้อย 4 เม็ดก่อนหยิบ", "ไม่ได้ เพราะห้ามหยิบสีเดียวกัน 2 เม็ดเสมอ"],
         answer: 2
       },
       {
         category: "tokens",
-        prompt: "At the end of your turn, what is the maximum number of tokens you may hold?",
-        choices: ["7 tokens", "10 tokens", "12 tokens", "Unlimited if you did not buy a card"],
+        prompt: "เมื่อจบตา ผู้เล่นถือ token ได้มากที่สุดกี่เม็ด?",
+        choices: ["7 เม็ด", "10 เม็ด", "12 เม็ด", "ไม่จำกัดถ้าไม่ได้ซื้อการ์ด"],
         answer: 1
       },
       {
         category: "reserve",
-        prompt: "When you reserve a face-up card from the market, what happens to the empty market space?",
-        choices: ["It stays empty until the end of the round", "Refill it from the same level deck if possible", "Slide a card from another level into the space", "The next player decides whether to refill it"],
+        prompt: "เมื่อ Reserve การ์ดหงายจากแถวกลาง ต้องทำอะไรกับช่องว่างของการ์ดใบนั้น?",
+        choices: ["ปล่อยว่างจนจบรอบ", "เติมการ์ดใหม่จากกองระดับเดียวกันถ้ายังมี", "เลื่อนการ์ดระดับอื่นมาแทน", "ให้ผู้เล่นคนถัดไปเลือกว่าจะเติมไหม"],
         answer: 1
       },
       {
         category: "reserve",
-        prompt: "How can you reserve a card from a deck?",
-        choices: ["Look through the deck and choose 1 card", "Draw the top card from a level I, II, or III deck without showing it", "Only draw from the level I deck", "You cannot reserve from decks, only from face-up cards"],
+        prompt: "การ Reserve การ์ดจากกองทำได้อย่างไร?",
+        choices: ["เลือกดูทั้งกองแล้วหยิบ 1 ใบ", "จั่วใบบนจากกองระดับ I, II หรือ III โดยไม่เปิดให้คนอื่นดู", "จั่วได้เฉพาะกองระดับ I", "ทำไม่ได้ ต้อง Reserve เฉพาะการ์ดหงาย"],
         answer: 1
       },
       {
         category: "reserve",
-        prompt: "How many reserved cards may one player hold at most?",
-        choices: ["1 card", "2 cards", "3 cards", "No limit"],
+        prompt: "ผู้เล่นถือการ์ดที่ Reserve ไว้ได้สูงสุดกี่ใบ?",
+        choices: ["1 ใบ", "2 ใบ", "3 ใบ", "ไม่จำกัด"],
         answer: 2
       },
       {
         category: "reserve",
-        prompt: "If there are no gold tokens left, can a player still reserve a card?",
-        choices: ["No, gold is required to reserve", "Yes, but they receive no gold", "Yes, and they may take another color instead", "Only if reserving from a deck"],
+        prompt: "ถ้า gold หมดกอง ผู้เล่นยัง Reserve การ์ดได้ไหม?",
+        choices: ["ไม่ได้ เพราะ gold เป็นเงื่อนไขของการ Reserve", "ได้ แต่ไม่ได้รับ gold", "ได้ และหยิบสีอื่นแทน gold ได้", "ได้เฉพาะ Reserve จากกองเท่านั้น"],
         answer: 1
       },
       {
         category: "buying",
-        prompt: "A card costs 3 blue, 2 green, and 1 white. You already have 1 blue bonus and 2 green bonuses. What do you pay?",
-        choices: ["3 blue, 2 green, 1 white", "2 blue, 0 green, 1 white", "1 blue, 0 green, 0 white", "You cannot buy it because bonuses are not discounts"],
+        prompt: "การ์ดใบหนึ่งราคา น้ำเงิน 3 เขียว 2 ขาว 1 ผู้เล่นมี bonus น้ำเงิน 1 เขียว 2 ต้องจ่ายจริงเท่าไร?",
+        choices: ["น้ำเงิน 3 เขียว 2 ขาว 1", "น้ำเงิน 2 เขียว 0 ขาว 1", "น้ำเงิน 1 เขียว 0 ขาว 0", "จ่ายไม่ได้ เพราะ bonus ไม่ใช่ส่วนลด"],
         answer: 1
       },
       {
         category: "buying",
-        prompt: "After you buy a development card, how does its bonus work?",
-        choices: ["It is used once and then removed", "It is a permanent discount for future purchases", "It counts as a token in your hand and toward the 10-token limit", "It only discounts the next card of the same color"],
+        prompt: "เมื่อซื้อการ์ดแล้ว สัญลักษณ์ bonus บนการ์ดทำงานอย่างไร?",
+        choices: ["ใช้ได้ครั้งเดียวแล้วหมด", "เป็นส่วนลดถาวรสำหรับการซื้อการ์ดต่อไป", "นับเป็น token ในมือและรวมกับ limit 10", "ใช้ลดราคาเฉพาะการ์ดสีเดียวกันใบถัดไปเท่านั้น"],
         answer: 1
       },
       {
         category: "buying",
-        prompt: "Which cards may a player buy?",
-        choices: ["Only face-up market cards", "Only cards they have reserved", "Face-up market cards or their own reserved cards", "The top card of a deck without revealing it first"],
+        prompt: "ผู้เล่นสามารถซื้อการ์ดจากที่ใดได้บ้าง?",
+        choices: ["เฉพาะการ์ดหงายกลางโต๊ะ", "เฉพาะการ์ดที่ตัวเอง Reserve ไว้", "การ์ดหงายกลางโต๊ะหรือการ์ดที่ตัวเอง Reserve ไว้", "จั่วใบบนจากกองแล้วซื้อทันที"],
         answer: 2
       },
       {
         category: "noble",
-        prompt: "What do Noble requirements check?",
-        choices: ["Tokens in your hand", "Bonuses on cards you have bought", "Number of reserved cards", "Number of gold tokens you hold"],
+        prompt: "Noble ตรวจเงื่อนไขจากอะไร?",
+        choices: ["token ในมือ", "bonus บนการ์ดที่ซื้อแล้ว", "จำนวนการ์ดที่ Reserve ไว้", "จำนวน gold ที่ถืออยู่"],
         answer: 1
       },
       {
         category: "noble",
-        prompt: "At the end of your turn, you meet a Noble requirement. What happens?",
-        choices: ["You receive that Noble without spending an action", "You must spend your next action to claim it", "You may decline it and wait", "You must pay the tokens shown on the Noble"],
+        prompt: "ถ้าท้ายตาผู้เล่นมี bonus ครบเงื่อนไข Noble จะเกิดอะไรขึ้น?",
+        choices: ["รับ Noble ได้โดยไม่ใช้ action", "ต้องใช้ action ถัดไปเพื่อรับ Noble", "เลือกได้ว่าจะรับหรือไม่รับ", "ต้องจ่าย token ตามที่ Noble แสดง"],
         answer: 0
       },
       {
         category: "noble",
-        prompt: "If you meet requirements for multiple Nobles at the end of one turn, how many may you take?",
-        choices: ["All Nobles you qualify for", "At most 1 Noble, chosen by you", "None until your next turn", "Randomly choose 1 Noble"],
+        prompt: "ถ้าผู้เล่นเข้าเงื่อนไข Noble หลายใบในท้ายตาเดียวกัน รับได้กี่ใบ?",
+        choices: ["รับทุกใบที่ครบเงื่อนไข", "รับได้สูงสุด 1 ใบ และผู้เล่นเลือกเอง", "รับไม่ได้จนกว่าจะถึงตาถัดไป", "สุ่ม Noble 1 ใบ"],
         answer: 1
       },
       {
         category: "endgame",
-        prompt: "A player reaches 15 prestige points. What happens next?",
-        choices: ["The game ends immediately", "Continue until the current round is complete so all players have equal turns", "Play exactly 3 more rounds", "Reset Noble scoring"],
+        prompt: "เมื่อมีผู้เล่นคนหนึ่งถึง 15 คะแนน เกมควรดำเนินต่ออย่างไร?",
+        choices: ["จบทันทีในตานั้น", "เล่นต่อจนจบรอบปัจจุบัน เพื่อให้ทุกคนมีจำนวนตาเท่ากัน", "เล่นต่ออีก 3 รอบ", "เริ่มนับคะแนน Noble ใหม่"],
         answer: 1
       },
       {
         category: "endgame",
-        prompt: "If final scores are tied, who wins the tie in the base game?",
-        choices: ["The player holding more tokens", "The player with more Nobles", "The tied player who bought fewer development cards", "The player who reached 15 points first"],
+        prompt: "ถ้าคะแนนสุดท้ายเสมอกัน ใครชนะตามกติกา base game?",
+        choices: ["คนที่ถือ token มากกว่า", "คนที่มี Noble มากกว่าเสมอ", "คนที่ซื้อการ์ดพัฒนาน้อยกว่า", "คนที่ถึง 15 คะแนนก่อน"],
         answer: 2
       },
       {
         category: "endgame",
-        prompt: "Where do prestige points mainly come from?",
-        choices: ["Tokens left in your hand", "Point cards and Nobles", "Reserved cards", "Unused bonuses"],
+        prompt: "คะแนนใน Splendor มาจากอะไรเป็นหลัก?",
+        choices: ["token ที่เหลือในมือ", "การ์ดที่มีคะแนนและ Noble", "การ์ดที่ Reserve ไว้", "bonus ที่ยังไม่ได้ใช้"],
         answer: 1
       },
       {
         category: "turn",
-        prompt: "You buy 1 face-up card and still have enough tokens to buy another card. Can you buy the second card on the same turn?",
-        choices: ["Yes, if the second card is level I", "Yes, if you can pay the cost", "No, buying a card is your one action for the turn", "No, face-up cards cannot be bought"],
+        prompt: "ผู้เล่นซื้อการ์ดหงาย 1 ใบ และยังมี token เหลือพอซื้ออีกใบในตาเดียวกัน เขาทำได้ไหม?",
+        choices: ["ได้ ถ้าการ์ดใบที่สองอยู่ระดับ I", "ได้ ถ้าจ่ายราคาได้ครบ", "ไม่ได้ เพราะการซื้อการ์ดคือ 1 action ของตานั้น", "ไม่ได้ เพราะการ์ดหงายซื้อไม่ได้"],
         answer: 2
       }
     ];
@@ -817,7 +817,7 @@
     }
 
     function normalizeName(value) {
-      return value.trim().replace(/\s+/g, " ").toLocaleLowerCase("en-US");
+      return value.trim().replace(/\s+/g, " ").toLocaleLowerCase("th-TH");
     }
 
     function show(panel) {
@@ -846,7 +846,7 @@
       state.normalizedName = normalizedName;
       state.current = 0;
       state.answers = Array(questions.length).fill(null);
-      studentPill.textContent = `Player: ${displayName}`;
+      studentPill.textContent = `ผู้ทำ: ${displayName}`;
       renderQuestion();
       show(quizPanel);
     }
@@ -858,8 +858,8 @@
     function renderQuestion() {
       const item = questions[state.current];
       const answered = answeredCount();
-      questionPill.textContent = `Question ${state.current + 1}/${questions.length}`;
-      answeredPill.textContent = `Answered ${answered}/${questions.length}`;
+      questionPill.textContent = `ข้อ ${state.current + 1}/${questions.length}`;
+      answeredPill.textContent = `ตอบแล้ว ${answered}/${questions.length}`;
       progressFill.style.width = `${(answered / questions.length) * 100}%`;
       categoryLabel.textContent = categoryLabels[item.category];
       questionText.textContent = item.prompt;
@@ -869,7 +869,7 @@
         const button = document.createElement("button");
         button.className = `choice ${state.answers[state.current] === index ? "selected" : ""}`;
         button.type = "button";
-        button.innerHTML = `<span>${choice}</span><small>Choice ${String.fromCharCode(65 + index)}</small>`;
+        button.innerHTML = `<span>${choice}</span><small>ตัวเลือก ${String.fromCharCode(65 + index)}</small>`;
         button.addEventListener("click", () => {
           state.answers[state.current] = index;
           renderQuestion();
@@ -881,8 +881,8 @@
       nextButton.disabled = state.current === questions.length - 1;
       submitButton.disabled = answered !== questions.length;
       submitWarning.textContent = answered === questions.length
-        ? "All questions answered. Check your name before submitting."
-        : `${questions.length - answered} question(s) remaining.`;
+        ? "ตอบครบแล้ว ตรวจชื่อให้ถูกก่อนส่งคะแนน"
+        : `ยังเหลือ ${questions.length - answered} ข้อที่ยังไม่ได้ตอบ`;
     }
 
     function submitQuiz() {
@@ -940,16 +940,16 @@
 
     function readiness(score) {
       if (score >= 85) {
-        return ["Table-ready", "This score suggests you know the key rules well enough to join the first table."];
+        return ["พร้อมลงเล่น", "คะแนนระดับนี้น่าจะจับกติกาหลักได้แม่นพอสำหรับลงโต๊ะ 8 คนแรก"];
       }
       if (score >= 70) {
-        return ["Playable, but review first", "You can probably play with support, but review the categories below before joining a table."];
+        return ["พอเล่นได้ แต่ควรทวนจุดพลาด", "เหมาะกับการลงเล่นถ้าอาจารย์ต้องการคนเพิ่ม แต่ควรทวนหมวดด้านล่างก่อน"];
       }
-      return ["Review before playing", "Several rule points may still slow the table down. Review the teach-to-play slides first."];
+      return ["ควรทวนกติกาก่อนลงโต๊ะ", "ยังมีหลายจุดที่อาจทำให้เล่นสะดุด ให้กลับไปดูสไลด์สอนเล่นก่อน"];
     }
 
     function formatDate(iso) {
-      return new Intl.DateTimeFormat("en-GB", {
+      return new Intl.DateTimeFormat("th-TH", {
         dateStyle: "medium",
         timeStyle: "short"
       }).format(new Date(iso));
@@ -972,12 +972,12 @@
       reviewTags.innerHTML = "";
 
       if (!missed.length) {
-        reviewText.textContent = "No weak category detected. You are a strong candidate for the first table.";
+        reviewText.textContent = "ไม่พบหมวดที่อ่อน เหมาะมากสำหรับเป็นผู้เล่นรอบแรก";
         const tag = document.createElement("b");
-        tag.textContent = "Ready";
+        tag.textContent = "พร้อมลงโต๊ะ";
         reviewTags.appendChild(tag);
       } else {
-        reviewText.textContent = "Review these categories before playing:";
+        reviewText.textContent = "ทวนหมวดต่อไปนี้ก่อนเริ่มเล่นจริง";
         missed.forEach(([category, count]) => {
           const tag = document.createElement("b");
           tag.textContent = `${categoryLabels[category]} (${count})`;
@@ -986,7 +986,7 @@
       }
 
       if (result.storageWarning) {
-        reviewText.textContent += " Note: this device could not save to localStorage, so screenshot this result now.";
+        reviewText.textContent += " หมายเหตุ: เครื่องนี้บันทึกผลใน localStorage ไม่สำเร็จ ให้แคปหน้าจอทันที";
       }
 
       show(resultPanel);
