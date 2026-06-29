@@ -525,7 +525,7 @@
       <div class="hero-copy">
         <p class="kicker">SMA2106 Week 1</p>
         <h1>สังเกตการเล่น Splendor ให้เห็นการคิดเชิงกลยุทธ์</h1>
-        <p class="lead">สำหรับนักศึกษาที่ไม่ได้ลงเล่น ให้เลือกคำตอบจากสิ่งที่เห็นจริง 2 จังหวะ แล้วคัดลอกข้อความไปส่งใน Google Classroom</p>
+        <p class="lead">สำหรับนักศึกษาที่ไม่ได้ลงเล่น ให้สังเกตตามช่วงคะแนนของผู้เล่นที่โฟกัส 3 จังหวะ แล้วคัดลอกข้อความไปส่งใน Google Classroom</p>
       </div>
 
       <div class="start-card">
@@ -563,7 +563,7 @@
         <div>
           <p class="kicker">ภารกิจสังเกตของคุณ</p>
           <h2 id="missionText">-</h2>
-          <p id="missionHint">ให้มองหาจังหวะที่เกี่ยวกับภารกิจนี้ระหว่างเกม แล้วใช้เป็นหลักฐานใน observation moments</p>
+          <p id="missionHint">ให้ดูคะแนนของผู้เล่นที่โฟกัสเป็นหลัก: 0-3 คะแนน, 4-9 คะแนน, และ 10+ คะแนน ถ้าเกมจบก่อนถึง 10+ ให้ใช้จังหวะคะแนนสูงสุดที่เห็นแทน</p>
         </div>
       </div>
 
@@ -584,8 +584,8 @@
 
       <div class="moment-card" id="momentOne">
         <div class="section-head">
-          <h3>Observation Moment 1</h3>
-          <span>เลือกจากสิ่งที่เห็นจริง</span>
+          <h3>Moment 1: ช่วง 0-3 คะแนน</h3>
+          <span>ดูตอนเริ่มสร้างทางเล่น</span>
         </div>
         <div class="form-grid">
           <div class="field">
@@ -613,8 +613,8 @@
 
       <div class="moment-card" id="momentTwo">
         <div class="section-head">
-          <h3>Observation Moment 2</h3>
-          <span>อีกหนึ่งจังหวะที่เห็นชัด</span>
+          <h3>Moment 2: ช่วง 4-9 คะแนน</h3>
+          <span>ดูตอนแผนเริ่มชัด</span>
         </div>
         <div class="form-grid">
           <div class="field">
@@ -636,6 +636,35 @@
           <div class="field full">
             <label for="noteTwo">note สั้น ๆ (ไม่บังคับ)</label>
             <textarea class="note" id="noteTwo" maxlength="140" placeholder="เช่น หลังการ์ดใหม่เปิดมา ผู้เล่นเปลี่ยนเป้าหมายทันที"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="moment-card" id="momentThree">
+        <div class="section-head">
+          <h3>Moment 3: ช่วง 10+ คะแนน</h3>
+          <span>ถ้าไม่ถึง ให้ใช้คะแนนสูงสุดที่เห็น</span>
+        </div>
+        <div class="form-grid">
+          <div class="field">
+            <div class="field-title">Action ที่เห็น</div>
+            <div class="option-grid" data-path="moments.2.action"></div>
+          </div>
+          <div class="field">
+            <div class="field-title">จังหวะนี้เป็นอะไร</div>
+            <div class="option-grid" data-path="moments.2.type"></div>
+          </div>
+          <div class="field">
+            <div class="field-title">เป้าหมายที่น่าจะเป็น</div>
+            <div class="option-grid" data-path="moments.2.objective"></div>
+          </div>
+          <div class="field">
+            <div class="field-title">ผลที่เกิดขึ้น</div>
+            <div class="option-grid" data-path="moments.2.effect"></div>
+          </div>
+          <div class="field full">
+            <label for="noteThree">note สั้น ๆ (ไม่บังคับ)</label>
+            <textarea class="note" id="noteThree" maxlength="140" placeholder="เช่น ผู้เล่นเริ่มเปลี่ยนจากสร้าง engine มาเร่งทำแต้มปิดเกม"></textarea>
           </div>
         </div>
       </div>
@@ -779,6 +808,10 @@
       "moments.1.type": "type",
       "moments.1.objective": "objective",
       "moments.1.effect": "effect",
+      "moments.2.action": "action",
+      "moments.2.type": "type",
+      "moments.2.objective": "objective",
+      "moments.2.effect": "effect",
       "decision.maker": "maker",
       "decision.choice": "choice",
       "decision.environment": "environment",
@@ -792,6 +825,7 @@
       "name", "table", "focus", "mission",
       "moments.0.action", "moments.0.type", "moments.0.objective", "moments.0.effect",
       "moments.1.action", "moments.1.type", "moments.1.objective", "moments.1.effect",
+      "moments.2.action", "moments.2.type", "moments.2.objective", "moments.2.effect",
       "decision.maker", "decision.choice", "decision.environment", "decision.goal",
       "summary.style", "summary.memorable", "summary.nextTry"
     ];
@@ -803,6 +837,7 @@
     const nameInput = document.getElementById("studentName");
     const noteOne = document.getElementById("noteOne");
     const noteTwo = document.getElementById("noteTwo");
+    const noteThree = document.getElementById("noteThree");
     const outputText = document.getElementById("outputText");
     const copyStatus = document.getElementById("copyStatus");
 
@@ -815,6 +850,7 @@
         startedAt: "",
         updatedAt: "",
         moments: [
+          { action: "", type: "", objective: "", effect: "", note: "" },
           { action: "", type: "", objective: "", effect: "", note: "" },
           { action: "", type: "", objective: "", effect: "", note: "" }
         ],
@@ -832,7 +868,8 @@
           ...draft,
           moments: [
             { ...emptyState().moments[0], ...(draft.moments && draft.moments[0]) },
-            { ...emptyState().moments[1], ...(draft.moments && draft.moments[1]) }
+            { ...emptyState().moments[1], ...(draft.moments && draft.moments[1]) },
+            { ...emptyState().moments[2], ...(draft.moments && draft.moments[2]) }
           ],
           decision: { ...emptyState().decision, ...(draft.decision || {}) },
           summary: { ...emptyState().summary, ...(draft.summary || {}) }
@@ -949,19 +986,26 @@
         "",
         `ภารกิจสังเกต: ${valueOrDash(state.mission)}`,
         "",
-        "Observation Moment 1",
+        "Moment 1: ช่วง 0-3 คะแนน",
         `- Action ที่เห็น: ${valueOrDash(state.moments[0].action)}`,
         `- มองว่าเป็น: ${valueOrDash(state.moments[0].type)}`,
         `- เป้าหมายที่น่าจะเป็น: ${valueOrDash(state.moments[0].objective)}`,
         `- ผลที่เกิดขึ้น: ${valueOrDash(state.moments[0].effect)}`,
         `- Note: ${valueOrDash(state.moments[0].note)}`,
         "",
-        "Observation Moment 2",
+        "Moment 2: ช่วง 4-9 คะแนน",
         `- Action ที่เห็น: ${valueOrDash(state.moments[1].action)}`,
         `- มองว่าเป็น: ${valueOrDash(state.moments[1].type)}`,
         `- เป้าหมายที่น่าจะเป็น: ${valueOrDash(state.moments[1].objective)}`,
         `- ผลที่เกิดขึ้น: ${valueOrDash(state.moments[1].effect)}`,
         `- Note: ${valueOrDash(state.moments[1].note)}`,
+        "",
+        "Moment 3: ช่วง 10+ คะแนน (ถ้าเกมจบก่อน ให้ใช้จังหวะคะแนนสูงสุดที่เห็น)",
+        `- Action ที่เห็น: ${valueOrDash(state.moments[2].action)}`,
+        `- มองว่าเป็น: ${valueOrDash(state.moments[2].type)}`,
+        `- เป้าหมายที่น่าจะเป็น: ${valueOrDash(state.moments[2].objective)}`,
+        `- ผลที่เกิดขึ้น: ${valueOrDash(state.moments[2].effect)}`,
+        `- Note: ${valueOrDash(state.moments[2].note)}`,
         "",
         "Decision Structure",
         `- ผู้ตัดสินใจหลัก: ${valueOrDash(state.decision.maker)}`,
@@ -989,6 +1033,7 @@
       nameInput.value = state.name;
       noteOne.value = state.moments[0].note || "";
       noteTwo.value = state.moments[1].note || "";
+      noteThree.value = state.moments[2].note || "";
       document.getElementById("missionText").textContent = state.mission || "กดเริ่มเพื่อสุ่มภารกิจสังเกต";
       observerPanel.classList.toggle("hidden", !state.startedAt);
       renderSelectedButtons();
@@ -1043,6 +1088,12 @@
 
     noteTwo.addEventListener("input", () => {
       state.moments[1].note = noteTwo.value.trim();
+      saveDraft();
+      render();
+    });
+
+    noteThree.addEventListener("input", () => {
+      state.moments[2].note = noteThree.value.trim();
       saveDraft();
       render();
     });
