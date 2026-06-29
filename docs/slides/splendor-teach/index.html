@@ -322,13 +322,30 @@
     .two-grid { grid-template-columns: repeat(2, 1fr); }
 
     .answer-card {
+      align-items: start;
+      color: var(--ink);
       min-height: 180px;
       text-align: left;
     }
 
+    .answer-card span { color: var(--ink); }
+
+    button.answer-card.active {
+      background: #fff5e1;
+      border-color: var(--ruby);
+      color: var(--ink);
+    }
+
+    button.answer-card.active span { color: var(--ink); }
+
     .answer-card.correct {
       border-color: rgba(31, 156, 104, .55);
       box-shadow: 0 18px 48px rgba(31, 156, 104, .14);
+    }
+
+    button.answer-card.active.correct {
+      background: #ecfff7;
+      border-color: rgba(31, 156, 104, .75);
     }
 
     .feedback {
@@ -340,6 +357,97 @@
     .feedback strong {
       color: var(--teal);
       font-size: clamp(22px, 2.4vw, 36px);
+    }
+
+    .rule-strip {
+      display: grid;
+      gap: 12px;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .rule-callout {
+      background: #fffdf7;
+      border: 2px solid var(--line);
+      border-left-width: 10px;
+      border-radius: 8px;
+      display: grid;
+      gap: 4px;
+      padding: 12px 14px;
+    }
+
+    .rule-callout strong {
+      color: var(--ink);
+      font-size: clamp(17px, 1.7vw, 24px);
+      line-height: 1.15;
+    }
+
+    .rule-callout span {
+      color: var(--muted);
+      font-size: clamp(15px, 1.45vw, 20px);
+      font-weight: 800;
+    }
+
+    .rule-callout.must { border-left-color: var(--ruby); }
+    .rule-callout.can { border-left-color: var(--emerald); }
+    .rule-callout.note { border-left-color: var(--gold); }
+    .rule-callout.trap { border-left-color: var(--onyx); }
+
+    .token-table {
+      background: rgba(255,255,255,.94);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      display: grid;
+      gap: 0;
+      overflow: hidden;
+    }
+
+    .token-table div {
+      align-items: center;
+      border-bottom: 1px solid var(--line);
+      display: grid;
+      font-size: clamp(17px, 1.7vw, 24px);
+      font-weight: 900;
+      grid-template-columns: 1fr 1fr 1fr;
+      padding: 12px 14px;
+    }
+
+    .token-table div:last-child { border-bottom: 0; }
+    .token-table .head { background: #fff0c2; color: #624511; }
+
+    .deck-stack {
+      align-content: center;
+      background: linear-gradient(135deg, #213b3a, #132625);
+      border: 3px solid #d3a752;
+      border-radius: 10px;
+      color: #ffe9ae;
+      display: grid;
+      font-size: clamp(22px, 2.4vw, 34px);
+      font-weight: 900;
+      min-height: 148px;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .end-track {
+      align-items: center;
+      display: grid;
+      gap: 12px;
+      grid-template-columns: repeat(4, 1fr);
+    }
+
+    .end-track div {
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      min-height: 122px;
+      padding: 16px;
+    }
+
+    .end-track strong {
+      color: var(--teal);
+      display: block;
+      font-size: clamp(22px, 2.4vw, 34px);
+      margin-bottom: 6px;
     }
 
     .card-anatomy {
@@ -478,9 +586,28 @@
 
     @media (max-width: 760px) {
       .frame { overflow-y: auto; }
-      .slide { padding: 58px 20px 52px; }
-      .split, .flow, .quiz-grid, .three-grid, .two-grid, .card-anatomy, .calc {
+      .meta {
+        display: grid;
+        gap: 4px 12px;
+        grid-template-columns: 1fr auto;
+        left: 20px;
+        right: 20px;
+        top: 20px;
+      }
+      .meta span:nth-child(4) {
+        grid-column: 1 / -1;
+      }
+      .slide { padding: 128px 20px 96px; }
+      .split, .flow, .quiz-grid, .three-grid, .two-grid, .card-anatomy, .calc, .rule-strip, .end-track {
         grid-template-columns: 1fr;
+      }
+      h1 { font-size: clamp(38px, 12vw, 56px); }
+      h2 { font-size: clamp(30px, 9.5vw, 44px); }
+      p, li, span { font-size: clamp(16px, 4.8vw, 22px); }
+      .table-scene {
+        border-width: 10px;
+        min-height: 380px;
+        padding: 14px;
       }
       .market-row {
         grid-template-columns: 1fr 1fr;
@@ -492,6 +619,19 @@
       }
       .controls span { display: none; }
     }
+
+    body.presentation-mode .deck { padding: 0; }
+    body.presentation-mode .frame {
+      border: 0;
+      box-shadow: none;
+      height: 100vh;
+      width: 100vw;
+    }
+    body.presentation-mode .slide {
+      height: 100vh;
+      padding: clamp(62px, 7vw, 104px) clamp(54px, 7vw, 118px) clamp(60px, 6vw, 94px);
+      width: 100vw;
+    }
   </style>
 </head>
 <body>
@@ -502,7 +642,7 @@
         <span>Splendor Teach-to-Play</span>
         <span id="count">1/12</span>
         <span id="minutes">5 นาที</span>
-        <span>รวม 65 นาที + เล่นจริง</span>
+        <span id="totalMeta">รวม 70 นาที + เล่นจริง</span>
       </div>
       <div class="slide" id="slide"></div>
       <aside class="notes" id="notes" hidden></aside>
@@ -527,6 +667,7 @@
       { id: "buy", minutes: 8, html: buySlide },
       { id: "reserve", minutes: 5, html: reserveSlide },
       { id: "noble", minutes: 6, html: nobleSlide },
+      { id: "endgame", minutes: 5, html: endGameSlide },
       { id: "quiz", minutes: 6, html: quizSlide },
       { id: "video", minutes: 5, html: videoSlide },
       { id: "play", minutes: 0, html: playSlide }
@@ -538,7 +679,9 @@
       anatomy: "จับการ์ดจริง 1 ใบขึ้นมาเทียบกับสไลด์",
       actions: "หลังสไลด์นี้ให้ผู้เรียนลองบอก action ที่ตัวเองอยากทำ 1 อย่าง",
       buy: "เน้นว่าโบนัสคือส่วนลดถาวร ไม่ใช่ token ที่ใช้แล้วหมด",
-      noble: "ย้ำว่า noble ดูจากโบนัสบนการ์ด ไม่ใช่ token ในมือ",
+      reserve: "จองได้ทั้งการ์ดหงายและใบบนจากกอง ถ้าการ์ดหงายหายให้เติมใบใหม่ทันที",
+      noble: "ย้ำว่า noble ดูจากโบนัสบนการ์ด ไม่ใช่ token ในมือ และรับได้มากสุด 1 ใบต่อเทิร์น",
+      endgame: "ให้ผู้เรียนซ้อมพูดว่า 'จบรอบก่อน' เพราะมือใหม่มักเข้าใจว่าถึง 15 แล้วจบทันที",
       quiz: "ใช้เป็น checkpoint ก่อนปล่อยเล่นจริง"
     };
 
@@ -548,7 +691,9 @@
     let actionChoice = "";
     let tokenChoice = "";
     let reserveChoice = "";
+    let nobleChoice = "";
     let quizChoice = "";
+    let endChoice = "";
     const bonuses = { sapphire: 1, emerald: 0, ruby: 0, onyx: 0, diamond: 0 };
 
     function gem(color, text = "") {
@@ -557,6 +702,11 @@
 
     function card({ score = 0, bonus = "emerald", cost = [] }) {
       return `<div class="dev-card"><div class="dev-top"><strong class="score">${score || ""}</strong><span class="bonus ${bonus}"></span></div><div class="cost">${cost.map(([c, n]) => gem(c, n)).join("")}</div></div>`;
+    }
+
+    function rule(type, title, text) {
+      const labels = { must: "ต้องทำ", can: "ทำได้", note: "ห้ามลืม", trap: "กับดักมือใหม่" };
+      return `<div class="rule-callout ${type}"><strong>${labels[type]}: ${title}</strong><span>${text}</span></div>`;
     }
 
     function minutesLabel(total) {
@@ -569,6 +719,7 @@
       document.getElementById("count").textContent = `${index + 1}/${slides.length}`;
       document.getElementById("minutes").textContent = current.minutes ? minutesLabel(current.minutes) : "เริ่มเล่น";
       document.getElementById("elapsed").textContent = `${minutesLabel(slides.slice(0, index).reduce((sum, slide) => sum + slide.minutes, 0))} / ${minutesLabel(totalMinutes)}`;
+      document.getElementById("totalMeta").textContent = `รวม ${minutesLabel(totalMinutes)} + เล่นจริง`;
       document.getElementById("back").disabled = index === 0;
       document.getElementById("next").disabled = index === slides.length - 1;
       document.getElementById("slide").innerHTML = current.html();
@@ -597,9 +748,21 @@
           render();
         });
       });
+      document.querySelectorAll("[data-noble]").forEach((button) => {
+        button.addEventListener("click", () => {
+          nobleChoice = button.dataset.noble;
+          render();
+        });
+      });
       document.querySelectorAll("[data-quiz]").forEach((button) => {
         button.addEventListener("click", () => {
           quizChoice = button.dataset.quiz;
+          render();
+        });
+      });
+      document.querySelectorAll("[data-end]").forEach((button) => {
+        button.addEventListener("click", () => {
+          endChoice = button.dataset.end;
           render();
         });
       });
@@ -616,7 +779,7 @@
     }
 
     function setupSlide() {
-      return `<div class="layout"><p class="eyebrow">Setup Map</p><h2>บนโต๊ะมี 4 พื้นที่ที่ต้องมองออก</h2><div class="flow"><div><strong>1</strong><span>การ์ด 3 ระดับ หงายระดับละ 4 ใบ</span></div><div><strong>2</strong><span>กอง token 5 สี + gold joker</span></div><div><strong>3</strong><span>Noble tiles เท่ากับจำนวนผู้เล่น + 1</span></div><div><strong>4</strong><span>พื้นที่ส่วนตัวของแต่ละคน: token, การ์ดซื้อแล้ว, การ์ดจอง</span></div></div><p class="prompt">สิ่งที่ต้องเห็นเสมอ: คะแนนและโบนัสบนการ์ดที่ซื้อแล้ว</p></div>`;
+      return `<div class="layout split"><div><p class="eyebrow">Setup Map</p><h2>ก่อนเริ่ม ต้องจัดโต๊ะให้เห็นตลาดและกอง token ชัด</h2><div class="flow"><div><strong>1</strong><span>การ์ด 3 ระดับ หงายระดับละ 4 ใบ</span></div><div><strong>2</strong><span>Noble tiles = จำนวนผู้เล่น + 1</span></div><div><strong>3</strong><span>token 5 สี + gold joker</span></div><div><strong>4</strong><span>พื้นที่ส่วนตัว: token, การ์ดซื้อแล้ว, การ์ดจอง</span></div></div>${rule("note", "เติมตลาดทันที", "เมื่อการ์ดหงายถูกซื้อหรือถูกจอง ให้เปิดใบใหม่จากกองระดับเดียวกันถ้ายังมี")}</div><div><div class="token-table"><div class="head"><span>ผู้เล่น</span><span>token สีละ</span><span>gold</span></div><div><span>2 คน</span><span>4 เม็ด</span><span>5 เม็ด</span></div><div><span>3 คน</span><span>5 เม็ด</span><span>5 เม็ด</span></div><div><span>4 คน</span><span>7 เม็ด</span><span>5 เม็ด</span></div></div><p class="prompt">ชี้ให้ผู้เรียนเห็นว่า token สีคือทรัพยากรชั่วคราว แต่โบนัสบนการ์ดคือส่วนลดถาวร</p></div></div>`;
     }
 
     function anatomySlide() {
@@ -624,17 +787,17 @@
     }
 
     function goalSlide() {
-      return `<div class="layout split"><div><p class="eyebrow">Goal</p><h2>เป้าหมายคือ 15 คะแนน แต่เส้นทางมีหลายแบบ</h2><p class="prompt">แต้มมาจากการ์ดและ noble การเล่นที่ดีคือทำให้ทุกตาสร้างทางไปสู่แต้ม</p></div><div class="three-grid"><div class="answer-card"><strong>Race</strong><span>รีบซื้อการ์ดมีแต้ม</span></div><div class="answer-card"><strong>Engine</strong><span>ซื้อการ์ดถูกเพื่อสร้างส่วนลด</span></div><div class="answer-card"><strong>Noble</strong><span>สะสมสีให้ noble มาเอง</span></div></div></div>`;
+      return `<div class="layout split"><div><p class="eyebrow">Goal</p><h2>เป้าหมายคือ 15 คะแนน แต่เกมยังไม่จบทันที</h2><p class="prompt">แต้มมาจากการ์ดและ noble การเล่นที่ดีคือทำให้ทุกตาสร้างทางไปสู่แต้ม</p><div class="rule-strip">${rule("must", "ถึง 15 แล้วจบรอบ", "เล่นต่อจนทุกคนมีจำนวนตาเท่ากันก่อนนับผู้ชนะ")}${rule("trap", "เสมอกันดูจำนวนการ์ด", "ถ้าคะแนนเท่ากัน คนที่ซื้อการ์ดพัฒนาน้อยกว่าชนะ")}</div></div><div class="three-grid"><div class="answer-card"><strong>Race</strong><span>รีบซื้อการ์ดมีแต้ม</span></div><div class="answer-card"><strong>Engine</strong><span>ซื้อการ์ดถูกเพื่อสร้างส่วนลด</span></div><div class="answer-card"><strong>Noble</strong><span>สะสมโบนัสให้ noble มาเอง</span></div></div></div>`;
     }
 
     function actionsSlide() {
       const feedback = {
-        three: ["หยิบ 3 สีต่างกัน", "ดีเมื่อยังเปิดทางหลายแผน และต้องการ flexibility"],
-        two: ["หยิบ 2 สีเดียวกัน", "ทำได้เฉพาะถ้ากองสีนั้นมีอย่างน้อย 4 เม็ดก่อนหยิบ"],
-        reserve: ["จองการ์ด", "ได้ gold ถ้ามี เหมาะกับการเก็บการ์ดสำคัญหรือกันคู่แข่ง"],
-        buy: ["ซื้อการ์ด", "จ่าย token หลังหักโบนัส แล้วการ์ดกลายเป็นส่วนลดถาวร"]
+        three: ["หยิบ 3 สีต่างกัน", "ใช้ตอนยังไม่ล็อกแผน หรืออยากเปิดทางซื้อการ์ดหลายใบในตลาด"],
+        two: ["หยิบ 2 สีเดียวกัน", "ทำได้เฉพาะถ้ากองสีนั้นมีอย่างน้อย 4 เม็ดก่อนหยิบ เป็นจังหวะเร่งซื้อใบสำคัญ"],
+        reserve: ["จองการ์ด", "หยิบการ์ดเข้ามือและรับ gold ถ้ามี ใช้เก็บใบสำคัญ จั่วจากกอง หรือกันคู่แข่ง"],
+        buy: ["ซื้อการ์ด", "จ่าย token หลังหักโบนัส แล้วการ์ดที่ซื้อจะให้คะแนนหรือโบนัสถาวรทันที"]
       }[actionChoice];
-      return `<div class="layout"><p class="eyebrow">One Turn = One Action</p><h2>ใน 1 ตา คุณเลือกได้ 1 อย่าง</h2><div class="choice-row"><button class="${actionChoice==="three"?"active":"secondary"}" data-action="three">หยิบ 3 สีต่างกัน</button><button class="${actionChoice==="two"?"active":"secondary"}" data-action="two">หยิบ 2 สีเดียวกัน</button><button class="${actionChoice==="reserve"?"active":"secondary"}" data-action="reserve">จองการ์ด + gold</button><button class="${actionChoice==="buy"?"active":"secondary"}" data-action="buy">ซื้อการ์ด</button></div>${feedback ? `<div class="feedback"><strong>${feedback[0]}</strong><p>${feedback[1]}</p></div>` : `<p class="prompt">ลองกด action หนึ่งอย่าง แล้วดูว่าเมื่อไรควรเลือก action นั้น</p>`}</div>`;
+      return `<div class="layout"><p class="eyebrow">One Turn = One Action</p><h2>ใน 1 ตา คุณเลือกได้ 1 อย่างจาก 4 action</h2><div class="choice-row"><button class="${actionChoice==="three"?"active":"secondary"}" data-action="three">หยิบ 3 สีต่างกัน</button><button class="${actionChoice==="two"?"active":"secondary"}" data-action="two">หยิบ 2 สีเดียวกัน</button><button class="${actionChoice==="reserve"?"active":"secondary"}" data-action="reserve">จองการ์ด</button><button class="${actionChoice==="buy"?"active":"secondary"}" data-action="buy">ซื้อการ์ด</button></div>${feedback ? `<div class="feedback"><strong>${feedback[0]}</strong><p>${feedback[1]}</p></div>` : `<div class="rule-strip">${rule("can", "เลือกแค่ 1 action", "จบ action แล้วเช็กว่าถือ token ไม่เกิน 10 เม็ด")}${rule("note", "ตลาดเปลี่ยนทันที", "ซื้อหรือจองการ์ดหงายแล้วเปิดใบใหม่แทนก่อนคนถัดไปเล่น")}</div>`}</div>`;
     }
 
     function takeTokenSlide() {
@@ -656,25 +819,40 @@
 
     function reserveSlide() {
       const feedback = {
-        gold: ["ได้ gold ถ้ามีเหลือ", "Gold เป็น joker ใช้แทนสีใดก็ได้ตอนซื้อการ์ด"],
-        limit: ["ถือการ์ดจองได้สูงสุด 3 ใบ", "จองแล้วทิ้งไม่ได้ ต้องซื้อจากมือในตาหลัง"],
-        block: ["ใช้กันคู่แข่งได้", "ถ้าคู่แข่งกำลังจะซื้อใบสำคัญ การจองคือ tactical move ที่แรงมาก"]
+        source: ["จองได้ 2 แบบ", "เลือกการ์ดหงาย 1 ใบ หรือจั่วใบบนจากกองระดับ I/II/III แบบไม่เปิดให้คนอื่นดู"],
+        gold: ["ได้ gold ถ้ามีเหลือ", "Gold เป็น joker ใช้แทนสีใดก็ได้ตอนซื้อการ์ด ถ้า gold หมดก็ยังจองได้ แค่ไม่ได้ gold"],
+        limit: ["ถือการ์ดจองได้สูงสุด 3 ใบ", "จองแล้วทิ้งไม่ได้ ต้องซื้อจากมือในตาหลัง หรือปล่อยไว้จนจบเกม"],
+        replace: ["ถ้าจองการ์ดหงาย ให้เติมตลาด", "เปิดใบใหม่จากกองระดับเดียวกันทันทีถ้ายังมีการ์ดในกอง"]
       }[reserveChoice];
-      return `<div class="layout split"><div><p class="eyebrow">Reserve</p><h2>จองการ์ดคือ action ที่มีพลังมากกว่าที่คิด</h2><div class="choice-row"><button class="${reserveChoice==="gold"?"active":"secondary"}" data-reserve="gold">ได้ gold?</button><button class="${reserveChoice==="limit"?"active":"secondary"}" data-reserve="limit">จองได้กี่ใบ?</button><button class="${reserveChoice==="block"?"active":"secondary"}" data-reserve="block">ใช้บล็อกได้ไหม?</button></div>${feedback ? `<div class="feedback"><strong>${feedback[0]}</strong><p>${feedback[1]}</p></div>` : `<p class="prompt">กดดู 3 เหตุผลที่ควรจองการ์ด</p>`}</div><div class="two-grid">${card({score:4,bonus:"ruby",cost:[["ruby",3],["onyx",3],["diamond",3]]})}<div class="noble-card"><strong>${gem("gold")}</strong><span>รับ gold ถ้ามีเหลือ</span></div></div></div>`;
+      return `<div class="layout split"><div><p class="eyebrow">Reserve</p><h2>จองการ์ดคือการล็อกแผน ไม่ใช่แค่เอา gold</h2><div class="choice-row"><button class="${reserveChoice==="source"?"active":"secondary"}" data-reserve="source">จองจากไหนได้?</button><button class="${reserveChoice==="gold"?"active":"secondary"}" data-reserve="gold">ถ้า gold หมด?</button><button class="${reserveChoice==="limit"?"active":"secondary"}" data-reserve="limit">ถือได้กี่ใบ?</button><button class="${reserveChoice==="replace"?"active":"secondary"}" data-reserve="replace">ต้องเติมตลาดไหม?</button></div>${feedback ? `<div class="feedback"><strong>${feedback[0]}</strong><p>${feedback[1]}</p></div>` : `<div class="rule-strip">${rule("can", "จองจากกองได้", "ใช้เมื่ออยากเสี่ยงเปิดแผนใหม่โดยไม่ให้คู่แข่งเห็น")}${rule("trap", "ไม่มี gold ก็ยังจองได้", "gold เป็นโบนัสจากการจอง ไม่ใช่เงื่อนไขว่าจองได้หรือไม่ได้")}</div>`}</div><div class="two-grid">${card({score:4,bonus:"ruby",cost:[["ruby",3],["onyx",3],["diamond",3]]})}<div class="deck-stack">จั่วใบบน<br>จากกองระดับ I/II/III</div><div class="noble-card"><strong>${gem("gold")}</strong><span>รับ gold ถ้ามีเหลือ</span></div><div class="answer-card"><strong>สูงสุด 3</strong><span>การ์ดที่จองไว้ในมือของผู้เล่นแต่ละคน</span></div></div></div>`;
     }
 
     function nobleSlide() {
-      return `<div class="layout split"><div><p class="eyebrow">Nobles</p><h2>Noble ดูจากโบนัส ไม่ใช่ token ในมือ</h2><p class="prompt">ท้ายตา ถ้าโบนัสสีตรงตาม noble ต้องการ noble จะมาเอง ได้ 3 คะแนน และไม่ใช้ action</p></div><div class="two-grid"><div class="noble-card"><strong>3</strong><div class="cost">${gem("emerald",3)}${gem("sapphire",3)}${gem("ruby",3)}</div><span>ต้องมีโบนัสสีละ 3</span></div><div class="answer-card correct"><strong>ตัวอย่าง</strong><span>มีการ์ดเขียว 3 ใบ น้ำเงิน 3 ใบ แดง 3 ใบ = noble มา แม้ token ในมือจะไม่มีเลย</span></div></div></div>`;
+      const feedback = {
+        token: ["ยังไม่ถูก", "Noble ไม่ดู token ในมือเลย ดูเฉพาะโบนัสบนการ์ดที่ซื้อแล้ว"],
+        one: ["ถูกต้อง", "ท้ายตารับ noble ได้มากสุด 1 ใบ ถ้าเข้าเงื่อนไขหลายใบ ผู้เล่นเลือกเองว่าจะรับใบไหน"],
+        refuse: ["ยังไม่ถูก", "เมื่อเข้าเงื่อนไขแล้ว noble มาอัตโนมัติ ปฏิเสธไม่ได้ และไม่ใช้ action"]
+      }[nobleChoice];
+      return `<div class="layout split"><div><p class="eyebrow">Nobles</p><h2>Noble ดูจากโบนัส และมาเองท้ายตา</h2><p class="prompt">โจทย์: คุณมีโบนัสครบ noble 2 ใบในท้ายตาเดียวกัน ควรเกิดอะไรขึ้น?</p><div class="choice-row"><button class="${nobleChoice==="token"?"active":"secondary"}" data-noble="token">ดู token ในมือก่อน</button><button class="${nobleChoice==="one"?"active":"secondary"}" data-noble="one">เลือก noble ได้ 1 ใบ</button><button class="${nobleChoice==="refuse"?"active":"secondary"}" data-noble="refuse">ปฏิเสธไว้ก่อนก็ได้</button></div>${feedback ? `<div class="feedback"><strong>${feedback[0]}</strong><p>${feedback[1]}</p></div>` : `<div class="rule-strip">${rule("must", "รับอัตโนมัติ", "ถ้าโบนัสครบ เงื่อนไขสำเร็จทันทีท้ายตา")}${rule("note", "ไม่ใช้ action", "noble ให้ 3 คะแนน แต่ไม่ได้ให้โบนัสสีเพิ่ม")}</div>`}</div><div class="two-grid"><div class="noble-card"><strong>3</strong><div class="cost">${gem("emerald",3)}${gem("sapphire",3)}${gem("ruby",3)}</div><span>ต้องมีโบนัสสีละ 3</span></div><div class="noble-card"><strong>3</strong><div class="cost">${gem("onyx",3)}${gem("diamond",3)}${gem("sapphire",3)}</div><span>ถ้าครบหลายใบ เลือก 1 ใบ</span></div></div></div>`;
+    }
+
+    function endGameSlide() {
+      const feedback = {
+        now: ["ยังไม่ถูก", "ถึง 15 คะแนนแล้วไม่จบทันที ต้องเล่นให้จบรอบก่อน"],
+        round: ["ถูกต้อง", "เล่นต่อจนผู้เล่นทุกคนมีจำนวนตาเท่ากัน แล้วค่อยเทียบคะแนน"],
+        tie: ["ยังไม่ครบ", "คะแนนสูงสุดชนะก่อน ถ้าคะแนนเท่ากันค่อยดูว่าคนไหนซื้อการ์ดพัฒนาน้อยกว่า"]
+      }[endChoice];
+      return `<div class="layout"><p class="eyebrow">End Game Checkpoint</p><h2>มีคนถึง 15 คะแนนแล้ว ห้องเรียนควรทำอะไรต่อ?</h2><div class="end-track"><div><strong>1</strong><span>ผู้เล่นคนหนึ่งถึง 15 คะแนน</span></div><div><strong>2</strong><span>เล่นต่อให้จบรอบปัจจุบัน</span></div><div><strong>3</strong><span>ทุกคนมีจำนวนตาเท่ากัน</span></div><div><strong>4</strong><span>นับคะแนน และ tie-break ด้วยจำนวนการ์ดที่ซื้อน้อยกว่า</span></div></div><div class="choice-row"><button class="${endChoice==="now"?"active":"secondary"}" data-end="now">จบทันทีที่แตะ 15</button><button class="${endChoice==="round"?"active":"secondary"}" data-end="round">เล่นต่อจนจบรอบ</button><button class="${endChoice==="tie"?"active":"secondary"}" data-end="tie">นับแค่จำนวนการ์ดที่ซื้อ</button></div>${feedback ? `<div class="feedback"><strong>${feedback[0]}</strong><p>${feedback[1]}</p></div>` : `<p class="prompt">ให้ผู้เรียนตอบก่อน เฉลยแล้วค่อยเริ่มเกมจริงจะลดปัญหาท้ายเกมได้มาก</p>`}</div>`;
     }
 
     function quizSlide() {
       const feedback = {
         a: ["ยังไม่ใช่", "Gold ไม่ได้หยิบจากกองตามใจ ต้องได้จากการจองการ์ดเท่านั้น"],
-        b: ["ถูกต้อง", "ซื้อการ์ดแล้วโบนัสอยู่ถาวร ช่วยลดราคาการ์ดในอนาคต"],
-        c: ["ยังไม่ใช่", "Noble ใช้โบนัสบนการ์ด ไม่ใช่ token ในมือ"],
-        d: ["ยังไม่ใช่", "จบตาห้ามมี token เกิน 10 เม็ด"]
+        b: ["ถูกต้อง", "ซื้อการ์ดแล้วโบนัสอยู่ถาวร ช่วยลดราคาการ์ดในอนาคต และเป็นสิ่งที่ noble ใช้นับ"],
+        c: ["ยังไม่ใช่", "การจองทำได้แม้ gold หมด เพียงแต่ไม่ได้รับ gold"],
+        d: ["ยังไม่ใช่", "ถ้าซื้อหรือจองการ์ดหงาย ต้องเติมการ์ดจากกองระดับเดียวกันถ้ายังมี"]
       }[quizChoice];
-      return `<div class="layout"><p class="eyebrow">Quick Check</p><h2>ข้อใดถูกต้องที่สุดก่อนเริ่มเล่นจริง</h2><div class="quiz-grid"><button class="answer-card ${quizChoice==="a"?"active":""}" data-quiz="a"><strong>A</strong><span>หยิบ gold ได้ทุกครั้งที่อยากได้ joker</span></button><button class="answer-card ${quizChoice==="b"?"active correct":""}" data-quiz="b"><strong>B</strong><span>ซื้อการ์ดแล้วได้โบนัสถาวรสำหรับลดราคาการ์ดถัดไป</span></button><button class="answer-card ${quizChoice==="c"?"active":""}" data-quiz="c"><strong>C</strong><span>Noble มาเมื่อมี token สีตรงตามที่ noble ต้องการ</span></button><button class="answer-card ${quizChoice==="d"?"active":""}" data-quiz="d"><strong>D</strong><span>ถือ token กี่เม็ดก็ได้ถ้ายังซื้อการ์ดไม่ได้</span></button></div>${feedback ? `<div class="feedback"><strong>${feedback[0]}</strong><p>${feedback[1]}</p></div>` : `<p class="prompt">ให้ผู้เรียนตอบก่อนปล่อยเล่นจริง</p>`}</div>`;
+      return `<div class="layout"><p class="eyebrow">Quick Check</p><h2>ข้อใดถูกต้องที่สุดก่อนเริ่มเล่นจริง</h2><div class="quiz-grid"><button class="answer-card ${quizChoice==="a"?"active":""}" data-quiz="a"><strong>A</strong><span>หยิบ gold ได้ทุกครั้งที่อยากได้ joker</span></button><button class="answer-card ${quizChoice==="b"?"active correct":""}" data-quiz="b"><strong>B</strong><span>ซื้อการ์ดแล้วได้โบนัสถาวรสำหรับลดราคาและเรียก noble</span></button><button class="answer-card ${quizChoice==="c"?"active":""}" data-quiz="c"><strong>C</strong><span>ถ้า gold หมด จะจองการ์ดไม่ได้</span></button><button class="answer-card ${quizChoice==="d"?"active":""}" data-quiz="d"><strong>D</strong><span>การ์ดหงายที่ถูกซื้อหรือจองไม่ต้องเติมจนกว่าจะจบรอบ</span></button></div>${feedback ? `<div class="feedback"><strong>${feedback[0]}</strong><p>${feedback[1]}</p></div>` : `<p class="prompt">ให้ผู้เรียนตอบก่อนปล่อยเล่นจริง แล้วชี้ misconception ของแต่ละข้อ</p>`}</div>`;
     }
 
     function videoSlide() {
@@ -689,8 +867,15 @@
     document.getElementById("back").addEventListener("click", () => { index = Math.max(index - 1, 0); showNotes = false; render(); });
     document.getElementById("noteToggle").addEventListener("click", () => { showNotes = !showNotes; render(); });
     document.getElementById("full").addEventListener("click", async () => {
-      if (document.fullscreenElement) await document.exitFullscreen();
-      else await document.documentElement.requestFullscreen();
+      if (document.fullscreenElement) {
+        await document.exitFullscreen();
+      } else {
+        document.body.classList.add("presentation-mode");
+        await document.documentElement.requestFullscreen();
+      }
+    });
+    document.addEventListener("fullscreenchange", () => {
+      document.body.classList.toggle("presentation-mode", Boolean(document.fullscreenElement));
     });
     document.addEventListener("keydown", (event) => {
       if (event.key === "ArrowRight" || event.key === " ") document.getElementById("next").click();

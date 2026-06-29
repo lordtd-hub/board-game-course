@@ -64,7 +64,7 @@
 | Week | เกม | วิธีสอนเร็ว | แหล่งเรียนรู้/คลิปที่ควรหา |
 |---|---|---|---|
 | 1 | Chess | ใช้ puzzle ไม่ต้องสอนทั้งเกม ถามว่า move นี้แก้ปัญหาเฉพาะหน้าหรือสร้างแผนระยะยาว | lichess puzzles, YouTube: Chess basics strategy vs tactics |
-| 1 | Splendor | สอน goal 15 คะแนน, 3 actions, bonus engine แล้วเริ่มเล่นทันที | ค้นคลิปไทย: `สอนเล่น Splendor ภาษาไทย`; ถ้าไม่เจอให้ทำ Thai quick sheet |
+| 1 | Splendor | สอน goal 15 คะแนน, 4 actions, bonus engine แล้วเริ่มเล่นทันที | ค้นคลิปไทย: `สอนเล่น Splendor ภาษาไทย`; ถ้าไม่เจอให้ทำ Thai quick sheet |
 | 2 | Love Letter | สอน turn loop: draw 1, play 1, resolve effect แล้วแจก reference card | ค้นคลิปไทย: `สอนเล่น Love Letter ภาษาไทย`; ใช้ reference card ภาษาไทยในห้อง |
 | 2-3 | Avalon | สอนผ่าน role reveal demo ก่อน ไม่เริ่มจาก rulebook | ค้นคลิปไทย: `สอนเล่น Avalon บอร์ดเกม ภาษาไทย`; ถ้าไม่เจอให้ใช้ role script ภาษาไทย |
 | 3 | Werewolf | ใช้ script คืน-วัน และเริ่มด้วย role น้อยก่อน | ใช้บทความ/คลิปไทย: Online Station Werewolf หรือค้น `วิธีเล่น Werewolf ภาษาไทย` |
