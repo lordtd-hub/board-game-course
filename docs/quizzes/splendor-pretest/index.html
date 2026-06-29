@@ -571,7 +571,7 @@
           <input id="studentName" autocomplete="name" placeholder="เช่น กิตติพงศ์ ใจดี" />
           <button class="primary" id="startButton">เริ่มทำ pretest</button>
           <p class="warning hidden" id="nameWarning">กรุณากรอกชื่อก่อนเริ่มทำ pretest</p>
-          <p class="tiny">หนึ่งชื่อทำได้หนึ่งครั้งในเครื่องนี้ ถ้าเคยส่งแล้ว ระบบจะแสดงผลเดิมทันที</p>
+          <p class="tiny">หนึ่งชื่อทำได้หนึ่งครั้งในเครื่องนี้ ถ้าเคยส่งแล้ว ระบบจะแสดงผลเดิมทันที ลำดับข้อและตัวเลือกจะสุ่มใหม่ในแต่ละ attempt</p>
           <div class="stat-grid">
             <div class="stat"><strong>20</strong><span>ข้อ</span></div>
             <div class="stat"><strong>100</strong><span>คะแนนเต็ม</span></div>
@@ -779,6 +779,7 @@
       normalizedName: "",
       current: 0,
       answers: Array(questions.length).fill(null),
+      quizItems: [],
       attempts: readAttempts()
     };
 
@@ -820,6 +821,30 @@
       return value.trim().replace(/\s+/g, " ").toLocaleLowerCase("th-TH");
     }
 
+    function shuffleCopy(items) {
+      const shuffled = [...items];
+      for (let index = shuffled.length - 1; index > 0; index -= 1) {
+        const swapIndex = Math.floor(Math.random() * (index + 1));
+        [shuffled[index], shuffled[swapIndex]] = [shuffled[swapIndex], shuffled[index]];
+      }
+      return shuffled;
+    }
+
+    function buildQuizItems() {
+      return shuffleCopy(questions.map((question, sourceIndex) => ({ question, sourceIndex })))
+        .map(({ question, sourceIndex }) => {
+          const choices = shuffleCopy(question.choices.map((text, originalIndex) => ({ text, originalIndex })));
+          return {
+            sourceIndex,
+            category: question.category,
+            prompt: question.prompt,
+            choices: choices.map((choice) => choice.text),
+            choiceOrder: choices.map((choice) => choice.originalIndex),
+            answer: choices.findIndex((choice) => choice.originalIndex === question.answer)
+          };
+        });
+    }
+
     function show(panel) {
       [startPanel, quizPanel, resultPanel].forEach((item) => item.classList.add("hidden"));
       panel.classList.remove("hidden");
@@ -845,7 +870,8 @@
       state.displayName = displayName;
       state.normalizedName = normalizedName;
       state.current = 0;
-      state.answers = Array(questions.length).fill(null);
+      state.quizItems = buildQuizItems();
+      state.answers = Array(state.quizItems.length).fill(null);
       studentPill.textContent = `ผู้ทำ: ${displayName}`;
       renderQuestion();
       show(quizPanel);
@@ -856,11 +882,12 @@
     }
 
     function renderQuestion() {
-      const item = questions[state.current];
+      const item = state.quizItems[state.current];
       const answered = answeredCount();
-      questionPill.textContent = `ข้อ ${state.current + 1}/${questions.length}`;
-      answeredPill.textContent = `ตอบแล้ว ${answered}/${questions.length}`;
-      progressFill.style.width = `${(answered / questions.length) * 100}%`;
+      const total = state.quizItems.length;
+      questionPill.textContent = `ข้อ ${state.current + 1}/${total}`;
+      answeredPill.textContent = `ตอบแล้ว ${answered}/${total}`;
+      progressFill.style.width = `${(answered / total) * 100}%`;
       categoryLabel.textContent = categoryLabels[item.category];
       questionText.textContent = item.prompt;
       choiceGrid.innerHTML = "";
@@ -878,15 +905,15 @@
       });
 
       prevButton.disabled = state.current === 0;
-      nextButton.disabled = state.current === questions.length - 1;
-      submitButton.disabled = answered !== questions.length;
-      submitWarning.textContent = answered === questions.length
+      nextButton.disabled = state.current === total - 1;
+      submitButton.disabled = answered !== total;
+      submitWarning.textContent = answered === total
         ? "ตอบครบแล้ว ตรวจชื่อให้ถูกก่อนส่งคะแนน"
-        : `ยังเหลือ ${questions.length - answered} ข้อที่ยังไม่ได้ตอบ`;
+        : `ยังเหลือ ${total - answered} ข้อที่ยังไม่ได้ตอบ`;
     }
 
     function submitQuiz() {
-      if (answeredCount() !== questions.length) {
+      if (answeredCount() !== state.quizItems.length) {
         renderQuestion();
         return;
       }
@@ -906,7 +933,7 @@
     function scoreAttempt() {
       const missedByCategory = {};
       let correct = 0;
-      questions.forEach((question, index) => {
+      state.quizItems.forEach((question, index) => {
         if (state.answers[index] === question.answer) {
           correct += 1;
         } else {
@@ -916,12 +943,16 @@
 
       const score = correct * 5;
       const submittedAt = new Date().toISOString();
-      const resultCode = makeResultCode(`${state.normalizedName}|${submittedAt}|${score}|${state.answers.join("")}`);
+      const questionOrder = state.quizItems.map((item) => item.sourceIndex);
+      const choiceOrders = state.quizItems.map((item) => item.choiceOrder);
+      const resultCode = makeResultCode(`${state.normalizedName}|${submittedAt}|${score}|${questionOrder.join("-")}|${choiceOrders.map((order) => order.join("")).join("-")}|${state.answers.join("")}`);
       return {
         displayName: state.displayName,
         normalizedName: state.normalizedName,
         submittedAt,
         answers: state.answers,
+        questionOrder,
+        choiceOrders,
         correct,
         score,
         missedByCategory,
@@ -962,7 +993,7 @@
       document.getElementById("readinessDetail").textContent = detail;
       document.getElementById("resultName").textContent = result.displayName;
       document.getElementById("resultTime").textContent = formatDate(result.submittedAt);
-      document.getElementById("correctText").textContent = `${result.correct}/${questions.length}`;
+      document.getElementById("correctText").textContent = `${result.correct}/${(result.answers || questions).length}`;
       document.getElementById("resultCode").textContent = result.resultCode;
 
       const missed = Object.entries(result.missedByCategory || {})
@@ -1001,7 +1032,7 @@
       renderQuestion();
     });
     nextButton.addEventListener("click", () => {
-      state.current = Math.min(questions.length - 1, state.current + 1);
+      state.current = Math.min(state.quizItems.length - 1, state.current + 1);
       renderQuestion();
     });
     submitButton.addEventListener("click", submitQuiz);
