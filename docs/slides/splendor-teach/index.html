@@ -274,6 +274,23 @@
 
     .gem.diamond { color: #4a4031; }
 
+    .bonus-req {
+      align-items: center;
+      border: 2px solid rgba(255,255,255,.72);
+      border-radius: 8px;
+      box-shadow: inset 0 2px 4px rgba(255,255,255,.28), 0 3px 7px rgba(0,0,0,.14);
+      color: white;
+      display: inline-flex;
+      font-size: 15px;
+      font-weight: 900;
+      height: 36px;
+      justify-content: center;
+      min-width: 36px;
+      padding: 0 8px;
+    }
+
+    .bonus-req.diamond { color: #4a4031; }
+
     .token-bank {
       align-items: center;
       display: flex;
@@ -700,6 +717,10 @@
       return `<span class="gem ${color}">${text}</span>`;
     }
 
+    function bonusReq(color, text = "") {
+      return `<span class="bonus-req ${color}">${text}</span>`;
+    }
+
     function card({ score = 0, bonus = "emerald", cost = [] }) {
       return `<div class="dev-card"><div class="dev-top"><strong class="score">${score || ""}</strong><span class="bonus ${bonus}"></span></div><div class="cost">${cost.map(([c, n]) => gem(c, n)).join("")}</div></div>`;
     }
@@ -833,7 +854,7 @@
         one: ["ถูกต้อง", "ท้ายตารับ Noble ได้มากสุด 1 ใบ ถ้าเข้าเงื่อนไขหลายใบ ผู้เล่นเลือกเองว่าจะรับใบไหน"],
         refuse: ["ยังไม่ถูก", "เมื่อเข้าเงื่อนไขแล้ว Noble มาอัตโนมัติ ปฏิเสธไม่ได้ และไม่ใช้แอ็กชัน"]
       }[nobleChoice];
-      return `<div class="layout split"><div><p class="eyebrow">Noble</p><h2>Noble ดูจากโบนัส และมาเองท้ายตา</h2><p class="prompt">โจทย์: คุณมีโบนัสครบ Noble 2 ใบในท้ายตาเดียวกัน ควรเกิดอะไรขึ้น?</p><div class="choice-row"><button class="${nobleChoice==="token"?"active":"secondary"}" data-noble="token">ดูโทเคนในมือก่อน</button><button class="${nobleChoice==="one"?"active":"secondary"}" data-noble="one">เลือก Noble ได้ 1 ใบ</button><button class="${nobleChoice==="refuse"?"active":"secondary"}" data-noble="refuse">ปฏิเสธไว้ก่อนก็ได้</button></div>${feedback ? `<div class="feedback"><strong>${feedback[0]}</strong><p>${feedback[1]}</p></div>` : `<div class="rule-strip">${rule("must", "รับอัตโนมัติ", "ถ้าโบนัสครบ เงื่อนไขสำเร็จทันทีท้ายตา")}${rule("note", "ไม่ใช้แอ็กชัน", "Noble ให้ 3 คะแนน แต่ไม่ได้ให้โบนัสสีเพิ่ม")}</div>`}</div><div class="two-grid"><div class="noble-card"><strong>3</strong><div class="cost">${gem("emerald",3)}${gem("sapphire",3)}${gem("ruby",3)}</div><span>ต้องมีโบนัสสีละ 3</span></div><div class="noble-card"><strong>3</strong><div class="cost">${gem("onyx",3)}${gem("diamond",3)}${gem("sapphire",3)}</div><span>ถ้าครบหลายใบ เลือก 1 ใบ</span></div></div></div>`;
+      return `<div class="layout split"><div><p class="eyebrow">Noble</p><h2>Noble ดูจากโบนัส และมาเองท้ายตา</h2><p class="prompt">โจทย์: คุณมีโบนัสครบ Noble 2 ใบในท้ายตาเดียวกัน ควรเกิดอะไรขึ้น?</p><div class="choice-row"><button class="${nobleChoice==="token"?"active":"secondary"}" data-noble="token">ดูโทเคนในมือก่อน</button><button class="${nobleChoice==="one"?"active":"secondary"}" data-noble="one">เลือก Noble ได้ 1 ใบ</button><button class="${nobleChoice==="refuse"?"active":"secondary"}" data-noble="refuse">ปฏิเสธไว้ก่อนก็ได้</button></div>${feedback ? `<div class="feedback"><strong>${feedback[0]}</strong><p>${feedback[1]}</p></div>` : `<div class="rule-strip">${rule("must", "รับอัตโนมัติ", "ถ้าโบนัสครบ เงื่อนไขสำเร็จทันทีท้ายตา")}${rule("note", "ไม่ใช้แอ็กชัน", "Noble ให้ 3 คะแนน แต่ไม่ได้ให้โบนัสสีเพิ่ม")}</div>`}</div><div class="two-grid"><div class="noble-card"><strong>3</strong><div class="cost">${bonusReq("emerald",3)}${bonusReq("sapphire",3)}${bonusReq("ruby",3)}</div><span>ต้องมีโบนัสสีละ 3</span></div><div class="noble-card"><strong>3</strong><div class="cost">${bonusReq("onyx",3)}${bonusReq("diamond",3)}${bonusReq("sapphire",3)}</div><span>ถ้าครบหลายใบ เลือก 1 ใบ</span></div></div></div>`;
     }
 
     function endGameSlide() {
