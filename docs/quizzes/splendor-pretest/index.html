@@ -1,0 +1,1011 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Splendor Pretest | SMA2106</title>
+  <style>
+    :root {
+      --velvet: #251614;
+      --paper: #fff8eb;
+      --ink: #241f19;
+      --muted: #6f6253;
+      --line: #e2cda6;
+      --gold: #d9a441;
+      --ruby: #bd3838;
+      --emerald: #18835a;
+      --sapphire: #245faa;
+      --onyx: #24262e;
+      --teal: #117a76;
+      --danger: #a93434;
+      --shadow: 0 24px 70px rgba(26, 16, 10, .18);
+    }
+
+    * { box-sizing: border-box; }
+
+    html { background: var(--velvet); }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 12% 8%, rgba(217, 164, 65, .18), transparent 30%),
+        radial-gradient(circle at 88% 88%, rgba(17, 122, 118, .22), transparent 34%),
+        linear-gradient(135deg, #201211 0%, #4c271d 52%, #0f3837 100%);
+      color: var(--ink);
+      font-family: Arial, "Noto Sans Thai", sans-serif;
+      overflow-x: hidden;
+    }
+
+    button,
+    input { font: inherit; }
+
+    button { cursor: pointer; }
+
+    .page {
+      display: grid;
+      gap: 18px;
+      margin: 0 auto;
+      max-width: 1040px;
+      min-height: 100vh;
+      padding: clamp(16px, 3vw, 34px);
+      width: min(1040px, 100vw);
+    }
+
+    .topbar {
+      align-items: center;
+      color: #fff8eb;
+      display: flex;
+      gap: 12px;
+      justify-content: space-between;
+    }
+
+    .brand {
+      display: grid;
+      gap: 3px;
+    }
+
+    .brand strong {
+      font-size: clamp(18px, 3vw, 28px);
+      line-height: 1.1;
+    }
+
+    .brand span,
+    .tiny {
+      color: rgba(255, 248, 235, .78);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .home-link {
+      border: 1px solid rgba(255, 248, 235, .35);
+      border-radius: 8px;
+      color: #fff8eb;
+      font-size: 14px;
+      font-weight: 800;
+      padding: 10px 13px;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .panel {
+      background:
+        linear-gradient(180deg, rgba(255, 252, 244, .98), rgba(255, 248, 235, .985)),
+        repeating-linear-gradient(90deg, rgba(91, 50, 30, .035), rgba(91, 50, 30, .035) 2px, transparent 2px, transparent 28px);
+      border: 1px solid rgba(226, 205, 166, .9);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+      max-width: 100%;
+      min-width: 0;
+      overflow: hidden;
+    }
+
+    .hero {
+      display: grid;
+      gap: clamp(16px, 3vw, 30px);
+      grid-template-columns: minmax(0, 1.1fr) minmax(260px, .9fr);
+      padding: clamp(20px, 4vw, 44px);
+    }
+
+    .hero > *,
+    .name-card,
+    .question-area,
+    .result,
+    .result-item,
+    .review-box {
+      min-width: 0;
+    }
+
+    .kicker {
+      color: var(--teal);
+      font-size: 13px;
+      font-weight: 900;
+      letter-spacing: .08em;
+      margin: 0 0 10px;
+      text-transform: uppercase;
+    }
+
+    h1,
+    h2,
+    h3,
+    p { margin-top: 0; }
+
+    h1 {
+      font-size: clamp(34px, 6.4vw, 68px);
+      letter-spacing: 0;
+      line-height: 1;
+      margin-bottom: 18px;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+    }
+
+    h2 {
+      font-size: clamp(24px, 4.4vw, 46px);
+      letter-spacing: 0;
+      line-height: 1.08;
+      margin-bottom: 14px;
+    }
+
+    .lead {
+      color: var(--muted);
+      font-size: clamp(16px, 2.2vw, 22px);
+      line-height: 1.55;
+      margin-bottom: 18px;
+      overflow-wrap: anywhere;
+    }
+
+    .notice {
+      background: #fff2d2;
+      border: 1px solid #ecc46e;
+      border-left: 7px solid var(--gold);
+      border-radius: 8px;
+      color: #5d4021;
+      font-size: 15px;
+      font-weight: 800;
+      line-height: 1.45;
+      overflow-wrap: anywhere;
+      padding: 13px 15px;
+      word-break: break-word;
+    }
+
+    .name-card {
+      background: rgba(255, 255, 255, .76);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      display: grid;
+      gap: 13px;
+      padding: 18px;
+    }
+
+    .name-card .tiny {
+      color: var(--muted);
+    }
+
+    label {
+      color: #5d321e;
+      font-size: 14px;
+      font-weight: 900;
+    }
+
+    input {
+      background: #fff;
+      border: 2px solid #d9be8d;
+      border-radius: 8px;
+      color: var(--ink);
+      font-size: 18px;
+      min-height: 52px;
+      padding: 12px 14px;
+      width: 100%;
+    }
+
+    input:focus,
+    button:focus-visible,
+    a:focus-visible {
+      outline: 3px solid rgba(17, 122, 118, .22);
+      outline-offset: 2px;
+    }
+
+    .primary,
+    .secondary,
+    .choice,
+    .nav-pill {
+      border: 0;
+      border-radius: 8px;
+      font-weight: 900;
+    }
+
+    .primary {
+      background: var(--teal);
+      color: white;
+      min-height: 52px;
+      padding: 13px 18px;
+    }
+
+    .primary:disabled {
+      background: #a3aaa8;
+      cursor: not-allowed;
+    }
+
+    .secondary {
+      background: #f0dfc0;
+      color: #4c3324;
+      min-height: 48px;
+      padding: 12px 16px;
+    }
+
+    .gem-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .gem {
+      align-items: center;
+      border: 2px solid rgba(255,255,255,.85);
+      border-radius: 999px;
+      box-shadow: 0 7px 16px rgba(36, 31, 25, .18);
+      color: #fff;
+      display: inline-grid;
+      font-size: 13px;
+      font-weight: 900;
+      height: 42px;
+      justify-content: center;
+      width: 42px;
+    }
+
+    .emerald { background: var(--emerald); }
+    .sapphire { background: var(--sapphire); }
+    .ruby { background: var(--ruby); }
+    .onyx { background: var(--onyx); }
+    .diamond {
+      background: #f7ead3;
+      color: var(--ink);
+    }
+    .gold {
+      background: var(--gold);
+      color: #2c2114;
+    }
+
+    .stat-grid {
+      display: grid;
+      gap: 12px;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      margin-top: 20px;
+    }
+
+    .stat {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 13px;
+    }
+
+    .stat strong {
+      display: block;
+      font-size: 24px;
+      line-height: 1.1;
+    }
+
+    .stat span {
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .quiz-head {
+      background: rgba(255, 255, 255, .72);
+      border-bottom: 1px solid var(--line);
+      display: grid;
+      gap: 12px;
+      padding: clamp(16px, 3vw, 24px);
+    }
+
+    .progress-line {
+      background: #ead8b7;
+      border-radius: 999px;
+      height: 10px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      background: linear-gradient(90deg, var(--emerald), var(--gold), var(--ruby));
+      height: 100%;
+      transition: width 180ms ease;
+      width: 0;
+    }
+
+    .quiz-meta {
+      align-items: center;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: space-between;
+    }
+
+    .pill {
+      background: #efe0c3;
+      border-radius: 999px;
+      color: #60452f;
+      font-size: 13px;
+      font-weight: 900;
+      padding: 7px 11px;
+    }
+
+    .question-area {
+      display: grid;
+      gap: 20px;
+      padding: clamp(18px, 4vw, 38px);
+    }
+
+    .question-text {
+      display: grid;
+      gap: 8px;
+    }
+
+    .question-text strong {
+      color: var(--teal);
+      font-size: 14px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .choice-grid {
+      display: grid;
+      gap: 12px;
+    }
+
+    .choice {
+      background: #fff;
+      border: 2px solid #d9be8d;
+      color: var(--ink);
+      display: grid;
+      gap: 4px;
+      line-height: 1.45;
+      min-height: 64px;
+      padding: 15px 16px;
+      text-align: left;
+      width: 100%;
+    }
+
+    .choice:hover {
+      border-color: var(--teal);
+    }
+
+    .choice.selected {
+      background: #e7f4ef;
+      border-color: var(--teal);
+      box-shadow: inset 0 0 0 2px rgba(17, 122, 118, .2);
+    }
+
+    .choice small {
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .choice span,
+    .result-item strong,
+    .review-box p {
+      overflow-wrap: anywhere;
+    }
+
+    .question-nav {
+      display: grid;
+      gap: 12px;
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .nav-pill {
+      background: #f3e3c6;
+      color: #4a3324;
+      min-height: 50px;
+      padding: 12px 14px;
+    }
+
+    .nav-pill:disabled {
+      color: #9c8d78;
+      cursor: not-allowed;
+    }
+
+    .submit-row {
+      align-items: center;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: space-between;
+    }
+
+    .warning {
+      color: var(--danger);
+      font-size: 14px;
+      font-weight: 900;
+      margin: 0;
+    }
+
+    .result {
+      display: grid;
+      gap: 18px;
+      padding: clamp(20px, 4vw, 42px);
+    }
+
+    .score-band {
+      align-items: center;
+      display: grid;
+      gap: 16px;
+      grid-template-columns: minmax(132px, 180px) 1fr;
+    }
+
+    .score-circle {
+      align-items: center;
+      background: var(--teal);
+      border: 8px solid #e8d2a5;
+      border-radius: 999px;
+      color: #fff;
+      display: inline-grid;
+      height: clamp(132px, 24vw, 180px);
+      justify-content: center;
+      text-align: center;
+      width: clamp(132px, 24vw, 180px);
+    }
+
+    .score-circle strong {
+      font-size: clamp(36px, 8vw, 62px);
+      line-height: .95;
+    }
+
+    .score-circle span {
+      font-size: 14px;
+      font-weight: 900;
+    }
+
+    .result-grid {
+      display: grid;
+      gap: 12px;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .result-item,
+    .review-box {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 14px;
+    }
+
+    .result-item span,
+    .review-box span {
+      color: var(--muted);
+      display: block;
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: .05em;
+      margin-bottom: 5px;
+      text-transform: uppercase;
+    }
+
+    .review-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .review-tags b {
+      background: #f1e2c6;
+      border-radius: 999px;
+      color: #4d3828;
+      font-size: 13px;
+      padding: 8px 11px;
+    }
+
+    .hidden { display: none !important; }
+
+    @media (max-width: 760px) {
+      .page { padding: 12px; }
+
+      .topbar {
+        align-items: start;
+        flex-direction: column;
+      }
+
+      .hero,
+      .score-band,
+      .result-grid,
+      .stat-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero,
+      .question-area,
+      .result {
+        padding: 18px;
+      }
+
+      h1 {
+        font-size: clamp(32px, 9.5vw, 42px);
+        line-height: 1.08;
+      }
+
+      h2 { font-size: clamp(24px, 7.5vw, 34px); }
+
+      .score-circle { justify-self: center; }
+
+      .question-nav { grid-template-columns: 1fr; }
+
+      .submit-row .primary,
+      .submit-row .secondary {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="topbar">
+      <div class="brand">
+        <strong>Splendor Pretest</strong>
+        <span>SMA2106 Board Game Course</span>
+      </div>
+      <a class="home-link" href="../../">Back to materials</a>
+    </header>
+
+    <section class="panel" id="startPanel">
+      <div class="hero">
+        <div>
+          <p class="kicker">Rule Accuracy Check</p>
+          <h1>Splendor Table-Ready Pretest</h1>
+          <p class="lead">Use this pretest to select the first 8 players by highest score. Everyone else can observe the table and help catch rule timing.</p>
+          <div class="notice">After submitting, screenshot the result page and send it in Google Classroom. This page does not upload data or use a database.</div>
+          <div class="gem-row" aria-hidden="true">
+            <span class="gem emerald">G</span>
+            <span class="gem sapphire">B</span>
+            <span class="gem ruby">R</span>
+            <span class="gem onyx">K</span>
+            <span class="gem diamond">W</span>
+            <span class="gem gold">Au</span>
+          </div>
+        </div>
+        <div class="name-card">
+          <label for="studentName">Name shown on the result screen</label>
+          <input id="studentName" autocomplete="name" placeholder="e.g. Kittipong Jaidee" />
+          <button class="primary" id="startButton">Start pretest</button>
+          <p class="warning hidden" id="nameWarning">Please enter your name before starting.</p>
+          <p class="tiny">One attempt per name on this device. If the same name has already submitted, the previous result will be shown.</p>
+          <div class="stat-grid">
+            <div class="stat"><strong>20</strong><span>questions</span></div>
+            <div class="stat"><strong>100</strong><span>points</span></div>
+            <div class="stat"><strong>1</strong><span>attempt per name</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel hidden" id="quizPanel">
+      <div class="quiz-head">
+        <div class="quiz-meta">
+          <span class="pill" id="studentPill">Player: -</span>
+          <span class="pill" id="questionPill">Question 1/20</span>
+          <span class="pill" id="answeredPill">Answered 0/20</span>
+        </div>
+        <div class="progress-line" aria-hidden="true"><div class="progress-fill" id="progressFill"></div></div>
+      </div>
+      <div class="question-area">
+        <div class="question-text">
+          <strong id="categoryLabel">Setup</strong>
+          <h2 id="questionText">Question</h2>
+        </div>
+        <div class="choice-grid" id="choiceGrid"></div>
+        <div class="question-nav">
+          <button class="nav-pill" id="prevButton">Previous question</button>
+          <button class="nav-pill" id="nextButton">Next question</button>
+        </div>
+        <div class="submit-row">
+          <p class="warning" id="submitWarning">Answer all questions before submitting.</p>
+          <button class="primary" id="submitButton" disabled>Submit and view score</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel hidden" id="resultPanel">
+      <div class="result">
+        <div class="score-band">
+          <div class="score-circle">
+            <div><strong id="scoreText">0</strong><span>/100</span></div>
+          </div>
+          <div>
+            <p class="kicker">Screenshot Result</p>
+            <h2 id="readinessText">Pretest result</h2>
+            <p class="lead" id="readinessDetail">Screenshot this page and send it in Google Classroom.</p>
+          </div>
+        </div>
+        <div class="result-grid">
+          <div class="result-item"><span>Name</span><strong id="resultName">-</strong></div>
+          <div class="result-item"><span>Submitted at</span><strong id="resultTime">-</strong></div>
+          <div class="result-item"><span>Correct answers</span><strong id="correctText">0/20</strong></div>
+          <div class="result-item"><span>Result Code</span><strong id="resultCode">-</strong></div>
+        </div>
+        <div class="review-box">
+          <span>Review before playing</span>
+          <p id="reviewText">-</p>
+          <div class="review-tags" id="reviewTags"></div>
+        </div>
+        <div class="notice">Your screenshot should clearly show your name, score, submitted time, and Result Code.</div>
+        <div class="submit-row">
+          <a class="secondary" href="../../" style="display:inline-grid; place-items:center; text-decoration:none;">Back to materials</a>
+          <button class="secondary" id="printButton">Print / save as PDF</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const STORAGE_KEY = "splendorPretestAttempts:v1";
+    const categoryLabels = {
+      setup: "Setup",
+      turn: "Turn Structure",
+      tokens: "Token Rules",
+      reserve: "Reserve",
+      buying: "Buying Cards",
+      noble: "Noble",
+      endgame: "End Game"
+    };
+
+    const questions = [
+      {
+        category: "setup",
+        prompt: "In a 3-player game, how many tokens of each color and how many gold tokens are used?",
+        choices: ["4 of each color and 5 gold", "5 of each color and 5 gold", "7 of each color and 5 gold", "5 of each color and 3 gold"],
+        answer: 1
+      },
+      {
+        category: "setup",
+        prompt: "In a 4-player game, how many Noble tiles are revealed during setup?",
+        choices: ["3 Noble tiles", "4 Noble tiles", "5 Noble tiles", "As many as there are level III cards"],
+        answer: 2
+      },
+      {
+        category: "turn",
+        prompt: "What does a player do on one turn in Splendor?",
+        choices: ["Take tokens first, then buy a card if possible", "Choose exactly 1 legal action", "Reserve a card and buy it immediately on the same turn", "Buy as many cards as their tokens allow"],
+        answer: 1
+      },
+      {
+        category: "tokens",
+        prompt: "If you take 3 tokens as your action, what must be true?",
+        choices: ["They may be any 3 tokens", "They must be 3 different colors, 1 token each", "They must be 2 matching tokens plus 1 gold", "You may take gold if you are missing a color"],
+        answer: 1
+      },
+      {
+        category: "tokens",
+        prompt: "The red token stack has 3 tokens before you take. Can you take 2 red tokens?",
+        choices: ["Yes, because there are at least 2 available", "Yes, if a visible card needs red", "No, the stack must have at least 4 before taking 2 of the same color", "No, taking 2 of the same color is never allowed"],
+        answer: 2
+      },
+      {
+        category: "tokens",
+        prompt: "At the end of your turn, what is the maximum number of tokens you may hold?",
+        choices: ["7 tokens", "10 tokens", "12 tokens", "Unlimited if you did not buy a card"],
+        answer: 1
+      },
+      {
+        category: "reserve",
+        prompt: "When you reserve a face-up card from the market, what happens to the empty market space?",
+        choices: ["It stays empty until the end of the round", "Refill it from the same level deck if possible", "Slide a card from another level into the space", "The next player decides whether to refill it"],
+        answer: 1
+      },
+      {
+        category: "reserve",
+        prompt: "How can you reserve a card from a deck?",
+        choices: ["Look through the deck and choose 1 card", "Draw the top card from a level I, II, or III deck without showing it", "Only draw from the level I deck", "You cannot reserve from decks, only from face-up cards"],
+        answer: 1
+      },
+      {
+        category: "reserve",
+        prompt: "How many reserved cards may one player hold at most?",
+        choices: ["1 card", "2 cards", "3 cards", "No limit"],
+        answer: 2
+      },
+      {
+        category: "reserve",
+        prompt: "If there are no gold tokens left, can a player still reserve a card?",
+        choices: ["No, gold is required to reserve", "Yes, but they receive no gold", "Yes, and they may take another color instead", "Only if reserving from a deck"],
+        answer: 1
+      },
+      {
+        category: "buying",
+        prompt: "A card costs 3 blue, 2 green, and 1 white. You already have 1 blue bonus and 2 green bonuses. What do you pay?",
+        choices: ["3 blue, 2 green, 1 white", "2 blue, 0 green, 1 white", "1 blue, 0 green, 0 white", "You cannot buy it because bonuses are not discounts"],
+        answer: 1
+      },
+      {
+        category: "buying",
+        prompt: "After you buy a development card, how does its bonus work?",
+        choices: ["It is used once and then removed", "It is a permanent discount for future purchases", "It counts as a token in your hand and toward the 10-token limit", "It only discounts the next card of the same color"],
+        answer: 1
+      },
+      {
+        category: "buying",
+        prompt: "Which cards may a player buy?",
+        choices: ["Only face-up market cards", "Only cards they have reserved", "Face-up market cards or their own reserved cards", "The top card of a deck without revealing it first"],
+        answer: 2
+      },
+      {
+        category: "noble",
+        prompt: "What do Noble requirements check?",
+        choices: ["Tokens in your hand", "Bonuses on cards you have bought", "Number of reserved cards", "Number of gold tokens you hold"],
+        answer: 1
+      },
+      {
+        category: "noble",
+        prompt: "At the end of your turn, you meet a Noble requirement. What happens?",
+        choices: ["You receive that Noble without spending an action", "You must spend your next action to claim it", "You may decline it and wait", "You must pay the tokens shown on the Noble"],
+        answer: 0
+      },
+      {
+        category: "noble",
+        prompt: "If you meet requirements for multiple Nobles at the end of one turn, how many may you take?",
+        choices: ["All Nobles you qualify for", "At most 1 Noble, chosen by you", "None until your next turn", "Randomly choose 1 Noble"],
+        answer: 1
+      },
+      {
+        category: "endgame",
+        prompt: "A player reaches 15 prestige points. What happens next?",
+        choices: ["The game ends immediately", "Continue until the current round is complete so all players have equal turns", "Play exactly 3 more rounds", "Reset Noble scoring"],
+        answer: 1
+      },
+      {
+        category: "endgame",
+        prompt: "If final scores are tied, who wins the tie in the base game?",
+        choices: ["The player holding more tokens", "The player with more Nobles", "The tied player who bought fewer development cards", "The player who reached 15 points first"],
+        answer: 2
+      },
+      {
+        category: "endgame",
+        prompt: "Where do prestige points mainly come from?",
+        choices: ["Tokens left in your hand", "Point cards and Nobles", "Reserved cards", "Unused bonuses"],
+        answer: 1
+      },
+      {
+        category: "turn",
+        prompt: "You buy 1 face-up card and still have enough tokens to buy another card. Can you buy the second card on the same turn?",
+        choices: ["Yes, if the second card is level I", "Yes, if you can pay the cost", "No, buying a card is your one action for the turn", "No, face-up cards cannot be bought"],
+        answer: 2
+      }
+    ];
+
+    const state = {
+      displayName: "",
+      normalizedName: "",
+      current: 0,
+      answers: Array(questions.length).fill(null),
+      attempts: readAttempts()
+    };
+
+    const startPanel = document.getElementById("startPanel");
+    const quizPanel = document.getElementById("quizPanel");
+    const resultPanel = document.getElementById("resultPanel");
+    const nameInput = document.getElementById("studentName");
+    const nameWarning = document.getElementById("nameWarning");
+    const studentPill = document.getElementById("studentPill");
+    const questionPill = document.getElementById("questionPill");
+    const answeredPill = document.getElementById("answeredPill");
+    const progressFill = document.getElementById("progressFill");
+    const categoryLabel = document.getElementById("categoryLabel");
+    const questionText = document.getElementById("questionText");
+    const choiceGrid = document.getElementById("choiceGrid");
+    const prevButton = document.getElementById("prevButton");
+    const nextButton = document.getElementById("nextButton");
+    const submitButton = document.getElementById("submitButton");
+    const submitWarning = document.getElementById("submitWarning");
+
+    function readAttempts() {
+      try {
+        return JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+      } catch (error) {
+        return {};
+      }
+    }
+
+    function writeAttempts(attempts) {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(attempts));
+        return true;
+      } catch (error) {
+        return false;
+      }
+    }
+
+    function normalizeName(value) {
+      return value.trim().replace(/\s+/g, " ").toLocaleLowerCase("en-US");
+    }
+
+    function show(panel) {
+      [startPanel, quizPanel, resultPanel].forEach((item) => item.classList.add("hidden"));
+      panel.classList.remove("hidden");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function startQuiz() {
+      const displayName = nameInput.value.trim().replace(/\s+/g, " ");
+      const normalizedName = normalizeName(displayName);
+      if (!normalizedName) {
+        nameWarning.classList.remove("hidden");
+        nameInput.focus();
+        return;
+      }
+
+      nameWarning.classList.add("hidden");
+      const existing = state.attempts[normalizedName];
+      if (existing) {
+        renderResult(existing);
+        return;
+      }
+
+      state.displayName = displayName;
+      state.normalizedName = normalizedName;
+      state.current = 0;
+      state.answers = Array(questions.length).fill(null);
+      studentPill.textContent = `Player: ${displayName}`;
+      renderQuestion();
+      show(quizPanel);
+    }
+
+    function answeredCount() {
+      return state.answers.filter((answer) => answer !== null).length;
+    }
+
+    function renderQuestion() {
+      const item = questions[state.current];
+      const answered = answeredCount();
+      questionPill.textContent = `Question ${state.current + 1}/${questions.length}`;
+      answeredPill.textContent = `Answered ${answered}/${questions.length}`;
+      progressFill.style.width = `${(answered / questions.length) * 100}%`;
+      categoryLabel.textContent = categoryLabels[item.category];
+      questionText.textContent = item.prompt;
+      choiceGrid.innerHTML = "";
+
+      item.choices.forEach((choice, index) => {
+        const button = document.createElement("button");
+        button.className = `choice ${state.answers[state.current] === index ? "selected" : ""}`;
+        button.type = "button";
+        button.innerHTML = `<span>${choice}</span><small>Choice ${String.fromCharCode(65 + index)}</small>`;
+        button.addEventListener("click", () => {
+          state.answers[state.current] = index;
+          renderQuestion();
+        });
+        choiceGrid.appendChild(button);
+      });
+
+      prevButton.disabled = state.current === 0;
+      nextButton.disabled = state.current === questions.length - 1;
+      submitButton.disabled = answered !== questions.length;
+      submitWarning.textContent = answered === questions.length
+        ? "All questions answered. Check your name before submitting."
+        : `${questions.length - answered} question(s) remaining.`;
+    }
+
+    function submitQuiz() {
+      if (answeredCount() !== questions.length) {
+        renderQuestion();
+        return;
+      }
+
+      if (state.attempts[state.normalizedName]) {
+        renderResult(state.attempts[state.normalizedName]);
+        return;
+      }
+
+      const result = scoreAttempt();
+      state.attempts[state.normalizedName] = result;
+      const saved = writeAttempts(state.attempts);
+      if (!saved) result.storageWarning = true;
+      renderResult(result);
+    }
+
+    function scoreAttempt() {
+      const missedByCategory = {};
+      let correct = 0;
+      questions.forEach((question, index) => {
+        if (state.answers[index] === question.answer) {
+          correct += 1;
+        } else {
+          missedByCategory[question.category] = (missedByCategory[question.category] || 0) + 1;
+        }
+      });
+
+      const score = correct * 5;
+      const submittedAt = new Date().toISOString();
+      const resultCode = makeResultCode(`${state.normalizedName}|${submittedAt}|${score}|${state.answers.join("")}`);
+      return {
+        displayName: state.displayName,
+        normalizedName: state.normalizedName,
+        submittedAt,
+        answers: state.answers,
+        correct,
+        score,
+        missedByCategory,
+        resultCode
+      };
+    }
+
+    function makeResultCode(text) {
+      let hash = 2166136261;
+      for (let i = 0; i < text.length; i += 1) {
+        hash ^= text.charCodeAt(i);
+        hash = Math.imul(hash, 16777619);
+      }
+      return `SPL-${(hash >>> 0).toString(36).toUpperCase().padStart(7, "0")}`;
+    }
+
+    function readiness(score) {
+      if (score >= 85) {
+        return ["Table-ready", "This score suggests you know the key rules well enough to join the first table."];
+      }
+      if (score >= 70) {
+        return ["Playable, but review first", "You can probably play with support, but review the categories below before joining a table."];
+      }
+      return ["Review before playing", "Several rule points may still slow the table down. Review the teach-to-play slides first."];
+    }
+
+    function formatDate(iso) {
+      return new Intl.DateTimeFormat("en-GB", {
+        dateStyle: "medium",
+        timeStyle: "short"
+      }).format(new Date(iso));
+    }
+
+    function renderResult(result) {
+      const [title, detail] = readiness(result.score);
+      document.getElementById("scoreText").textContent = result.score;
+      document.getElementById("readinessText").textContent = title;
+      document.getElementById("readinessDetail").textContent = detail;
+      document.getElementById("resultName").textContent = result.displayName;
+      document.getElementById("resultTime").textContent = formatDate(result.submittedAt);
+      document.getElementById("correctText").textContent = `${result.correct}/${questions.length}`;
+      document.getElementById("resultCode").textContent = result.resultCode;
+
+      const missed = Object.entries(result.missedByCategory || {})
+        .sort((a, b) => b[1] - a[1]);
+      const reviewText = document.getElementById("reviewText");
+      const reviewTags = document.getElementById("reviewTags");
+      reviewTags.innerHTML = "";
+
+      if (!missed.length) {
+        reviewText.textContent = "No weak category detected. You are a strong candidate for the first table.";
+        const tag = document.createElement("b");
+        tag.textContent = "Ready";
+        reviewTags.appendChild(tag);
+      } else {
+        reviewText.textContent = "Review these categories before playing:";
+        missed.forEach(([category, count]) => {
+          const tag = document.createElement("b");
+          tag.textContent = `${categoryLabels[category]} (${count})`;
+          reviewTags.appendChild(tag);
+        });
+      }
+
+      if (result.storageWarning) {
+        reviewText.textContent += " Note: this device could not save to localStorage, so screenshot this result now.";
+      }
+
+      show(resultPanel);
+    }
+
+    document.getElementById("startButton").addEventListener("click", startQuiz);
+    nameInput.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") startQuiz();
+    });
+    prevButton.addEventListener("click", () => {
+      state.current = Math.max(0, state.current - 1);
+      renderQuestion();
+    });
+    nextButton.addEventListener("click", () => {
+      state.current = Math.min(questions.length - 1, state.current + 1);
+      renderQuestion();
+    });
+    submitButton.addEventListener("click", submitQuiz);
+    document.getElementById("printButton").addEventListener("click", () => window.print());
+  </script>
+</body>
+</html>

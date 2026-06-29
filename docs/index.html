@@ -257,6 +257,12 @@
       outline: 3px solid rgba(216, 166, 66, .35);
     }
 
+    .link-stack {
+      align-self: end;
+      display: grid;
+      gap: 8px;
+    }
+
     .course-card {
       grid-column: span 2;
       min-height: 210px;
@@ -337,6 +343,7 @@
         <strong>โครงสื่อปัจจุบัน</strong>
         <div class="summary-row"><span>11</span><p>ชุดสไลด์/บทเรียนแบบ interactive</p></div>
         <div class="summary-row"><span>2</span><p>เกม HTML สำหรับฝึกเล่นในชั้นเรียน</p></div>
+        <div class="summary-row"><span>1</span><p>พรีเทสคัดผู้เล่นพร้อมผลคะแนนสำหรับแคปส่ง</p></div>
         <div class="summary-row"><span>1</span><p>หน้า Week 1 สำหรับบทนำรายวิชา</p></div>
       </aside>
     </section>
@@ -349,9 +356,12 @@
       <div class="grid">
         <article class="card accent-splendor">
           <div class="card-title"><span class="token">S</span><h3>สอนเล่น Splendor</h3></div>
-          <p>สไลด์ teach-to-play พร้อมผังโต๊ะ การ์ดจำลอง simulator และ quick check</p>
+          <p>สไลด์ teach-to-play พร้อมผังโต๊ะ การ์ดจำลอง และพรีเทสกติกาสำหรับคัดผู้เล่นรอบแรก</p>
           <div class="tag-row"><span class="tag">engine building</span><span class="tag">resource</span></div>
-          <a class="open-link" href="slides/splendor-teach/">เปิดสไลด์ Splendor</a>
+          <div class="link-stack">
+            <a class="open-link" href="slides/splendor-teach/">เปิดสไลด์ Splendor</a>
+            <a class="open-link" href="quizzes/splendor-pretest/">เปิดพรีเทส Splendor</a>
+          </div>
         </article>
 
         <article class="card accent-makhos">
