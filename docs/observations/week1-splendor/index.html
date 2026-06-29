@@ -1,0 +1,1060 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Week 1 Splendor Observer Log | SMA2106</title>
+  <link rel="icon" href="data:," />
+  <style>
+    :root {
+      --velvet: #251614;
+      --felt: #0f4f48;
+      --felt-2: #0b3936;
+      --paper: #fff8eb;
+      --paper-2: #f5e7c8;
+      --ink: #241f19;
+      --muted: #6f6253;
+      --line: rgba(60, 40, 24, .18);
+      --gold: #d9a441;
+      --ruby: #be4b4b;
+      --emerald: #208c62;
+      --sapphire: #1f69a8;
+      --onyx: #252525;
+      --teal: #0f766e;
+      --shadow: 0 26px 60px rgba(0, 0, 0, .28);
+      --radius: 8px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html { background: var(--velvet); }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 12% 8%, rgba(217, 164, 65, .18), transparent 30%),
+        radial-gradient(circle at 88% 18%, rgba(31, 105, 168, .18), transparent 28%),
+        linear-gradient(135deg, var(--velvet), var(--felt-2) 58%, var(--felt));
+      font-family: "Segoe UI", "Noto Sans Thai", Tahoma, sans-serif;
+      line-height: 1.55;
+    }
+
+    button,
+    input,
+    textarea {
+      font: inherit;
+    }
+
+    .page {
+      width: min(1180px, calc(100% - 28px));
+      margin: 0 auto;
+      padding: 22px 0 36px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      color: #fff8eb;
+      margin-bottom: 18px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 900;
+      letter-spacing: .02em;
+    }
+
+    .gem-mark {
+      display: grid;
+      place-items: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      color: #fff;
+      background:
+        linear-gradient(135deg, rgba(255, 255, 255, .35), transparent 38%),
+        linear-gradient(135deg, var(--ruby), var(--sapphire) 48%, var(--emerald));
+      border: 1px solid rgba(255, 255, 255, .32);
+      box-shadow: 0 12px 28px rgba(0, 0, 0, .22);
+    }
+
+    .hub-link {
+      color: #fff8eb;
+      border: 1px solid rgba(255, 255, 255, .28);
+      border-radius: 999px;
+      padding: 9px 13px;
+      text-decoration: none;
+      background: rgba(255, 255, 255, .08);
+      font-weight: 800;
+    }
+
+    .hero,
+    .panel {
+      background: linear-gradient(145deg, var(--paper), #fffdf6);
+      border: 1px solid rgba(255, 255, 255, .55);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.3fr) minmax(280px, .7fr);
+      gap: 0;
+      margin-bottom: 18px;
+    }
+
+    .hero-copy {
+      padding: clamp(22px, 4vw, 46px);
+      background:
+        linear-gradient(90deg, rgba(217, 164, 65, .24), transparent 18%),
+        linear-gradient(135deg, rgba(15, 118, 110, .08), rgba(31, 105, 168, .08));
+    }
+
+    .kicker {
+      margin: 0 0 8px;
+      color: var(--teal);
+      font-size: 13px;
+      font-weight: 900;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    h1,
+    h2,
+    h3 {
+      margin: 0;
+      line-height: 1.18;
+      letter-spacing: 0;
+    }
+
+    h1 {
+      max-width: 760px;
+      font-size: clamp(34px, 7vw, 76px);
+    }
+
+    h2 {
+      font-size: clamp(25px, 3.4vw, 42px);
+    }
+
+    h3 {
+      font-size: clamp(20px, 2.6vw, 28px);
+    }
+
+    .lead {
+      max-width: 760px;
+      margin: 16px 0 0;
+      color: #3c342c;
+      font-size: clamp(18px, 2.2vw, 24px);
+    }
+
+    .start-card {
+      display: grid;
+      gap: 16px;
+      padding: clamp(18px, 3vw, 30px);
+      background: rgba(37, 22, 20, .06);
+      border-left: 1px solid var(--line);
+    }
+
+    .field {
+      display: grid;
+      gap: 8px;
+    }
+
+    label,
+    .field-title {
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    input,
+    textarea {
+      width: 100%;
+      min-width: 0;
+      border: 2px solid rgba(15, 118, 110, .28);
+      border-radius: var(--radius);
+      background: #fff;
+      color: var(--ink);
+      outline: none;
+    }
+
+    input {
+      min-height: 52px;
+      padding: 12px 14px;
+      font-size: 18px;
+      font-weight: 800;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 86px;
+      padding: 12px;
+    }
+
+    input:focus,
+    textarea:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 4px rgba(217, 164, 65, .18);
+    }
+
+    .option-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .option-grid.compact {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .choice,
+    .primary,
+    .secondary {
+      min-height: 48px;
+      border: 0;
+      border-radius: var(--radius);
+      cursor: pointer;
+      font-weight: 900;
+      letter-spacing: 0;
+      transition: transform .16s ease, box-shadow .16s ease, background .16s ease;
+    }
+
+    .choice {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 58px;
+      padding: 11px 12px;
+      color: var(--ink);
+      background: #fff;
+      border: 2px solid rgba(15, 118, 110, .24);
+      text-align: center;
+      overflow-wrap: anywhere;
+    }
+
+    .choice:hover,
+    .primary:hover,
+    .secondary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 10px 24px rgba(0, 0, 0, .16);
+    }
+
+    .choice.selected {
+      color: #fff;
+      background: linear-gradient(135deg, var(--teal), var(--sapphire));
+      border-color: transparent;
+      box-shadow: 0 12px 26px rgba(15, 118, 110, .26);
+    }
+
+    .primary,
+    .secondary {
+      padding: 12px 16px;
+    }
+
+    .primary {
+      color: #231915;
+      background: linear-gradient(135deg, #ffe38f, var(--gold));
+    }
+
+    .secondary {
+      color: var(--ink);
+      background: #fff;
+      border: 1px solid var(--line);
+    }
+
+    .danger {
+      color: #fff;
+      background: #8b2d2d;
+    }
+
+    .warning {
+      display: none;
+      color: #8b2d2d;
+      font-weight: 900;
+    }
+
+    .warning.show { display: block; }
+
+    .panel {
+      display: grid;
+      gap: 18px;
+      padding: clamp(18px, 3vw, 34px);
+      margin-top: 18px;
+    }
+
+    .hidden { display: none !important; }
+
+    .status-strip {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      gap: 14px;
+      padding: 14px;
+      border-radius: var(--radius);
+      background: #fff;
+      border: 1px solid var(--line);
+    }
+
+    .meter {
+      height: 13px;
+      background: #eadbc0;
+      border-radius: 999px;
+      overflow: hidden;
+      border: 1px solid rgba(36, 31, 25, .12);
+    }
+
+    .meter-fill {
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(90deg, var(--ruby), var(--gold), var(--emerald), var(--sapphire));
+      transition: width .2s ease;
+    }
+
+    .status-text {
+      margin-top: 6px;
+      color: var(--muted);
+      font-weight: 800;
+    }
+
+    .mission-card,
+    .concept-card,
+    .moment-card,
+    .output-card {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, .82);
+      overflow: hidden;
+    }
+
+    .mission-card {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 16px;
+      align-items: center;
+      padding: 18px;
+      background:
+        linear-gradient(135deg, rgba(15, 118, 110, .14), rgba(217, 164, 65, .18)),
+        #fff;
+    }
+
+    .mission-icon {
+      display: grid;
+      place-items: center;
+      width: 62px;
+      height: 62px;
+      border-radius: 8px;
+      color: #fff;
+      font-size: 28px;
+      font-weight: 1000;
+      background: linear-gradient(135deg, var(--ruby), var(--sapphire));
+      box-shadow: 0 14px 26px rgba(0, 0, 0, .16);
+    }
+
+    .mission-card p,
+    .concept-card p,
+    .moment-card p {
+      margin: 8px 0 0;
+      color: #3c342c;
+    }
+
+    .concept-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .concept-card {
+      padding: 16px;
+    }
+
+    .concept-card strong {
+      display: block;
+      color: var(--teal);
+      font-size: 18px;
+    }
+
+    .moment-card {
+      display: grid;
+      gap: 18px;
+      padding: 18px;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 14px;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 12px;
+    }
+
+    .section-head span {
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .full { grid-column: 1 / -1; }
+
+    .note {
+      min-height: 72px;
+    }
+
+    .output-card {
+      display: grid;
+      gap: 14px;
+      padding: 18px;
+      background: linear-gradient(145deg, #fff, #fffaf0);
+    }
+
+    .output-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .copy-status {
+      min-height: 24px;
+      color: var(--teal);
+      font-weight: 900;
+    }
+
+    #outputText {
+      min-height: 320px;
+      font-family: "Segoe UI", "Noto Sans Thai", Tahoma, sans-serif;
+      line-height: 1.55;
+      white-space: pre-wrap;
+    }
+
+    .footer-note {
+      color: rgba(255, 248, 235, .86);
+      margin: 18px 0 0;
+      text-align: center;
+    }
+
+    @media (max-width: 860px) {
+      .hero,
+      .form-grid,
+      .concept-grid,
+      .status-strip {
+        grid-template-columns: 1fr;
+      }
+
+      .start-card {
+        border-left: 0;
+        border-top: 1px solid var(--line);
+      }
+
+      .option-grid,
+      .option-grid.compact {
+        grid-template-columns: 1fr;
+      }
+
+      .section-head {
+        align-items: start;
+        flex-direction: column;
+      }
+    }
+
+    @media (max-width: 520px) {
+      .page {
+        width: min(100% - 18px, 1180px);
+        padding-top: 12px;
+      }
+
+      .topbar {
+        align-items: stretch;
+        flex-direction: column;
+      }
+
+      .hub-link {
+        text-align: center;
+      }
+
+      .hero-copy,
+      .start-card,
+      .panel,
+      .moment-card,
+      .output-card {
+        padding: 16px;
+      }
+
+      h1 {
+        font-size: 36px;
+      }
+
+      .lead {
+        font-size: 18px;
+      }
+
+      .mission-card {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="topbar">
+      <div class="brand">
+        <div class="gem-mark" aria-hidden="true">S</div>
+        <div>
+          <strong>Week 1 Observer Log</strong><br>
+          <span>Splendor Strategic Thinking</span>
+        </div>
+      </div>
+      <a class="hub-link" href="../../">กลับหน้ารวมสื่อ</a>
+    </header>
+
+    <section class="hero">
+      <div class="hero-copy">
+        <p class="kicker">SMA2106 Week 1</p>
+        <h1>สังเกตการเล่น Splendor ให้เห็นการคิดเชิงกลยุทธ์</h1>
+        <p class="lead">สำหรับนักศึกษาที่ไม่ได้ลงเล่น ให้เลือกคำตอบจากสิ่งที่เห็นจริง 2 จังหวะ แล้วคัดลอกข้อความไปส่งใน Google Classroom</p>
+      </div>
+
+      <div class="start-card">
+        <div class="field">
+          <label for="studentName">ชื่อ-สกุล</label>
+          <input id="studentName" autocomplete="name" placeholder="พิมพ์ชื่อของคุณ" />
+        </div>
+
+        <div class="field">
+          <div class="field-title">โต๊ะที่สังเกต</div>
+          <div class="option-grid compact" id="tableOptions" data-path="table"></div>
+        </div>
+
+        <div class="field">
+          <div class="field-title">โฟกัสที่ใคร</div>
+          <div class="option-grid" id="focusOptions" data-path="focus"></div>
+        </div>
+
+        <button class="primary" id="startButton">เริ่มบันทึกการสังเกต</button>
+        <div class="warning" id="startWarning">กรุณากรอกชื่อ เลือกโต๊ะ และเลือกผู้เล่นที่โฟกัสก่อนเริ่ม</div>
+      </div>
+    </section>
+
+    <section class="panel hidden" id="observerPanel">
+      <div class="status-strip">
+        <div>
+          <div class="meter" aria-label="ความครบถ้วนของบันทึก"><div class="meter-fill" id="meterFill"></div></div>
+          <div class="status-text" id="statusText">ยังไม่ได้เริ่ม</div>
+        </div>
+        <button class="secondary danger" id="resetButton">Reset draft</button>
+      </div>
+
+      <div class="mission-card">
+        <div class="mission-icon" aria-hidden="true">?</div>
+        <div>
+          <p class="kicker">ภารกิจสังเกตของคุณ</p>
+          <h2 id="missionText">-</h2>
+          <p id="missionHint">ให้มองหาจังหวะที่เกี่ยวกับภารกิจนี้ระหว่างเกม แล้วใช้เป็นหลักฐานใน observation moments</p>
+        </div>
+      </div>
+
+      <div class="concept-grid" aria-label="แนวคิด Week 1">
+        <div class="concept-card">
+          <strong>Strategy</strong>
+          <p>แผนระยะยาวที่ทำให้ตาถัด ๆ ไปดีขึ้น เช่น สร้าง engine หรือเตรียม Noble</p>
+        </div>
+        <div class="concept-card">
+          <strong>Tactics</strong>
+          <p>การแก้สถานการณ์เฉพาะหน้า เช่น รีบซื้อก่อนโดนแย่ง หรือ reserve เพื่อกันจังหวะคู่แข่ง</p>
+        </div>
+        <div class="concept-card">
+          <strong>Decision Structure</strong>
+          <p>ดูว่าใครตัดสินใจ มีตัวเลือกอะไร สภาพโต๊ะกดดันอย่างไร และเป้าหมายคืออะไร</p>
+        </div>
+      </div>
+
+      <div class="moment-card" id="momentOne">
+        <div class="section-head">
+          <h3>Observation Moment 1</h3>
+          <span>เลือกจากสิ่งที่เห็นจริง</span>
+        </div>
+        <div class="form-grid">
+          <div class="field">
+            <div class="field-title">Action ที่เห็น</div>
+            <div class="option-grid" data-path="moments.0.action"></div>
+          </div>
+          <div class="field">
+            <div class="field-title">จังหวะนี้เป็นอะไร</div>
+            <div class="option-grid" data-path="moments.0.type"></div>
+          </div>
+          <div class="field">
+            <div class="field-title">เป้าหมายที่น่าจะเป็น</div>
+            <div class="option-grid" data-path="moments.0.objective"></div>
+          </div>
+          <div class="field">
+            <div class="field-title">ผลที่เกิดขึ้น</div>
+            <div class="option-grid" data-path="moments.0.effect"></div>
+          </div>
+          <div class="field full">
+            <label for="noteOne">note สั้น ๆ (ไม่บังคับ)</label>
+            <textarea class="note" id="noteOne" maxlength="140" placeholder="เช่น ผู้เล่น reserve ใบที่อีกคนเก็บ token รออยู่"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="moment-card" id="momentTwo">
+        <div class="section-head">
+          <h3>Observation Moment 2</h3>
+          <span>อีกหนึ่งจังหวะที่เห็นชัด</span>
+        </div>
+        <div class="form-grid">
+          <div class="field">
+            <div class="field-title">Action ที่เห็น</div>
+            <div class="option-grid" data-path="moments.1.action"></div>
+          </div>
+          <div class="field">
+            <div class="field-title">จังหวะนี้เป็นอะไร</div>
+            <div class="option-grid" data-path="moments.1.type"></div>
+          </div>
+          <div class="field">
+            <div class="field-title">เป้าหมายที่น่าจะเป็น</div>
+            <div class="option-grid" data-path="moments.1.objective"></div>
+          </div>
+          <div class="field">
+            <div class="field-title">ผลที่เกิดขึ้น</div>
+            <div class="option-grid" data-path="moments.1.effect"></div>
+          </div>
+          <div class="field full">
+            <label for="noteTwo">note สั้น ๆ (ไม่บังคับ)</label>
+            <textarea class="note" id="noteTwo" maxlength="140" placeholder="เช่น หลังการ์ดใหม่เปิดมา ผู้เล่นเปลี่ยนเป้าหมายทันที"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="moment-card">
+        <div class="section-head">
+          <h3>Decision Structure</h3>
+          <span>โยงเข้ากับบทเรียน Week 1</span>
+        </div>
+        <div class="form-grid">
+          <div class="field">
+            <div class="field-title">ผู้ตัดสินใจหลัก</div>
+            <div class="option-grid" data-path="decision.maker"></div>
+          </div>
+          <div class="field">
+            <div class="field-title">ตัวเลือกที่เขามี</div>
+            <div class="option-grid" data-path="decision.choice"></div>
+          </div>
+          <div class="field">
+            <div class="field-title">สภาพแวดล้อมที่กดดัน</div>
+            <div class="option-grid" data-path="decision.environment"></div>
+          </div>
+          <div class="field">
+            <div class="field-title">เป้าหมายของการตัดสินใจ</div>
+            <div class="option-grid" data-path="decision.goal"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="moment-card">
+        <div class="section-head">
+          <h3>สรุปท้ายการสังเกต</h3>
+          <span>ใช้ส่ง Classroom</span>
+        </div>
+        <div class="form-grid">
+          <div class="field">
+            <div class="field-title">โต๊ะนี้ดูเน้นอะไร</div>
+            <div class="option-grid" data-path="summary.style"></div>
+          </div>
+          <div class="field">
+            <div class="field-title">จังหวะที่น่าจำที่สุดเป็น</div>
+            <div class="option-grid" data-path="summary.memorable"></div>
+          </div>
+          <div class="field full">
+            <div class="field-title">ถ้าฉันได้เล่นเอง ฉันจะลอง</div>
+            <div class="option-grid" data-path="summary.nextTry"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="output-card">
+        <div class="section-head">
+          <h3>ข้อความสำหรับส่ง Google Classroom</h3>
+          <span>ตรวจแล้วกด copy</span>
+        </div>
+        <textarea id="outputText" readonly></textarea>
+        <div class="output-actions">
+          <button class="primary" id="copyButton">Copy for Google Classroom</button>
+          <button class="secondary" id="selectButton">เลือกข้อความทั้งหมด</button>
+          <div class="copy-status" id="copyStatus" aria-live="polite"></div>
+        </div>
+      </div>
+    </section>
+
+    <p class="footer-note">ข้อมูลหน้านี้อยู่ในเครื่องของผู้ใช้เท่านั้น ไม่มีการส่งเข้า server หรือฐานข้อมูล</p>
+  </main>
+
+  <script>
+    const STORAGE_KEY = "week1SplendorObserverDraft:v1";
+
+    const missions = [
+      "จับจังหวะที่ผู้เล่นสร้าง engine เพื่อให้การซื้อการ์ดในอนาคตง่ายขึ้น",
+      "จับจังหวะ reserve ที่ช่วยกันคู่แข่งหรือเก็บแผนสำคัญไว้",
+      "จับจังหวะที่ผู้เล่นเตรียม Noble จาก bonus บนการ์ด",
+      "จับจังหวะที่ดูเป็น tactics เฉพาะหน้า แต่ส่งผลต่อ strategy ระยะยาว",
+      "จับจังหวะ action เล็ก ๆ ที่ทำให้ผู้เล่นได้เปรียบสะสม",
+      "จับจังหวะเปลี่ยนแผนหลังการ์ดใหม่หรือ token บนโต๊ะเปลี่ยน"
+    ];
+
+    const optionSets = {
+      table: ["Table 1", "Table 2"],
+      focus: ["Player 1", "Player 2", "Player 3", "Player 4", "ทั้งโต๊ะ"],
+      action: [
+        "หยิบ token 3 สี",
+        "หยิบ token สีเดียว 2 เม็ด",
+        "ซื้อการ์ดถูกเพื่อเอา bonus",
+        "ซื้อการ์ดมีคะแนน",
+        "Reserve การ์ด",
+        "รับ Noble",
+        "คืน token เพราะเกิน 10",
+        "เปลี่ยนแผนหลังการ์ดใหม่เปิด"
+      ],
+      type: ["Strategy", "Tactics", "ทั้งสองอย่าง", "ยังไม่แน่ใจ"],
+      objective: [
+        "สร้าง engine ระยะยาว",
+        "เอาแต้มเร็ว",
+        "เตรียม Noble",
+        "กันโอกาสคู่แข่ง",
+        "ทำให้ตาถัดไปมีทางเลือกมากขึ้น",
+        "แก้ปัญหาเฉพาะหน้า"
+      ],
+      effect: [
+        "ได้แต้มทันที",
+        "ได้ bonus ซื้อใบต่อไปง่ายขึ้น",
+        "เปิดทางไป Noble",
+        "คู่แข่งเสียโอกาส",
+        "ได้ gold หรือเก็บใบสำคัญไว้",
+        "ยังไม่เห็นผลทันที แต่ดูมีแผน",
+        "เสี่ยง เพราะใช้ turn แล้วยังไม่คืบคะแนน"
+      ],
+      maker: ["ผู้เล่นที่โฟกัส", "ผู้เล่นอื่น", "ทั้งโต๊ะมีผลต่อกัน", "ยังไม่แน่ใจ"],
+      choice: ["หยิบ token", "ซื้อการ์ด", "Reserve", "รอจังหวะถัดไป", "เปลี่ยนเป้าหมาย"],
+      environment: [
+        "token สีที่ต้องการเหลือน้อย",
+        "การ์ดสำคัญอยู่กลางโต๊ะ",
+        "คู่แข่งใกล้ซื้อการ์ดนั้น",
+        "Noble ใกล้ครบ",
+        "คะแนนเริ่มห่าง",
+        "การ์ดใหม่เปิดมาเปลี่ยนแผน"
+      ],
+      goal: ["เอาแต้มเร็ว", "สร้าง bonus/engine", "เตรียม Noble", "ขัดจังหวะคู่แข่ง", "เพิ่มทางเลือกในตาถัดไป"],
+      style: ["แต้มเร็ว", "engine ระยะยาว", "Noble", "Reserve/กันคู่แข่ง", "ความยืดหยุ่นของ token"],
+      memorable: ["Strategy", "Tactics", "ทั้งสองอย่าง", "ยังไม่แน่ใจ"],
+      nextTry: [
+        "ซื้อการ์ดถูกเพื่อสร้าง engine",
+        "ดู Noble ตั้งแต่ต้น",
+        "Reserve ใบสำคัญ",
+        "รีบทำแต้มเมื่อมีโอกาส",
+        "มองว่า action นี้ช่วยตาถัดไปอย่างไร"
+      ]
+    };
+
+    const groupMap = {
+      table: "table",
+      focus: "focus",
+      "moments.0.action": "action",
+      "moments.0.type": "type",
+      "moments.0.objective": "objective",
+      "moments.0.effect": "effect",
+      "moments.1.action": "action",
+      "moments.1.type": "type",
+      "moments.1.objective": "objective",
+      "moments.1.effect": "effect",
+      "decision.maker": "maker",
+      "decision.choice": "choice",
+      "decision.environment": "environment",
+      "decision.goal": "goal",
+      "summary.style": "style",
+      "summary.memorable": "memorable",
+      "summary.nextTry": "nextTry"
+    };
+
+    const requiredPaths = [
+      "name", "table", "focus", "mission",
+      "moments.0.action", "moments.0.type", "moments.0.objective", "moments.0.effect",
+      "moments.1.action", "moments.1.type", "moments.1.objective", "moments.1.effect",
+      "decision.maker", "decision.choice", "decision.environment", "decision.goal",
+      "summary.style", "summary.memorable", "summary.nextTry"
+    ];
+
+    let state = emptyState();
+
+    const startWarning = document.getElementById("startWarning");
+    const observerPanel = document.getElementById("observerPanel");
+    const nameInput = document.getElementById("studentName");
+    const noteOne = document.getElementById("noteOne");
+    const noteTwo = document.getElementById("noteTwo");
+    const outputText = document.getElementById("outputText");
+    const copyStatus = document.getElementById("copyStatus");
+
+    function emptyState() {
+      return {
+        name: "",
+        table: "",
+        focus: "",
+        mission: "",
+        startedAt: "",
+        updatedAt: "",
+        moments: [
+          { action: "", type: "", objective: "", effect: "", note: "" },
+          { action: "", type: "", objective: "", effect: "", note: "" }
+        ],
+        decision: { maker: "", choice: "", environment: "", goal: "" },
+        summary: { style: "", memorable: "", nextTry: "" }
+      };
+    }
+
+    function readDraft() {
+      try {
+        const draft = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null");
+        if (!draft || typeof draft !== "object") return emptyState();
+        return {
+          ...emptyState(),
+          ...draft,
+          moments: [
+            { ...emptyState().moments[0], ...(draft.moments && draft.moments[0]) },
+            { ...emptyState().moments[1], ...(draft.moments && draft.moments[1]) }
+          ],
+          decision: { ...emptyState().decision, ...(draft.decision || {}) },
+          summary: { ...emptyState().summary, ...(draft.summary || {}) }
+        };
+      } catch (error) {
+        return emptyState();
+      }
+    }
+
+    function saveDraft() {
+      state.updatedAt = new Date().toISOString();
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      } catch (error) {
+        copyStatus.textContent = "เครื่องนี้บันทึก draft ไม่สำเร็จ ให้ copy ข้อความก่อนปิดหน้า";
+      }
+    }
+
+    function getPath(path) {
+      return path.split(".").reduce((target, key) => target && target[key], state);
+    }
+
+    function setPath(path, value) {
+      const keys = path.split(".");
+      let target = state;
+      keys.slice(0, -1).forEach((key) => {
+        target = target[key];
+      });
+      target[keys[keys.length - 1]] = value;
+    }
+
+    function renderOptionGroups() {
+      document.querySelectorAll("[data-path]").forEach((container) => {
+        const path = container.dataset.path;
+        const setName = groupMap[path];
+        const values = optionSets[setName] || [];
+        container.innerHTML = "";
+        values.forEach((value) => {
+          const button = document.createElement("button");
+          button.type = "button";
+          button.className = "choice";
+          button.dataset.value = value;
+          button.dataset.path = path;
+          button.textContent = value;
+          button.addEventListener("click", () => {
+            setPath(path, value);
+            saveDraft();
+            render();
+          });
+          container.appendChild(button);
+        });
+      });
+    }
+
+    function renderSelectedButtons() {
+      document.querySelectorAll(".choice[data-path]").forEach((button) => {
+        button.classList.toggle("selected", getPath(button.dataset.path) === button.dataset.value);
+      });
+    }
+
+    function startObservation() {
+      const name = nameInput.value.trim().replace(/\s+/g, " ");
+      state.name = name;
+      if (!state.name || !state.table || !state.focus) {
+        startWarning.classList.add("show");
+        return;
+      }
+      startWarning.classList.remove("show");
+      if (!state.mission) {
+        state.mission = missions[Math.floor(Math.random() * missions.length)];
+      }
+      if (!state.startedAt) {
+        state.startedAt = new Date().toISOString();
+      }
+      saveDraft();
+      render();
+      observerPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    function completionCount() {
+      return requiredPaths.filter((path) => String(getPath(path) || "").trim()).length;
+    }
+
+    function formatDate(iso) {
+      if (!iso) return "-";
+      try {
+        return new Intl.DateTimeFormat("th-TH", {
+          dateStyle: "medium",
+          timeStyle: "short"
+        }).format(new Date(iso));
+      } catch (error) {
+        return iso;
+      }
+    }
+
+    function valueOrDash(value) {
+      return String(value || "").trim() || "-";
+    }
+
+    function buildOutput() {
+      const completed = completionCount();
+      const completeNote = completed === requiredPaths.length
+        ? "สถานะ: กรอกครบ พร้อมส่ง"
+        : `สถานะ: ยังไม่ครบ (${completed}/${requiredPaths.length})`;
+
+      return [
+        "Week 1 Splendor Observer Log",
+        completeNote,
+        "",
+        `ชื่อ: ${valueOrDash(state.name)}`,
+        `โต๊ะ: ${valueOrDash(state.table)}`,
+        `โฟกัส: ${valueOrDash(state.focus)}`,
+        `เวลาบันทึกล่าสุด: ${formatDate(state.updatedAt || state.startedAt)}`,
+        "",
+        `ภารกิจสังเกต: ${valueOrDash(state.mission)}`,
+        "",
+        "Observation Moment 1",
+        `- Action ที่เห็น: ${valueOrDash(state.moments[0].action)}`,
+        `- มองว่าเป็น: ${valueOrDash(state.moments[0].type)}`,
+        `- เป้าหมายที่น่าจะเป็น: ${valueOrDash(state.moments[0].objective)}`,
+        `- ผลที่เกิดขึ้น: ${valueOrDash(state.moments[0].effect)}`,
+        `- Note: ${valueOrDash(state.moments[0].note)}`,
+        "",
+        "Observation Moment 2",
+        `- Action ที่เห็น: ${valueOrDash(state.moments[1].action)}`,
+        `- มองว่าเป็น: ${valueOrDash(state.moments[1].type)}`,
+        `- เป้าหมายที่น่าจะเป็น: ${valueOrDash(state.moments[1].objective)}`,
+        `- ผลที่เกิดขึ้น: ${valueOrDash(state.moments[1].effect)}`,
+        `- Note: ${valueOrDash(state.moments[1].note)}`,
+        "",
+        "Decision Structure",
+        `- ผู้ตัดสินใจหลัก: ${valueOrDash(state.decision.maker)}`,
+        `- ตัวเลือกที่มี: ${valueOrDash(state.decision.choice)}`,
+        `- สภาพแวดล้อมที่กดดัน: ${valueOrDash(state.decision.environment)}`,
+        `- เป้าหมายของการตัดสินใจ: ${valueOrDash(state.decision.goal)}`,
+        "",
+        "สรุปแนวคิด Week 1",
+        `- โต๊ะนี้ดูเน้น: ${valueOrDash(state.summary.style)}`,
+        `- จังหวะที่น่าจำที่สุดเป็น: ${valueOrDash(state.summary.memorable)}`,
+        `- ถ้าฉันได้เล่นเอง ฉันจะลอง: ${valueOrDash(state.summary.nextTry)}`
+      ].join("\n");
+    }
+
+    function renderProgress() {
+      const completed = completionCount();
+      const percent = Math.round((completed / requiredPaths.length) * 100);
+      document.getElementById("meterFill").style.width = `${percent}%`;
+      document.getElementById("statusText").textContent = completed === requiredPaths.length
+        ? "กรอกครบแล้ว ตรวจข้อความด้านล่างแล้วกด Copy ได้เลย"
+        : `กรอกแล้ว ${completed}/${requiredPaths.length} รายการ`;
+    }
+
+    function render() {
+      nameInput.value = state.name;
+      noteOne.value = state.moments[0].note || "";
+      noteTwo.value = state.moments[1].note || "";
+      document.getElementById("missionText").textContent = state.mission || "กดเริ่มเพื่อสุ่มภารกิจสังเกต";
+      observerPanel.classList.toggle("hidden", !state.startedAt);
+      renderSelectedButtons();
+      renderProgress();
+      outputText.value = buildOutput();
+    }
+
+    async function copyOutput() {
+      const text = outputText.value;
+      copyStatus.textContent = "";
+      try {
+        await navigator.clipboard.writeText(text);
+        copyStatus.textContent = "คัดลอกแล้ว นำไปวางใน Google Classroom ได้เลย";
+      } catch (error) {
+        outputText.focus();
+        outputText.select();
+        try {
+          document.execCommand("copy");
+          copyStatus.textContent = "คัดลอกแล้ว ถ้าไม่ติดให้กดเลือกข้อความทั้งหมดแล้ว copy เอง";
+        } catch (fallbackError) {
+          copyStatus.textContent = "Copy อัตโนมัติไม่ได้ ให้กดเลือกข้อความทั้งหมดแล้ว copy เอง";
+        }
+      }
+    }
+
+    function resetDraft() {
+      const ok = window.confirm("ล้าง draft ในเครื่องนี้และเริ่มใหม่?");
+      if (!ok) return;
+      localStorage.removeItem(STORAGE_KEY);
+      state = emptyState();
+      startWarning.classList.remove("show");
+      copyStatus.textContent = "";
+      render();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    renderOptionGroups();
+    state = readDraft();
+    render();
+
+    nameInput.addEventListener("input", () => {
+      state.name = nameInput.value.trim().replace(/\s+/g, " ");
+      if (state.startedAt) saveDraft();
+      render();
+    });
+
+    noteOne.addEventListener("input", () => {
+      state.moments[0].note = noteOne.value.trim();
+      saveDraft();
+      render();
+    });
+
+    noteTwo.addEventListener("input", () => {
+      state.moments[1].note = noteTwo.value.trim();
+      saveDraft();
+      render();
+    });
+
+    document.getElementById("startButton").addEventListener("click", startObservation);
+    document.getElementById("resetButton").addEventListener("click", resetDraft);
+    document.getElementById("copyButton").addEventListener("click", copyOutput);
+    document.getElementById("selectButton").addEventListener("click", () => {
+      outputText.focus();
+      outputText.select();
+      copyStatus.textContent = "เลือกข้อความแล้ว กด Ctrl+C หรือ Copy บนมือถือได้เลย";
+    });
+  </script>
+</body>
+</html>
