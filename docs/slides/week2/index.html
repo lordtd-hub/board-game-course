@@ -1,0 +1,1224 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SMA2106 Week 2 - โครงสร้างข้อมูลในเกม</title>
+  <style>
+    :root {
+      --night: #111827;
+      --night-2: #1f2a44;
+      --paper: #fff5d6;
+      --paper-2: #f7e5b5;
+      --ink: #141820;
+      --muted: #5f6470;
+      --line: #d6b76e;
+      --amber: #f6c453;
+      --red: #d64a4a;
+      --blue: #3b82f6;
+      --teal: #2dd4bf;
+      --green: #3c8f5a;
+      --shadow: rgba(0, 0, 0, .28);
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body { height: 100%; }
+
+    body {
+      margin: 0;
+      background:
+        radial-gradient(circle at 18% 14%, rgba(246, 196, 83, .18), transparent 26%),
+        radial-gradient(circle at 82% 18%, rgba(59, 130, 246, .18), transparent 28%),
+        linear-gradient(135deg, #0b1020, #151f36 48%, #22131a);
+      color: var(--paper);
+      font-family: Arial, "Noto Sans Thai", sans-serif;
+      min-height: 100%;
+      overflow: hidden;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .deck {
+      display: grid;
+      height: 100vh;
+      place-items: center;
+      width: 100vw;
+    }
+
+    .slide {
+      background:
+        linear-gradient(115deg, rgba(255, 245, 214, .96), rgba(255, 250, 236, .98)),
+        repeating-linear-gradient(0deg, transparent, transparent 42px, rgba(214, 183, 110, .12) 43px);
+      border: 1px solid rgba(246, 196, 83, .34);
+      box-shadow: 0 26px 70px var(--shadow);
+      color: var(--ink);
+      display: none;
+      height: min(100vh, calc(100vw * 9 / 16));
+      max-height: 100vh;
+      max-width: 100vw;
+      overflow: hidden;
+      padding: clamp(50px, 5.4vw, 82px) clamp(42px, 6.2vw, 104px) clamp(54px, 6vw, 90px);
+      position: relative;
+      width: min(100vw, calc(100vh * 16 / 9));
+    }
+
+    .slide.active {
+      display: grid;
+    }
+
+    body.presentation-mode .slide {
+      border: 0;
+      box-shadow: none;
+      height: 100vh;
+      max-height: none;
+      max-width: none;
+      width: 100vw;
+    }
+
+    .slide::before {
+      background:
+        linear-gradient(90deg, var(--amber), var(--red), var(--blue));
+      content: "";
+      height: 8px;
+      left: 0;
+      position: absolute;
+      right: 0;
+      top: 0;
+    }
+
+    .slide::after {
+      background:
+        linear-gradient(135deg, transparent 44%, rgba(17, 24, 39, .08) 44%, rgba(17, 24, 39, .08) 47%, transparent 47%);
+      bottom: 0;
+      content: "";
+      pointer-events: none;
+      position: absolute;
+      right: 0;
+      top: 0;
+      width: 48%;
+    }
+
+    .meta {
+      color: rgba(17, 24, 39, .72);
+      display: flex;
+      font-size: clamp(11px, 1vw, 14px);
+      font-weight: 800;
+      justify-content: space-between;
+      left: clamp(16px, 3vw, 44px);
+      position: fixed;
+      right: clamp(16px, 3vw, 44px);
+      top: clamp(12px, 2vw, 28px);
+      z-index: 20;
+    }
+
+    .progress {
+      background: linear-gradient(90deg, var(--amber), var(--red), var(--blue));
+      bottom: 0;
+      height: 7px;
+      left: 0;
+      position: fixed;
+      transition: width .18s ease;
+      z-index: 30;
+    }
+
+    .nav {
+      bottom: clamp(12px, 2vw, 28px);
+      display: flex;
+      gap: 10px;
+      left: 50%;
+      position: fixed;
+      transform: translateX(-50%);
+      z-index: 40;
+    }
+
+    .nav button,
+    .choice,
+    .pill-button,
+    .timer-btn {
+      align-items: center;
+      background: var(--paper);
+      border: 2px solid rgba(214, 183, 110, .92);
+      border-radius: 8px;
+      color: var(--ink);
+      cursor: pointer;
+      display: inline-flex;
+      font-weight: 900;
+      justify-content: center;
+      min-height: 42px;
+      padding: 10px 14px;
+    }
+
+    .nav button.primary,
+    .choice.active,
+    .pill-button.active,
+    .timer-btn.primary {
+      background: var(--amber);
+      border-color: var(--amber);
+      color: #241705;
+    }
+
+    .nav button:hover,
+    .choice:hover,
+    .pill-button:hover,
+    .timer-btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .content {
+      align-content: center;
+      display: grid;
+      gap: clamp(14px, 2vw, 24px);
+      height: 100%;
+      position: relative;
+      z-index: 1;
+    }
+
+    .title-layout {
+      grid-template-columns: 1fr minmax(290px, 430px);
+    }
+
+    .two-col {
+      align-items: center;
+      display: grid;
+      gap: clamp(18px, 3vw, 36px);
+      grid-template-columns: minmax(0, 1fr) minmax(280px, .78fr);
+    }
+
+    .wide-two {
+      align-items: start;
+      display: grid;
+      gap: 18px;
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .three-col {
+      display: grid;
+      gap: 16px;
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .four-col {
+      display: grid;
+      gap: 14px;
+      grid-template-columns: repeat(4, 1fr);
+    }
+
+    .stack {
+      display: grid;
+      gap: clamp(12px, 1.7vw, 18px);
+    }
+
+    .kicker {
+      color: var(--red);
+      font-size: clamp(13px, 1.3vw, 18px);
+      font-weight: 900;
+      margin: 0;
+    }
+
+    h1, h2, h3, p { margin: 0; }
+
+    h1 {
+      color: var(--night);
+      font-size: clamp(44px, 6.2vw, 88px);
+      letter-spacing: 0;
+      line-height: 1.02;
+      max-width: 980px;
+    }
+
+    h2 {
+      color: var(--night);
+      font-size: clamp(30px, 4.2vw, 58px);
+      letter-spacing: 0;
+      line-height: 1.08;
+    }
+
+    h3 {
+      color: var(--night);
+      font-size: clamp(20px, 2.1vw, 30px);
+      line-height: 1.18;
+    }
+
+    p, li {
+      font-size: clamp(17px, 1.65vw, 25px);
+      line-height: 1.36;
+    }
+
+    ul {
+      display: grid;
+      gap: 10px;
+      margin: 0;
+      padding-left: 1.3em;
+    }
+
+    .large-line {
+      color: #263349;
+      font-size: clamp(25px, 3.2vw, 44px);
+      font-weight: 900;
+      line-height: 1.16;
+    }
+
+    .small {
+      color: var(--muted);
+      font-size: clamp(14px, 1.25vw, 18px);
+      line-height: 1.35;
+    }
+
+    .panel,
+    .card,
+    .note,
+    .mini-card {
+      background: rgba(255, 255, 255, .74);
+      border: 1px solid rgba(214, 183, 110, .68);
+      border-radius: 8px;
+      box-shadow: 0 18px 42px rgba(31, 42, 68, .08);
+      padding: clamp(14px, 1.8vw, 24px);
+    }
+
+    .dark-panel {
+      background: var(--night);
+      border-color: rgba(246, 196, 83, .46);
+      color: var(--paper);
+    }
+
+    .dark-panel h3,
+    .dark-panel p {
+      color: var(--paper);
+    }
+
+    .callout {
+      background: #fff1b8;
+      border-left: 8px solid var(--amber);
+      border-radius: 8px;
+      padding: 18px 20px;
+    }
+
+    .moon-board {
+      aspect-ratio: 1;
+      background:
+        radial-gradient(circle at 50% 18%, #fff7d1 0 16%, transparent 17%),
+        linear-gradient(180deg, #14213d 0 54%, #241522 55% 100%);
+      border: 2px solid rgba(246, 196, 83, .44);
+      border-radius: 14px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .moon-board .house {
+      background: #f6c453;
+      border: 3px solid #3a2b12;
+      bottom: 18%;
+      height: 20%;
+      position: absolute;
+      width: 22%;
+    }
+
+    .house.one { left: 14%; }
+    .house.two { left: 42%; transform: scale(1.18); }
+    .house.three { right: 13%; }
+
+    .moon-board .roof {
+      border-bottom: 42px solid #d64a4a;
+      border-left: 48px solid transparent;
+      border-right: 48px solid transparent;
+      bottom: 36%;
+      height: 0;
+      position: absolute;
+      width: 0;
+    }
+
+    .roof.one { left: 10%; }
+    .roof.two { left: 39%; transform: scale(1.18); }
+    .roof.three { right: 9%; }
+
+    .flow {
+      display: grid;
+      gap: 12px;
+      grid-template-columns: repeat(5, 1fr);
+    }
+
+    .step {
+      background: var(--night);
+      border-radius: 8px;
+      color: var(--paper);
+      display: grid;
+      gap: 8px;
+      min-height: 150px;
+      padding: 14px;
+    }
+
+    .step b {
+      align-items: center;
+      background: var(--amber);
+      border-radius: 999px;
+      color: #251704;
+      display: grid;
+      font-size: 20px;
+      height: 34px;
+      justify-content: center;
+      width: 34px;
+    }
+
+    .step h3, .step p {
+      color: var(--paper);
+    }
+
+    .role-grid,
+    .player-grid,
+    .center-grid {
+      display: grid;
+      gap: 12px;
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .role-card,
+    .player-card,
+    .center-card {
+      background: #fff9e8;
+      border: 2px solid rgba(214, 183, 110, .9);
+      border-radius: 8px;
+      display: grid;
+      gap: 6px;
+      min-height: 98px;
+      padding: 12px;
+      text-align: center;
+    }
+
+    .role-card.wolf,
+    .player-card.changed {
+      border-color: var(--red);
+    }
+
+    .role-card.info,
+    .player-card.known {
+      border-color: var(--blue);
+    }
+
+    .role-card b,
+    .player-card b,
+    .center-card b {
+      font-size: clamp(18px, 2vw, 26px);
+    }
+
+    .role-card small,
+    .player-card small,
+    .center-card small {
+      color: var(--muted);
+      font-size: clamp(12px, 1.1vw, 15px);
+      font-weight: 800;
+    }
+
+    .button-row,
+    .choice-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    #simButtons {
+      display: grid;
+      gap: 8px;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    #simButtons .pill-button {
+      font-size: clamp(13px, 1.05vw, 16px);
+      line-height: 1.2;
+      min-height: 38px;
+      padding: 8px 10px;
+      text-align: center;
+    }
+
+    .feedback {
+      background: var(--night);
+      border-left: 8px solid var(--amber);
+      border-radius: 8px;
+      color: var(--paper);
+      font-size: clamp(17px, 1.55vw, 22px);
+      line-height: 1.38;
+      min-height: 78px;
+      padding: 16px;
+    }
+
+    .sim-slide h2 {
+      font-size: clamp(30px, 3.45vw, 48px);
+    }
+
+    .sim-slide .content,
+    .sim-slide .stack {
+      gap: 10px;
+    }
+
+    .sim-slide .player-card,
+    .sim-slide .center-card {
+      min-height: 80px;
+      padding: 9px;
+    }
+
+    .sim-slide .player-card b,
+    .sim-slide .center-card b {
+      font-size: clamp(17px, 1.55vw, 23px);
+    }
+
+    .info-map {
+      display: grid;
+      gap: 12px;
+      grid-template-columns: repeat(4, 1fr);
+    }
+
+    .map-column {
+      background: rgba(255, 255, 255, .8);
+      border: 2px solid rgba(214, 183, 110, .7);
+      border-radius: 8px;
+      display: grid;
+      gap: 10px;
+      min-height: 260px;
+      padding: 14px;
+    }
+
+    .map-column strong {
+      color: var(--night);
+      font-size: clamp(18px, 1.8vw, 25px);
+    }
+
+    .map-column span {
+      background: rgba(31, 42, 68, .07);
+      border-radius: 6px;
+      color: #263349;
+      display: block;
+      font-size: clamp(14px, 1.3vw, 18px);
+      line-height: 1.35;
+      padding: 8px;
+    }
+
+    .comparison {
+      display: grid;
+      gap: 12px;
+      grid-template-columns: repeat(4, 1fr);
+    }
+
+    .comparison .card {
+      min-height: 220px;
+    }
+
+    .timeline {
+      display: grid;
+      gap: 10px;
+      grid-template-columns: 1fr;
+    }
+
+    .time-row {
+      align-items: center;
+      display: grid;
+      gap: 12px;
+      grid-template-columns: 108px 1fr 170px;
+    }
+
+    .time-row span {
+      color: var(--red);
+      font-size: clamp(15px, 1.35vw, 20px);
+      font-weight: 900;
+    }
+
+    .bar {
+      background: rgba(31, 42, 68, .13);
+      border-radius: 999px;
+      height: 16px;
+      overflow: hidden;
+    }
+
+    .bar i {
+      background: linear-gradient(90deg, var(--blue), var(--amber));
+      display: block;
+      height: 100%;
+    }
+
+    .timer-display {
+      color: var(--night);
+      font-size: clamp(58px, 7vw, 104px);
+      font-weight: 900;
+      line-height: .95;
+      text-align: center;
+    }
+
+    .badge {
+      background: rgba(214, 74, 74, .1);
+      border: 1px solid rgba(214, 74, 74, .35);
+      border-radius: 999px;
+      color: var(--red);
+      display: inline-flex;
+      font-size: clamp(13px, 1.15vw, 16px);
+      font-weight: 900;
+      justify-content: center;
+      padding: 7px 10px;
+      width: fit-content;
+    }
+
+    .exit-ticket {
+      background: var(--night);
+      border-radius: 10px;
+      color: var(--paper);
+      display: grid;
+      gap: 14px;
+      padding: clamp(18px, 2.6vw, 34px);
+    }
+
+    .exit-ticket h3,
+    .exit-ticket p {
+      color: var(--paper);
+    }
+
+    .hidden-note {
+      display: none;
+    }
+
+    @media (max-width: 900px) {
+      body { overflow: auto; }
+
+      .deck {
+        align-items: start;
+        min-height: 100vh;
+      }
+
+      .slide {
+        height: 100vh;
+        padding: 54px 18px 72px;
+        width: 100vw;
+      }
+
+      .title-layout,
+      .two-col,
+      .wide-two,
+      .three-col,
+      .four-col,
+      .flow,
+      .info-map,
+      .comparison {
+        grid-template-columns: 1fr;
+      }
+
+      h1 { font-size: clamp(38px, 11vw, 56px); }
+      h2 { font-size: clamp(28px, 8.2vw, 42px); }
+      p, li { font-size: clamp(15px, 4.2vw, 19px); }
+
+      .moon-board { display: none; }
+      .step { min-height: 0; }
+      .map-column { min-height: 0; }
+      .time-row { grid-template-columns: 76px 1fr; }
+      .time-row strong { grid-column: 2; }
+      .role-grid, .player-grid, .center-grid { grid-template-columns: repeat(2, 1fr); }
+      #simButtons { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .meta { font-size: 11px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * { transition: none !important; animation: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="meta">
+    <span>Week 2 · โครงสร้างข้อมูลในเกม</span>
+    <span id="counter">1/24</span>
+    <span>สอน + เล่น 3 ชั่วโมง</span>
+  </div>
+  <div class="progress" id="progress"></div>
+
+  <main class="deck" aria-label="SMA2106 Week 2 slide deck">
+    <section class="slide active" data-note="เปิดด้วยคำถามเดียวก่อน อย่าเพิ่งนิยามทฤษฎี ให้ผู้เรียนรู้สึกว่าข้อมูลบนโต๊ะอาจไม่เหมือนข้อมูลในหัวตัวเอง">
+      <div class="content title-layout">
+        <div class="stack">
+          <p class="kicker">SMA2106 · Week 2</p>
+          <h1>โครงสร้างข้อมูลในเกม</h1>
+          <p class="large-line">ใครรู้อะไร ตอนตัดสินใจ</p>
+          <p>วันนี้ใช้ One Night Werewolf เป็นห้องทดลอง: เล่นก่อน เห็นปัญหาก่อน แล้วค่อยตั้งชื่อด้วยคำจากหนังสือ</p>
+        </div>
+        <div class="moon-board" aria-label="ภาพหมู่บ้านกลางคืน">
+          <div class="roof one"></div><div class="house one"></div>
+          <div class="roof two"></div><div class="house two"></div>
+          <div class="roof three"></div><div class="house three"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" data-note="ชี้ให้เห็นว่าชั่วโมงนี้ไม่ได้สอนให้โกหกเก่ง แต่สอนให้อ่านโครงสร้างข้อมูลเป็น">
+      <div class="content two-col">
+        <div class="stack">
+          <p class="kicker">เป้าหมายของคาบ</p>
+          <h2>ดูเกมให้เป็นแผนที่ข้อมูล</h2>
+          <ul>
+            <li>แยกได้ว่าอะไรคือข้อมูลที่เห็นจริง ข้อมูลที่ถูกซ่อน และข้อมูลที่คนอื่นอ้าง</li>
+            <li>อ่านได้ว่าใครรู้มากกว่าใคร และรู้นั้นมาจากบทบาทไหน</li>
+            <li>ใช้คำจากหนังสืออธิบายเกมได้ โดยไม่ต้องเริ่มจากศัพท์หนัก ๆ</li>
+          </ul>
+        </div>
+        <div class="callout">
+          <h3>ประโยคที่อยากให้จำ</h3>
+          <p>ก่อนตัดสินใจ ให้ถามก่อนว่า “ฉันรู้เอง หรือฉันแค่เชื่อคำพูดของใครบางคน?”</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" data-note="ใช้สไลด์นี้บริหารคาบ อาจารย์สามารถตัดช่วงคำอ้าง vs หลักฐานได้ถ้าเกมยืด">
+      <div class="content">
+        <p class="kicker">แผนเวลา 3 ชั่วโมง</p>
+        <h2>เล่นจริงสองรอบ แล้วค่อยเอาทฤษฎีมาจับ</h2>
+        <div class="timeline">
+          <div class="time-row"><span>0-28</span><div class="bar"><i style="width:16%"></i></div><strong>เปิดโจทย์ + สอนเล่น</strong></div>
+          <div class="time-row"><span>28-68</span><div class="bar"><i style="width:37%"></i></div><strong>demo + เล่นรอบที่ 1</strong></div>
+          <div class="time-row"><span>68-103</span><div class="bar"><i style="width:57%"></i></div><strong>debrief + mini lecture + พัก</strong></div>
+          <div class="time-row"><span>103-143</span><div class="bar"><i style="width:79%"></i></div><strong>เล่นรอบที่ 2 + information map</strong></div>
+          <div class="time-row"><span>143-180</span><div class="bar"><i style="width:100%"></i></div><strong>เทียบกับหนังสือ + exit ticket</strong></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" data-note="สอนกฎแบบพอเริ่มเล่น อย่าลงรายละเอียด Tanner ในรอบแรก">
+      <div class="content two-col">
+        <div class="stack">
+          <p class="kicker">สอนเล่นแบบย่อ</p>
+          <h2>One Night Werewolf เล่นจบในคืนเดียว</h2>
+          <ul>
+            <li>ทุกคนได้การ์ดบทบาท 1 ใบ และมีการ์ดกลาง 3 ใบ</li>
+            <li>กลางคืน บางบทบาทตื่นมาดูหรือสลับการ์ด</li>
+            <li>ตอนเช้า ทุกคนคุยกัน แล้วโหวตพร้อมกัน</li>
+            <li>ถ้า Werewolf ตาย ทีม Village ชนะ</li>
+          </ul>
+        </div>
+        <div class="panel">
+          <h3>กติกาที่ห้ามลืม</h3>
+          <p>การ์ดที่เห็นตอนเริ่มคืน อาจไม่ใช่บทบาทของคุณตอนจบคืน เพราะมีคนสลับการ์ดบนโต๊ะได้</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" data-note="แนะนำ role set สำหรับโต๊ะ 6-7 คน ใช้กับกิจกรรมในห้องจริง">
+      <div class="content">
+        <p class="kicker">จัดโต๊ะ</p>
+        <h2>โต๊ะละ 6-7 คน ใช้ชุดบทบาทนี้ก่อน</h2>
+        <div class="role-grid">
+          <div class="role-card wolf"><small>ทีม Werewolf</small><b>Werewolf x2</b><span>เห็นพวกเดียวกัน</span></div>
+          <div class="role-card info"><small>ทีม Village</small><b>Seer</b><span>ดูผู้เล่น 1 ใบ หรือการ์ดกลาง 2 ใบ</span></div>
+          <div class="role-card info"><small>ทีมตามการ์ดใหม่</small><b>Robber</b><span>สลับกับคนอื่น แล้วดูการ์ดใหม่</span></div>
+          <div class="role-card info"><small>ทีม Village</small><b>Troublemaker</b><span>สลับผู้เล่น 2 คน โดยไม่ดูการ์ด</span></div>
+          <div class="role-card"><small>ทีมตามการ์ดใหม่</small><b>Drunk</b><span>สลับกับการ์ดกลาง โดยไม่ดู</span></div>
+          <div class="role-card info"><small>ทีมตามการ์ดท้ายคืน</small><b>Insomniac</b><span>ดูการ์ดตัวเองตอนท้ายคืน</span></div>
+          <div class="role-card"><small>ทีม Village</small><b>Villager x2</b><span>ไม่ตื่นกลางคืน ใช้เทียบคำอ้าง</span></div>
+        </div>
+        <p class="small">ถ้ามี 7 คน ให้ใช้ Villager x3 ส่วน Tanner เก็บไว้เป็นบทบาทเสริมหลังผู้เล่นเริ่มคล่อง</p>
+      </div>
+    </section>
+
+    <section class="slide" data-note="ย้ำว่าลำดับกลางคืนคือจุดที่ข้อมูลเปลี่ยน ไม่ใช่แค่พิธีกรรมการเล่น">
+      <div class="content">
+        <p class="kicker">ลำดับกลางคืน</p>
+        <h2>ทุกบทบาทไม่ได้แค่ “ทำอะไร” แต่เปลี่ยนข้อมูลของใครบางคน</h2>
+        <div class="flow">
+          <div class="step"><b>1</b><h3>Werewolf</h3><p>รู้ว่าพวกเดียวกันคือใคร</p></div>
+          <div class="step"><b>2</b><h3>Seer</h3><p>ได้หลักฐานจากการ์ดที่เห็น</p></div>
+          <div class="step"><b>3</b><h3>Robber</h3><p>รู้บทบาทใหม่ของตัวเอง</p></div>
+          <div class="step"><b>4</b><h3>Troublemaker</h3><p>รู้ว่าตำแหน่งการ์ดเปลี่ยน แต่ไม่รู้หน้าไพ่</p></div>
+          <div class="step"><b>5</b><h3>Drunk / Insomniac</h3><p>คนหนึ่งไม่รู้ไพ่ใหม่ อีกคนเช็กท้ายคืน</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" data-note="ให้ผู้เรียนกดดูทีละบทบาทก่อนเริ่มเล่นจริง">
+      <div class="content two-col">
+        <div class="stack">
+          <p class="kicker">ลำดับบทบาท</p>
+          <h2>กดดูว่าแต่ละบทบาทรู้อะไร</h2>
+          <div class="button-row" id="roleButtons"></div>
+        </div>
+        <div class="dark-panel panel" id="roleDetail">
+          <h3>Werewolf</h3>
+          <p>ตื่นมาเห็น Werewolf คนอื่น ถ้าเป็นคนเดียวอาจดูการ์ดกลาง 1 ใบ</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide sim-slide" data-note="อาจารย์ใช้ simulator นี้ก่อนเล่นรอบแรก เพื่อให้เห็นว่าข้อมูลในหัวแต่ละคนไม่ตรงกับข้อมูลบนโต๊ะ">
+      <div class="content two-col">
+        <div class="stack">
+          <p class="kicker">ตัวอย่างกลางคืน</p>
+          <h2>ในคืนเดียว การ์ดบนโต๊ะเปลี่ยนได้หลายครั้ง</h2>
+          <div class="player-grid" id="players"></div>
+          <div class="center-grid" id="centers"></div>
+          <div class="button-row" id="simButtons"></div>
+        </div>
+        <div class="panel">
+          <h3 id="simTitle">เริ่มคืน</h3>
+          <p id="simText">ทุกคนรู้การ์ดที่ตัวเองเห็นตอนแรก แต่ยังไม่มีใครรู้ว่าไพ่จะถูกสลับต่ออย่างไร</p>
+          <div class="feedback" id="simLesson">ความจริงบนโต๊ะกับความเชื่อในหัวผู้เล่นยังตรงกันอยู่</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" data-note="สไลด์นี้ใช้ตอนปล่อยเล่นรอบที่ 1">
+      <div class="content two-col">
+        <div class="stack">
+          <p class="kicker">กิจกรรมที่ 1</p>
+          <h2>เล่นรอบที่ 1: รอบเรียนกติกา</h2>
+          <ul>
+            <li>โต๊ะละ 6-7 คน</li>
+            <li>ใช้บทบาทเริ่มต้นตามสไลด์ก่อนหน้า</li>
+            <li>ยังไม่ต้องเล่นฉลาดมาก แค่พูดให้ชัดว่ารู้จากอะไร</li>
+            <li>ผู้สังเกตจด 1 คำอ้างที่น่าสนใจ</li>
+          </ul>
+        </div>
+        <div class="panel">
+          <h3>จับเวลา 25 นาที</h3>
+          <div class="timer-display" id="timerDisplay">25:00</div>
+          <div class="button-row">
+            <button class="timer-btn primary" data-timer="start">เริ่ม</button>
+            <button class="timer-btn" data-timer="pause">พัก</button>
+            <button class="timer-btn" data-timer="reset">รีเซต</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" data-note="ให้แต่ละโต๊ะตอบด้วยปากก่อน อาจารย์ค่อยสรุปบนสไลด์">
+      <div class="content">
+        <p class="kicker">Debrief รอบที่ 1</p>
+        <h2>ใครรู้จริง ใครเดา ใครแค่พูดให้คนอื่นเชื่อ?</h2>
+        <div class="info-map">
+          <div class="map-column"><strong>รู้แน่</strong><span>เห็นการ์ดด้วยบทบาทของตัวเอง</span><span>เช่น Seer เห็นการ์ดกลาง</span></div>
+          <div class="map-column"><strong>เดา</strong><span>สรุปจากพฤติกรรมหรือคำพูด</span><span>ยังผิดได้เสมอ</span></div>
+          <div class="map-column"><strong>อ้างว่า</strong><span>ผู้เล่นพูดว่าเป็นบทบาทนั้น</span><span>ยังไม่ใช่หลักฐานโดยตัวเอง</span></div>
+          <div class="map-column"><strong>ยังไม่รู้</strong><span>การ์ดกลางที่ไม่มีใครเห็น</span><span>บทบาทหลังถูกสลับโดยไม่รู้ตัว</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" data-note="เริ่มผูกกับหนังสือหลังจากผู้เรียนมีประสบการณ์แล้ว">
+      <div class="content two-col">
+        <div class="stack">
+          <p class="kicker">จากเกมสู่หนังสือ</p>
+          <h2>โครงสร้างข้อมูล คือ กติกาว่าใครรู้อะไร</h2>
+          <p>หนังสือบทที่ 2 เริ่มจากคำถามนี้: ณ จุดที่ต้องตัดสินใจ ผู้เล่นแต่ละคนมีข้อมูลชุดเดียวกันไหม หรือมีบางส่วนที่ถูกซ่อนไว้</p>
+        </div>
+        <div class="callout">
+          <h3>แปลเป็นภาษาหน้าห้อง</h3>
+          <p>อย่าถามแค่ว่าใครพูดน่าเชื่อ ให้ถามว่าเขามีสิทธิ์รู้อะไรตั้งแต่แรก</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" data-note="นิยามให้สั้นที่สุด แล้วโยงกับเกม">
+      <div class="content">
+        <p class="kicker">สรุปจากหนังสือ</p>
+        <h2>ข้อมูลในเกมมี 3 แบบที่ต้องแยกให้ออก</h2>
+        <div class="three-col">
+          <div class="card"><span class="badge">Perfect Information</span><h3>เห็นข้อมูลครบ</h3><p>ทุกคนเห็นสถานะเกมเหมือนกัน เช่น Chess</p></div>
+          <div class="card"><span class="badge">Hidden Information</span><h3>มีข้อมูลที่ถูกซ่อน</h3><p>บางอย่างคว่ำไว้หรืออยู่ในมือผู้เล่น เช่น Love Letter</p></div>
+          <div class="card"><span class="badge">Asymmetric Information</span><h3>รู้ไม่เท่ากันตั้งแต่ต้น</h3><p>บางฝ่ายรู้โครงสร้างมากกว่าอีกฝ่าย เช่น Avalon หรือ Werewolf</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" data-note="อย่าอธิบาย information set แบบกราฟทฤษฎีเกมยาว ให้ใช้ภาพคนแยกสถานการณ์ไม่ออก">
+      <div class="content two-col">
+        <div class="stack">
+          <p class="kicker">Information Set</p>
+          <h2>บางครั้งผู้เล่นแยกสถานการณ์จริงไม่ออก</h2>
+          <p>ถ้า P3 ถูก Robber สลับการ์ด แต่ P3 ไม่รู้ตัว เขาอาจคิดว่ายังเป็น Villager อยู่ ทั้งที่บนโต๊ะจริงไม่ใช่แล้ว</p>
+        </div>
+        <div class="panel">
+          <h3>คำไทยที่ใช้ในห้อง</h3>
+          <p>Information Set = “สถานการณ์ที่ผู้เล่นแยกไม่ออก”</p>
+          <p class="small">ผู้เล่นรู้ว่าตัวเองอยู่ในกลุ่มความเป็นไปได้ชุดหนึ่ง แต่ไม่รู้จุดจริงที่แน่นอน</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" data-note="Common knowledge เป็นจุดที่นักศึกษามักสับสน ให้แยกจากแค่ทุกคนรู้">
+      <div class="content wide-two">
+        <div class="stack">
+          <p class="kicker">Common Knowledge</p>
+          <h2>“ทุกคนรู้” ยังไม่พอ</h2>
+          <p>Common Knowledge คือ ทุกคนรู้ และรู้ว่าคนอื่นก็รู้ และรู้ต่อไปอีกชั้นว่าอีกฝ่ายรู้เหมือนกัน</p>
+        </div>
+        <div class="panel">
+          <h3>ใน One Night Werewolf</h3>
+          <ul>
+            <li>กติกาเป็น Common Knowledge</li>
+            <li>การ์ดของแต่ละคนไม่ใช่ Common Knowledge</li>
+            <li>คำอ้างตอนเช้าอาจทำให้บางข้อมูลเริ่มกลายเป็นข้อมูลร่วม แต่ยังต้องระวังการโกหก</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" data-note="ปล่อยเล่นรอบสองโดยเพิ่มภารกิจสังเกต ทำให้เกมมีเป้าหมายทางวิชาการ">
+      <div class="content two-col">
+        <div class="stack">
+          <p class="kicker">กิจกรรมที่ 2</p>
+          <h2>เล่นรอบที่ 2: รอบตามข้อมูล</h2>
+          <ul>
+            <li>ทุกคนต้องจับ 1 คำอ้าง และ 1 หลักฐาน</li>
+            <li>ระหว่างคุย ให้ถาม “รู้จากบทบาทไหน?”</li>
+            <li>ก่อนโหวต ให้โต๊ะหยุด 30 วินาทีแล้วชี้ข้อมูลที่หนักที่สุด</li>
+          </ul>
+        </div>
+        <div class="panel">
+          <h3>จับเวลา 25 นาที</h3>
+          <div class="timer-display" id="timerDisplay2">25:00</div>
+          <div class="button-row">
+            <button class="timer-btn primary" data-timer2="start">เริ่ม</button>
+            <button class="timer-btn" data-timer2="pause">พัก</button>
+            <button class="timer-btn" data-timer2="reset">รีเซต</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" data-note="ใช้เป็นบอร์ด debrief หลังรอบสอง">
+      <div class="content">
+        <p class="kicker">แผนที่ข้อมูล</p>
+        <h2>ลากคำพูดในหัวให้กลับมาอยู่บนโต๊ะ</h2>
+        <div class="wide-two">
+          <div class="panel">
+            <h3>ให้แต่ละโต๊ะเติมด้วยปาก</h3>
+            <ul>
+              <li>ข้อมูลชิ้นไหนมาจากการเห็นการ์ดจริง</li>
+              <li>ข้อมูลชิ้นไหนมาจากคำอ้าง</li>
+              <li>ข้อมูลชิ้นไหนเป็นแค่การเดา</li>
+              <li>ข้อมูลอะไรยังไม่ควรเชื่อเต็มที่</li>
+            </ul>
+          </div>
+          <div class="dark-panel panel">
+            <h3>สรุปของอาจารย์</h3>
+            <p>เกม social deduction สนุกเพราะข้อมูลสามแบบนี้ปนกันตลอดเวลา คนที่เล่นดีไม่ได้เชื่อทุกอย่าง แต่รู้ว่าสิ่งไหนเป็นหลักฐาน และสิ่งไหนเป็นคำพูดที่ต้องทดสอบ</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" data-note="เทียบเกมจากหนังสือให้เห็นว่าบทที่ 2 ไม่ได้อยู่แค่ Werewolf">
+      <div class="content">
+        <p class="kicker">เชื่อมกับบทที่ 2</p>
+        <h2>เกมต่างกัน เพราะข้อมูลถูกจัดไม่เหมือนกัน</h2>
+        <div class="comparison">
+          <div class="card"><h3>Chess</h3><p><b>เห็นข้อมูลครบ</b><br>ชนะด้วยการคิดลึกกว่า ไม่ใช่รู้มากกว่า</p></div>
+          <div class="card"><h3>Love Letter</h3><p><b>มีข้อมูลที่ถูกซ่อน</b><br>อ่านจากการ์ดที่เล่นไปแล้วและสิ่งที่คู่แข่งเลือกทำ</p></div>
+          <div class="card"><h3>Avalon</h3><p><b>รู้ไม่เท่ากันตั้งแต่ต้น</b><br>ฝ่าย Evil รู้กันเอง ฝ่าย Good ต้องออกแบบคำถาม</p></div>
+          <div class="card"><h3>One Night Werewolf</h3><p><b>ข้อมูลเปลี่ยนในคืนเดียว</b><br>บทบาทตอนแรกอาจไม่ใช่บทบาทตอนจบ</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" data-note="กิจกรรมนี้ใช้เวลาสั้น ถ้าเกมยืดให้ข้ามไป exit ticket ได้">
+      <div class="content two-col">
+        <div class="stack">
+          <p class="kicker">คำอ้าง vs หลักฐาน</p>
+          <h2>คำพูดนี้น่าเชื่อแค่ไหน?</h2>
+          <div class="button-row">
+            <button class="choice claim-choice active" data-claim="seer">“ผมเป็น Seer เห็นการ์ดกลางสองใบ”</button>
+            <button class="choice claim-choice" data-claim="trouble">“ฉันสลับ A กับ C”</button>
+            <button class="choice claim-choice" data-claim="accuse">“เขาดูเงียบเกินไป น่าจะเป็นหมาป่า”</button>
+            <button class="choice claim-choice" data-claim="insomniac">“ฉันดูการ์ดท้ายคืนแล้ว ยังเป็น Insomniac”</button>
+          </div>
+        </div>
+        <div class="feedback" id="claimFeedback">ถ้าเป็น Seer จริง นี่คือหลักฐานที่มีน้ำหนัก แต่ยังต้องถามต่อว่าเห็นใบไหน และพูดตรงกับคนอื่นไหม</div>
+      </div>
+    </section>
+
+    <section class="slide" data-note="สรุปทฤษฎีให้กลับไปที่คำถามเดียวของคาบ">
+      <div class="content">
+        <p class="kicker">สรุปบทเรียน</p>
+        <h2>ข้อมูลเป็นทรัพยากรเชิงกลยุทธ์</h2>
+        <div class="three-col">
+          <div class="card"><h3>เห็นอะไร</h3><p>ข้อมูลที่ผู้เล่นเห็นด้วยตัวเอง</p></div>
+          <div class="card"><h3>เชื่ออะไร</h3><p>ความเชื่อที่เกิดจากคำพูดและพฤติกรรมของคนอื่น</p></div>
+          <div class="card"><h3>ตัดสินใจอย่างไร</h3><p>การเลือกภายใต้ข้อมูลที่ไม่ครบหรือไม่เท่ากัน</p></div>
+        </div>
+        <div class="callout">
+          <p>บทที่ 2 ยังไม่ถามว่า “ควรเลือกอะไรดีที่สุด” แต่ถามก่อนว่า “เรากำลังเลือกอยู่ใต้ข้อมูลแบบไหน”</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" data-note="ใช้ให้นักศึกษาคุย 2 นาทีแล้วให้บางคนตอบ">
+      <div class="content two-col">
+        <div class="stack">
+          <p class="kicker">คุยคู่</p>
+          <h2>ถ้ารู้ไม่เท่ากัน คนที่รู้น้อยกว่าควรทำอะไร?</h2>
+          <ul>
+            <li>ถามให้คนที่อ้างต้องระบุแหล่งข้อมูล</li>
+            <li>หาคำพูดที่ขัดกันเอง</li>
+            <li>สร้างสถานการณ์เล็ก ๆ เพื่อทดสอบคำอ้าง</li>
+          </ul>
+        </div>
+        <div class="panel">
+          <h3>โยงไป Week 3</h3>
+          <p>สัปดาห์หน้าเราจะเริ่มถามต่อว่า ภายใต้ข้อมูลที่ไม่ครบ เราควรเสี่ยง เชื่อ โกหก หรือรอหลักฐานอย่างไร</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" data-note="ให้เขียนส่งสั้น ๆ หรือพูดสรุปก่อนเลิกคาบ">
+      <div class="content two-col">
+        <div class="stack">
+          <p class="kicker">คำถามก่อนออกจากห้อง</p>
+          <h2>ก่อนออกจากห้อง ตอบ 3 ข้อนี้</h2>
+          <div class="exit-ticket">
+            <h3>1. วันนี้ข้อมูลชิ้นไหนเปลี่ยนการตัดสินใจของคุณมากที่สุด?</h3>
+            <p>2. ข้อมูลนั้นเป็น “รู้แน่”, “เดา”, “อ้างว่า” หรือ “ยังไม่รู้”?</p>
+            <p>3. ถ้าเล่นใหม่อีกครั้ง คุณจะถามคำถามอะไรให้เร็วขึ้น?</p>
+          </div>
+        </div>
+        <div class="panel">
+          <h3>ส่งแบบสั้น</h3>
+          <p>เขียน 5-8 บรรทัดพอ ไม่ต้องเล่าเกมทั้งหมด ให้จับแค่จังหวะที่ข้อมูลเปลี่ยนการตัดสินใจ</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" data-note="Appendix ใช้เมื่อมีเวลา หรือมีนักศึกษาถามเรื่อง Tanner">
+      <div class="content two-col">
+        <div class="stack">
+          <p class="kicker">ส่วนเสริม</p>
+          <h2>Tanner ทำให้เป้าหมายของเกมพลิก</h2>
+          <p>Tanner ไม่ได้อยากให้ทีม Village หรือ Werewolf ชนะ เขาอยากถูกโหวตตายเอง บทบาทนี้ทำให้คำอ้างและการจับพิรุธซับซ้อนขึ้น</p>
+        </div>
+        <div class="callout">
+          <h3>ใช้เมื่อผู้เล่นเริ่มคล่อง</h3>
+          <p>รอบแรก ๆ ยังไม่ควรใส่ เพราะนักศึกษาจะสับสนระหว่าง “หาความจริง” กับ “แกล้งทำตัวน่าสงสัย” เร็วเกินไป</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" data-note="ปิดด้วยแหล่งอ้างอิงของบทเรียน">
+      <div class="content two-col">
+        <div class="stack">
+          <p class="kicker">อ้างอิง</p>
+          <h2>แหล่งที่ใช้ประกอบสไลด์</h2>
+          <ul>
+            <li>หนังสือรายวิชา บทที่ 2: โครงสร้างข้อมูลในเกม</li>
+            <li>One Night Ultimate Werewolf base game rules</li>
+            <li>Kuhn (1953), Harsanyi (1967), Aumann (1976), Akerlof (1970)</li>
+          </ul>
+        </div>
+        <div class="panel">
+          <h3>หมายเหตุ</h3>
+          <p>สไลด์นี้ใช้การ์ดจำลองเพื่อการสอน ไม่ใช้ artwork จากเกมจริง และออกแบบสำหรับกิจกรรมในห้องเรียน 3 ชั่วโมง</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div class="nav" aria-label="slide controls">
+    <button type="button" id="prevBtn">‹</button>
+    <button type="button" id="fullBtn" class="primary">เต็มจอ</button>
+    <button type="button" id="nextBtn">›</button>
+  </div>
+
+  <script>
+    const slides = [...document.querySelectorAll('.slide')];
+    const progress = document.querySelector('#progress');
+    const counter = document.querySelector('#counter');
+    const requestedSlide = Number(new URLSearchParams(location.search).get('slide') || 1);
+    let index = Number.isFinite(requestedSlide)
+      ? Math.min(slides.length - 1, Math.max(0, requestedSlide - 1))
+      : 0;
+
+    function renderSlide() {
+      slides.forEach((slide, i) => slide.classList.toggle('active', i === index));
+      counter.textContent = `${index + 1}/${slides.length}`;
+      progress.style.width = `${((index + 1) / slides.length) * 100}%`;
+    }
+
+    function go(delta) {
+      index = Math.min(slides.length - 1, Math.max(0, index + delta));
+      renderSlide();
+    }
+
+    document.querySelector('#prevBtn').addEventListener('click', () => go(-1));
+    document.querySelector('#nextBtn').addEventListener('click', () => go(1));
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'ArrowRight' || event.key === 'PageDown' || event.key === ' ') go(1);
+      if (event.key === 'ArrowLeft' || event.key === 'PageUp') go(-1);
+    });
+
+    async function toggleFullscreen() {
+      if (!document.fullscreenElement) {
+        document.body.classList.add('presentation-mode');
+        await document.documentElement.requestFullscreen();
+      } else {
+        await document.exitFullscreen();
+      }
+    }
+
+    document.querySelector('#fullBtn').addEventListener('click', toggleFullscreen);
+    document.addEventListener('fullscreenchange', () => {
+      document.body.classList.toggle('presentation-mode', Boolean(document.fullscreenElement));
+    });
+
+    const roles = [
+      ['Werewolf', 'ตื่นมาเห็น Werewolf คนอื่น ถ้าเป็นคนเดียวอาจดูการ์ดกลาง 1 ใบ', 'ข้อมูลที่ได้: รู้ว่าฝ่ายตัวเองมีใครบ้าง หรือได้เห็นการ์ดกลางบางส่วน'],
+      ['Seer', 'เลือกดูการ์ดผู้เล่น 1 ใบ หรือดูการ์ดกลาง 2 ใบ', 'ข้อมูลที่ได้: หลักฐานค่อนข้างแรง แต่ยังเป็นภาพ ณ เวลาที่ดู'],
+      ['Robber', 'สลับการ์ดตัวเองกับคนอื่น แล้วดูการ์ดใหม่ของตัวเอง', 'ข้อมูลที่ได้: รู้บทบาทใหม่ของตัวเอง แต่คนที่ถูกสลับอาจไม่รู้ตัว'],
+      ['Troublemaker', 'สลับการ์ดผู้เล่นคนอื่น 2 คน โดยไม่ดูหน้าไพ่', 'ข้อมูลที่ได้: รู้ว่าตำแหน่งเปลี่ยน แต่ไม่รู้ว่าเปลี่ยนเป็นบทบาทอะไร'],
+      ['Drunk', 'สลับการ์ดตัวเองกับการ์ดกลาง 1 ใบ โดยไม่ดูไพ่ใหม่', 'ข้อมูลที่ได้: รู้ว่าตัวเองไม่ใช่ Drunk แล้ว แต่ไม่รู้ว่าเป็นอะไร'],
+      ['Insomniac', 'ดูการ์ดตัวเองตอนท้ายคืน', 'ข้อมูลที่ได้: รู้บทบาทตอนจบของตัวเองชัดกว่าคนส่วนใหญ่']
+    ];
+
+    const roleButtons = document.querySelector('#roleButtons');
+    roles.forEach(([name], i) => {
+      const button = document.createElement('button');
+      button.className = `pill-button${i === 0 ? ' active' : ''}`;
+      button.textContent = name;
+      button.addEventListener('click', () => {
+        document.querySelectorAll('#roleButtons .pill-button').forEach((item) => item.classList.remove('active'));
+        button.classList.add('active');
+        const role = roles[i];
+        document.querySelector('#roleDetail').innerHTML = `<h3>${role[0]}</h3><p>${role[1]}</p><div class="callout"><p>${role[2]}</p></div>`;
+      });
+      roleButtons.append(button);
+    });
+
+    const simSteps = [
+      {
+        title: 'เริ่มคืน',
+        text: 'ทุกคนรู้การ์ดที่ตัวเองเห็นตอนแรก แต่ยังไม่มีใครรู้ว่าไพ่จะถูกสลับต่ออย่างไร',
+        lesson: 'ความจริงบนโต๊ะกับความเชื่อในหัวผู้เล่นยังตรงกันอยู่',
+        players: [['P1', 'Werewolf', 'known'], ['P2', 'Seer', 'known'], ['P3', 'Villager', 'known'], ['P4', 'Robber', 'known'], ['P5', 'Drunk', 'known']],
+        centers: ['Troublemaker', 'Insomniac', 'Villager']
+      },
+      {
+        title: 'Seer ดูการ์ดกลาง',
+        text: 'P2 เห็นการ์ดกลางสองใบ เช่น Troublemaker และ Insomniac แต่ยังไม่รู้การ์ดของทุกคน',
+        lesson: 'Seer มีหลักฐานบางส่วน แต่หลักฐานนั้นเกิดก่อนการสลับบางอย่างจะตามมา',
+        players: [['P1', 'Werewolf', 'known'], ['P2', 'Seer', 'known'], ['P3', 'Villager', ''], ['P4', 'Robber', ''], ['P5', 'Drunk', '']],
+        centers: ['Troublemaker', 'Insomniac', 'Villager']
+      },
+      {
+        title: 'Robber สลับกับ P3',
+        text: 'P4 เอาการ์ดของ P3 มาเป็นของตัวเอง แล้วรู้ว่าตัวเองกลายเป็น Villager',
+        lesson: 'P3 อาจยังคิดว่าตัวเองเป็น Villager ทั้งที่ตอนนี้ถือ Robber แล้ว',
+        players: [['P1', 'Werewolf', ''], ['P2', 'Seer', ''], ['P3', 'Robber', 'changed'], ['P4', 'Villager', 'known changed'], ['P5', 'Drunk', '']],
+        centers: ['Troublemaker', 'Insomniac', 'Villager']
+      },
+      {
+        title: 'Troublemaker สลับ P1/P5',
+        text: 'ถ้า Troublemaker อยู่ในเกม เขาสลับ P1 กับ P5 โดยไม่ดูหน้าไพ่',
+        lesson: 'คนถูกสลับไม่รู้ตัว แต่คนสลับรู้ว่าตำแหน่งเปลี่ยนแล้ว',
+        players: [['P1', 'Drunk', 'changed'], ['P2', 'Seer', ''], ['P3', 'Robber', 'changed'], ['P4', 'Villager', 'known'], ['P5', 'Werewolf', 'changed']],
+        centers: ['Troublemaker', 'Insomniac', 'Villager']
+      },
+      {
+        title: 'Drunk สลับการ์ดกลาง',
+        text: 'P1 ที่กลายเป็น Drunk ต้องสลับกับการ์ดกลาง 1 ใบ โดยไม่ดูการ์ดใหม่',
+        lesson: 'นี่คือจุดที่เจ้าตัวไม่รู้บทบาทปัจจุบันของตัวเองชัดที่สุด',
+        players: [['P1', 'Insomniac?', 'changed'], ['P2', 'Seer', ''], ['P3', 'Robber', ''], ['P4', 'Villager', 'known'], ['P5', 'Werewolf', 'changed']],
+        centers: ['Troublemaker', 'Drunk', 'Villager']
+      },
+      {
+        title: 'Insomniac เช็กตัวเอง',
+        text: 'ถ้า P1 กลายเป็น Insomniac และตื่นท้ายคืน จะรู้บทบาทตอนจบของตัวเอง',
+        lesson: 'ข้อมูลท้ายคืนช่วยยืนยันบทบาทปัจจุบัน แต่ตอนคุยก็ยังต้องทำให้คนอื่นเชื่อ',
+        players: [['P1', 'Insomniac', 'known changed'], ['P2', 'Seer', ''], ['P3', 'Robber', ''], ['P4', 'Villager', ''], ['P5', 'Werewolf', 'changed']],
+        centers: ['Troublemaker', 'Drunk', 'Villager']
+      }
+    ];
+
+    const simButtons = document.querySelector('#simButtons');
+    simSteps.forEach((step, i) => {
+      const button = document.createElement('button');
+      button.className = `pill-button${i === 0 ? ' active' : ''}`;
+      button.textContent = step.title;
+      button.addEventListener('click', () => renderSim(i));
+      simButtons.append(button);
+    });
+
+    function renderSim(stepIndex) {
+      const step = simSteps[stepIndex];
+      document.querySelectorAll('#simButtons .pill-button').forEach((button, i) => {
+        button.classList.toggle('active', i === stepIndex);
+      });
+      document.querySelector('#players').innerHTML = step.players.map(([name, role, cls]) => `
+        <div class="player-card ${cls}">
+          <small>${name}</small>
+          <b>${role}</b>
+          <small>${cls.includes('known') ? 'รู้ตอนนี้' : cls.includes('changed') ? 'ถูกเปลี่ยน' : 'ไม่แน่ใจ'}</small>
+        </div>
+      `).join('');
+      document.querySelector('#centers').innerHTML = step.centers.map((role, i) => `
+        <div class="center-card">
+          <small>กลาง ${i + 1}</small>
+          <b>${role}</b>
+        </div>
+      `).join('');
+      document.querySelector('#simTitle').textContent = step.title;
+      document.querySelector('#simText').textContent = step.text;
+      document.querySelector('#simLesson').textContent = step.lesson;
+    }
+
+    const claimFeedback = {
+      seer: 'ถ้าเป็น Seer จริง นี่คือหลักฐานที่มีน้ำหนัก แต่ยังต้องถามต่อว่าเห็นใบไหน และพูดตรงกับคนอื่นไหม',
+      trouble: 'นี่เป็นคำอ้างเรื่องการสลับตำแหน่ง คนพูดรู้ว่าเลือกใคร แต่ไม่รู้หน้าไพ่ของสองคนนั้น',
+      accuse: 'นี่เป็นการเดาจากพฤติกรรม ใช้ประกอบได้ แต่อย่าให้หนักเท่าหลักฐานจากการเห็นการ์ด',
+      insomniac: 'นี่เป็นหลักฐานเกี่ยวกับบทบาทตัวเองตอนท้ายคืน แต่คนอื่นยังต้องตัดสินว่าจะเชื่อคำพูดนี้หรือไม่'
+    };
+
+    document.querySelectorAll('.claim-choice').forEach((button) => {
+      button.addEventListener('click', () => {
+        document.querySelectorAll('.claim-choice').forEach((item) => item.classList.remove('active'));
+        button.classList.add('active');
+        document.querySelector('#claimFeedback').textContent = claimFeedback[button.dataset.claim];
+      });
+    });
+
+    function createTimer(displayId, attr) {
+      const display = document.querySelector(displayId);
+      let total = 25 * 60;
+      let remaining = total;
+      let timer = null;
+
+      function paint() {
+        const minutes = String(Math.floor(remaining / 60)).padStart(2, '0');
+        const seconds = String(remaining % 60).padStart(2, '0');
+        display.textContent = `${minutes}:${seconds}`;
+      }
+
+      function start() {
+        if (timer) return;
+        timer = setInterval(() => {
+          remaining = Math.max(0, remaining - 1);
+          paint();
+          if (remaining === 0) pause();
+        }, 1000);
+      }
+
+      function pause() {
+        clearInterval(timer);
+        timer = null;
+      }
+
+      function reset() {
+        pause();
+        remaining = total;
+        paint();
+      }
+
+      document.querySelectorAll(`[${attr}]`).forEach((button) => {
+        button.addEventListener('click', () => {
+          const action = button.getAttribute(attr);
+          if (action === 'start') start();
+          if (action === 'pause') pause();
+          if (action === 'reset') reset();
+        });
+      });
+      paint();
+    }
+
+    createTimer('#timerDisplay', 'data-timer');
+    createTimer('#timerDisplay2', 'data-timer2');
+    renderSim(0);
+    renderSlide();
+  </script>
+</body>
+</html>
