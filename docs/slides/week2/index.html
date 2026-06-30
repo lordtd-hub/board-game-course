@@ -295,43 +295,108 @@
       padding: 18px 20px;
     }
 
-    .moon-board {
+    .info-village {
       aspect-ratio: 1;
       background:
-        radial-gradient(circle at 50% 18%, #fff7d1 0 16%, transparent 17%),
-        linear-gradient(180deg, #14213d 0 54%, #241522 55% 100%);
+        radial-gradient(circle at 52% 18%, #fff6c8 0 14%, rgba(255, 246, 200, .12) 15%, transparent 28%),
+        radial-gradient(circle at 20% 82%, rgba(246, 196, 83, .24), transparent 34%),
+        linear-gradient(180deg, #111c36 0 47%, #1a243a 48% 66%, #241522 67% 100%);
       border: 2px solid rgba(246, 196, 83, .44);
       border-radius: 14px;
       overflow: hidden;
       position: relative;
     }
 
-    .moon-board .house {
-      background: #f6c453;
-      border: 3px solid #3a2b12;
-      bottom: 18%;
-      height: 20%;
+    .info-village::before {
+      background:
+        linear-gradient(135deg, transparent 0 18px, rgba(246, 196, 83, .94) 18px 54px, transparent 54px),
+        linear-gradient(45deg, transparent 0 22px, rgba(214, 74, 74, .94) 22px 58px, transparent 58px);
+      bottom: 34%;
+      content: "";
+      height: 64px;
+      left: 9%;
+      opacity: .86;
       position: absolute;
-      width: 22%;
+      right: 9%;
     }
 
-    .house.one { left: 14%; }
-    .house.two { left: 42%; transform: scale(1.18); }
-    .house.three { right: 13%; }
-
-    .moon-board .roof {
-      border-bottom: 42px solid #d64a4a;
-      border-left: 48px solid transparent;
-      border-right: 48px solid transparent;
-      bottom: 36%;
-      height: 0;
+    .info-village::after {
+      background:
+        linear-gradient(90deg, transparent, rgba(246, 196, 83, .28), transparent),
+        repeating-linear-gradient(90deg, #120b12 0 58px, #1c101a 58px 62px);
+      bottom: 0;
+      content: "";
+      height: 34%;
+      left: 0;
       position: absolute;
-      width: 0;
+      right: 0;
     }
 
-    .roof.one { left: 10%; }
-    .roof.two { left: 39%; transform: scale(1.18); }
-    .roof.three { right: 9%; }
+    .info-card {
+      background: linear-gradient(180deg, #fff7df, #f1d88e);
+      border: 2px solid rgba(246, 196, 83, .74);
+      border-radius: 10px;
+      box-shadow: 0 16px 28px rgba(0, 0, 0, .24);
+      color: #1b2030;
+      display: grid;
+      font-size: clamp(13px, 1.1vw, 16px);
+      font-weight: 900;
+      gap: 4px;
+      height: 30%;
+      padding: 12px;
+      position: absolute;
+      text-align: center;
+      width: 28%;
+      z-index: 3;
+    }
+
+    .info-card small {
+      color: #735222;
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .info-card b {
+      align-self: center;
+      font-size: clamp(18px, 1.7vw, 24px);
+      line-height: 1.1;
+    }
+
+    .info-card.hidden { left: 10%; top: 48%; transform: rotate(-7deg); }
+    .info-card.claim { left: 36%; top: 54%; transform: rotate(2deg); }
+    .info-card.evidence { right: 10%; top: 48%; transform: rotate(7deg); }
+
+    .clue-line {
+      background: rgba(246, 196, 83, .62);
+      border-radius: 999px;
+      height: 3px;
+      left: 20%;
+      position: absolute;
+      top: 46%;
+      transform-origin: left center;
+      width: 62%;
+      z-index: 2;
+    }
+
+    .clue-line.one { transform: rotate(13deg); }
+    .clue-line.two { top: 58%; transform: rotate(-8deg); }
+
+    .question-chip {
+      background: rgba(17, 24, 39, .88);
+      border: 1px solid rgba(246, 196, 83, .5);
+      border-radius: 999px;
+      color: var(--paper);
+      font-size: clamp(12px, 1vw, 15px);
+      font-weight: 900;
+      left: 50%;
+      padding: 8px 12px;
+      position: absolute;
+      text-align: center;
+      top: 34%;
+      transform: translateX(-50%);
+      white-space: nowrap;
+      z-index: 4;
+    }
 
     .flow {
       display: grid;
@@ -603,7 +668,7 @@
       h2 { font-size: clamp(28px, 8.2vw, 42px); }
       p, li { font-size: clamp(15px, 4.2vw, 19px); }
 
-      .moon-board { display: none; }
+      .info-village { display: none; }
       .step { min-height: 0; }
       .map-column { min-height: 0; }
       .time-row { grid-template-columns: 76px 1fr; }
@@ -635,10 +700,13 @@
           <p class="large-line">ใครรู้อะไร ตอนตัดสินใจ</p>
           <p>วันนี้ใช้ One Night Werewolf เป็นห้องทดลอง: เล่นก่อน เห็นปัญหาก่อน แล้วค่อยตั้งชื่อด้วยคำจากหนังสือ</p>
         </div>
-        <div class="moon-board" aria-label="ภาพหมู่บ้านกลางคืน">
-          <div class="roof one"></div><div class="house one"></div>
-          <div class="roof two"></div><div class="house two"></div>
-          <div class="roof three"></div><div class="house three"></div>
+        <div class="info-village" aria-label="ภาพหมู่บ้านกลางคืนกับการ์ดข้อมูล">
+          <div class="clue-line one"></div>
+          <div class="clue-line two"></div>
+          <div class="question-chip">รู้จริง หรือแค่เชื่อ?</div>
+          <div class="info-card hidden"><small>การ์ดที่ซ่อน</small><b>ยังไม่รู้</b></div>
+          <div class="info-card claim"><small>คำพูดบนโต๊ะ</small><b>อ้างว่า</b></div>
+          <div class="info-card evidence"><small>เห็นกับตา</small><b>หลักฐาน</b></div>
         </div>
       </div>
     </section>
