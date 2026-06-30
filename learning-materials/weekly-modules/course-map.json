@@ -64,24 +64,24 @@
       "chapter": "โครงสร้างข้อมูลในเกม",
       "englishTitle": "Information Structure in Games",
       "sourceFiles": ["chapters/ch02.tex"],
-      "games": ["Chess", "Love Letter", "Avalon"],
+      "games": ["Chess", "One Night Werewolf", "Love Letter", "Avalon"],
       "learningOutcomes": [
         "แยก perfect information, hidden information และ asymmetric information ได้",
         "อธิบาย information sets และ common knowledge ได้",
-        "ใช้ Bayesian updating แบบ informal วิเคราะห์ Love Letter ได้",
-        "อธิบาย screening และการอ่านประเภทผู้เล่นใน Avalon ได้"
+        "วิเคราะห์ว่าใครรู้อะไรและข้อมูลเปลี่ยนตอนไหนใน One Night Werewolf ได้",
+        "ใช้ belief tracking แบบ informal วิเคราะห์คำพูดและหลักฐานในเกม social deduction ได้"
       ],
       "coreConcepts": ["information structure", "perfect information", "hidden information", "asymmetric information", "common knowledge", "information set", "deduction", "screening"],
       "playFirstFlow": [
-        "เล่น Love Letter หลายรอบเร็วเพื่อให้เห็นหลักฐานใหม่ทุกตา",
-        "หยุดหลังบางตาให้ผู้เรียนเขียนว่าความเชื่อเกี่ยวกับไพ่ของคู่แข่งเปลี่ยนอย่างไร",
-        "demo Avalon role reveal เฉพาะฝั่ง เพื่อเปรียบเทียบข้อมูลไม่สมมาตร",
-        "debrief ด้วยคำถาม ใครรู้อะไร และใครต้องเดาอะไร"
+        "สอนเล่น One Night Werewolf ด้วย role set พื้นฐานและ night order สั้น",
+        "เล่น One Night Werewolf หลายรอบเพื่อให้เห็นข้อมูลที่ซ่อนอยู่และข้อมูลที่เปลี่ยนหลัง night action",
+        "หยุดหลังบางรอบให้ผู้เรียนทำ information map ว่าใครรู้อะไร ใครต้องเดา และ claim ไหนมีหลักฐาน",
+        "เปรียบเทียบสั้น ๆ กับ Love Letter หรือ Avalon หากต้องการเห็นรูปแบบ hidden/asymmetric information แบบอื่น"
       ],
       "interactiveHtmlIdeas": [
-        "Information map: แสดงข้อมูลที่แต่ละผู้เล่นรู้/ไม่รู้",
-        "Love Letter belief tracker",
-        "Avalon screening simulator สำหรับทดลองจัดทีมและอ่าน voting pattern"
+        "One Night Werewolf role wake-order strip",
+        "Night action simulator: แสดงว่าการ์ดและข้อมูลของผู้เล่นเปลี่ยนอย่างไร",
+        "Information map: แสดงข้อมูลที่แต่ละผู้เล่นรู้/ไม่รู้/อ้างว่า"
       ],
       "worksheet": "game-observation",
       "submission": {

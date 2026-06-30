@@ -78,16 +78,16 @@ export const materialWeeks: MaterialWeek[] = [
     title: "โครงสร้างข้อมูลในเกม",
     englishTitle: "Information Structure in Games",
     chapterSource: "chapters/ch02.tex",
-    games: ["Chess", "Love Letter", "Avalon"],
-    learningOutcomes: ["แยก perfect, hidden และ asymmetric information ได้", "อธิบาย information sets และ common knowledge ได้", "ใช้ belief tracking แบบง่ายกับ Love Letter ได้"],
+    games: ["Chess", "One Night Werewolf", "Love Letter", "Avalon"],
+    learningOutcomes: ["แยก perfect, hidden และ asymmetric information ได้", "อธิบาย information sets และ common knowledge ได้", "วิเคราะห์ว่าใครรู้อะไรและข้อมูลเปลี่ยนตอนไหนใน One Night Werewolf ได้"],
     concepts: ["information structure", "hidden information", "asymmetric information", "common knowledge", "deduction", "screening"],
     classFlow: defaultClassFlow,
     teachToPlay: [],
     conceptBlocks: [],
     activities: [
-      { id: "information-map", title: "Information map", purpose: "แสดงว่าใครรู้อะไรและใครต้องเดาอะไร", kind: "placeholder" },
-      { id: "belief-tracker", title: "Love Letter belief tracker", purpose: "ติดตามความเชื่อที่เปลี่ยนหลังเห็นหลักฐานใหม่", kind: "placeholder" },
-      { id: "avalon-screening", title: "Avalon screening simulator", purpose: "ทดลองจัดทีมและอ่าน voting pattern", kind: "placeholder" }
+      { id: "werewolf-wake-order", title: "One Night Werewolf wake-order strip", purpose: "เห็นว่าแต่ละ role ได้ข้อมูลหรือเปลี่ยนข้อมูลตอนไหน", kind: "placeholder" },
+      { id: "night-action-simulator", title: "Night action simulator", purpose: "จำลองการสลับการ์ดและผลต่อข้อมูลของผู้เล่น", kind: "placeholder" },
+      { id: "information-map", title: "Information map", purpose: "แสดงว่าใครรู้อะไร ใครต้องเดา และ claim ไหนมีหลักฐาน", kind: "placeholder" }
     ],
     worksheet: "Game Observation Worksheet",
     submissionTitle: "Information Structure Log",
