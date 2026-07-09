@@ -100,20 +100,30 @@ export const materialWeeks: MaterialWeek[] = [
     title: "การตัดสินใจภายใต้ความไม่แน่นอน",
     englishTitle: "Decision Making under Uncertainty",
     chapterSource: "chapters/ch03.tex",
-    games: ["Werewolf", "Avalon"],
-    learningOutcomes: ["แยก social uncertainty จาก risk และ ambiguity ได้", "อธิบาย bluffing, cheap talk และ credible communication ได้"],
+    games: ["Love Letter"],
+    learningOutcomes: ["แยก social uncertainty จาก risk และ ambiguity ได้", "อธิบาย bluffing, cheap talk และ credible communication ผ่าน Love Letter ได้"],
     concepts: ["social uncertainty", "mixed strategy", "bluffing", "cheap talk", "credible communication", "herding"],
     classFlow: defaultClassFlow,
-    teachToPlay: [],
+    teachToPlay: [
+      {
+        game: "Love Letter",
+        goal: "ชนะรอบด้วยการเหลือรอด หรือถือไพ่เลขสูงสุดเมื่อกองจั่วหมด",
+        turnLoop: ["จั่ว 1 ใบ", "เลือกเล่น 1 ใบจาก 2 ใบในมือ", "ทำความสามารถของไพ่", "วางไพ่ที่เล่นแล้วหงายไว้เป็นข้อมูลบนโต๊ะ"],
+        firstDecisions: ["จะใช้ข้อมูลจากไพ่ที่ออกแล้วอย่างไร", "คำพูดไหนน่าเชื่อหรือเป็นแค่การหลอก", "ควรป้องกันตัวเองหรือกดดันคนอื่น", "ควรเปลี่ยนรูปแบบการเล่นไม่ให้คนอื่นจับทางได้อย่างไร"],
+        doNotWorryYet: ["การจำการ์ดทั้งหมดตั้งแต่รอบแรก", "การ bluff ซับซ้อน", "การคำนวณโอกาสแบบละเอียด"],
+        playNowPrompt: "เล่นรอบแรกแบบเปิดเหตุผล แล้วเล่นจริงอีก 2-4 รอบตามเวลา",
+        debriefPrompt: "เลือกจังหวะหนึ่งที่ต้องตัดสินใจทั้งที่ข้อมูลไม่ครบ แล้วแยกว่ามีหลักฐานอะไรและมีคำพูดอะไรเข้ามาเกี่ยว"
+      }
+    ],
     conceptBlocks: [],
     activities: [
       { id: "credibility-meter", title: "Credibility meter", purpose: "จัดอันดับคำพูดและหลักฐาน", kind: "placeholder" },
-      { id: "vote-history", title: "Vote history visualization", purpose: "มอง pattern การโหวตในเกม social deduction", kind: "placeholder" },
-      { id: "bluff-mixer", title: "Bluff pattern mixer", purpose: "ทดลองสร้าง mixed strategy", kind: "placeholder" }
+      { id: "love-letter-card-checkpoint", title: "Love Letter card checkpoint", purpose: "เช็กความสามารถการ์ดสำคัญก่อนเล่นจริง", kind: "placeholder" },
+      { id: "bluff-mixer", title: "Bluff pattern mixer", purpose: "ทดลองเปลี่ยนรูปแบบการเล่นไม่ให้ถูกจับทางง่าย", kind: "placeholder" }
     ],
     worksheet: "Game Observation Worksheet",
     submissionTitle: "Credible or Cheap Talk",
-    submissionPrompt: "เลือกคำพูดหรือ vote หนึ่งครั้งจากเกม แล้ววิเคราะห์ว่ามีความน่าเชื่อถือเพียงใด",
+    submissionPrompt: "เลือกจังหวะหนึ่งจาก Love Letter แล้ววิเคราะห์ว่าตัดสินใจจากหลักฐาน คำพูด หรือการเดาเพราะข้อมูลไม่ครบ",
     exitTicket: { title: "Credible or Cheap Talk", prompt: "หลักฐานแบบไหนทำให้คุณเชื่อหรือไม่เชื่อผู้เล่นคนหนึ่ง" },
     status: "placeholder"
   },

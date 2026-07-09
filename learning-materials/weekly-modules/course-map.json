@@ -95,30 +95,30 @@
       "chapter": "การตัดสินใจภายใต้ความไม่แน่นอน",
       "englishTitle": "Decision Making under Uncertainty",
       "sourceFiles": ["chapters/ch03.tex"],
-      "games": ["Werewolf", "Avalon"],
+      "games": ["Love Letter"],
       "learningOutcomes": [
         "แยก social uncertainty ออกจาก risk และ ambiguity ได้",
         "อธิบาย mixed strategy และเหตุผลของ bluffing ได้",
         "แยก cheap talk, credible communication และ costly/corroborated evidence ได้",
-        "วิเคราะห์ Werewolf และ Avalon ในมุมการสื่อสารเชิงกลยุทธ์ได้"
+        "วิเคราะห์ Love Letter ในมุมข้อมูลไม่ครบ คำพูดที่เชื่อได้ และการ bluff ได้"
       ],
       "coreConcepts": ["social uncertainty", "mixed strategy", "bluffing", "cheap talk", "credible communication", "herding", "social proof"],
       "playFirstFlow": [
-        "เล่น Werewolf หรือ Avalon แบบ discussion-heavy",
-        "หยุดก่อน vote สำคัญให้แต่ละคนบันทึกว่าตนเชื่อใครและเพราะอะไร",
-        "หลัง vote เปิด debrief เรื่อง bluffing pattern และ cheap talk",
-        "ให้ผู้เรียนเทียบคำพูดกับ action จริง"
+        "สอนเล่น Love Letter เวอร์ชันการ์ด 0-9 แบบสั้น พร้อม checkpoint ความสามารถการ์ด",
+        "เล่นรอบแรกแบบเปิดเหตุผล เพื่อให้เห็นข้อมูลจากไพ่ที่ออกแล้วและคำพูดของผู้เล่น",
+        "เล่นจริงอีก 2-4 รอบตามเวลา โดยให้ผู้เรียนจับหนึ่งจังหวะที่ต้องตัดสินใจทั้งที่ข้อมูลไม่ครบ",
+        "debrief เรื่อง cheap talk, credible evidence, bluffing และการเล่นไม่ให้ถูกจับทางง่าย"
       ],
       "interactiveHtmlIdeas": [
         "Credibility meter สำหรับจัดอันดับคำพูด/หลักฐาน",
-        "Vote history visualization",
-        "Bluff pattern mixer ให้ลองสร้าง mixed strategy"
+        "Love Letter card ability checkpoint",
+        "Bluff pattern mixer ให้ลองสร้าง mixed strategy จากจังหวะ Guard, Handmaid และ Countess"
       ],
       "worksheet": "game-observation",
       "submission": {
         "type": "case-analysis",
         "title": "Credible or Cheap Talk",
-        "prompt": "เลือกคำพูดหรือการ vote หนึ่งครั้งจากเกม แล้ววิเคราะห์ว่ามีความน่าเชื่อถือเพียงใด"
+        "prompt": "เลือกจังหวะหนึ่งจาก Love Letter แล้ววิเคราะห์ว่าตัดสินใจจากหลักฐาน คำพูด หรือการเดาเพราะข้อมูลไม่ครบ"
       }
     },
     {
