@@ -11,7 +11,13 @@ export const appConfig = {
   googleSheetId: process.env.GOOGLE_SHEET_ID || "",
   googleDriveRootFolderId: process.env.GOOGLE_DRIVE_ROOT_FOLDER_ID || "",
   googleServiceAccountEmail: process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL || "",
-  googlePrivateKey: (process.env.GOOGLE_PRIVATE_KEY || "").replace(/\\n/g, "\n")
+  googlePrivateKey: (process.env.GOOGLE_PRIVATE_KEY || "").replace(/\\n/g, "\n"),
+  examSecret: process.env.EXAM_SECRET || process.env.AUTH_SECRET || "dev-exam-secret-change-before-deploy",
+  examControlPinHash: process.env.EXAM_CONTROL_PIN_HASH || "",
+  examRoomCodeHash: process.env.EXAM_ROOM_CODE_HASH || "",
+  examOpenAt: process.env.EXAM_OPEN_AT || "",
+  examCloseAt: process.env.EXAM_CLOSE_AT || "",
+  examSectionOptions: process.env.EXAM_SECTION_OPTIONS || "SEC-1:Section 1,SEC-2:Section 2,SEC-3:Section 3"
 };
 
 export function isAllowedEmail(email: string) {

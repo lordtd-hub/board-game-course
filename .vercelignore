@@ -5,6 +5,8 @@ node_modules
 coverage
 dist
 *.tsbuildinfo
+output/pdf/
+tmp/
 
 learning-materials/bookref
 learning-materials/**/_archive
