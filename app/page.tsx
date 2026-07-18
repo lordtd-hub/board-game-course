@@ -71,6 +71,11 @@ export default async function HomePage() {
           </p>
         </section>
       )}
+
+      <footer className="hub-credit">
+        <strong>ออกแบบและพัฒนาโดย Sittichoke Songsa-ard</strong>
+        <span>© 2026 Sittichoke Songsa-ard</span>
+      </footer>
     </div>
   );
 }
