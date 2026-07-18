@@ -33,8 +33,13 @@ export function MobileExam({ sections }: { sections: SectionOption[] }) {
   const phaseRef = useRef<Phase>("setup");
   const autoSubmitted = useRef(false);
   const hiddenPending = useRef(false);
+  const questionViewportRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => { phaseRef.current = phase; }, [phase]);
+
+  useEffect(() => {
+    questionViewportRef.current?.scrollTo({ top: 0, left: 0 });
+  }, [current, session?.formCode]);
 
   const storageKey = useMemo(() => session ? `sma2106-exam:${session.studentId}` : "", [session]);
   const persist = useCallback((nextAnswers: string[], nextCurrent = current) => {
@@ -198,7 +203,7 @@ export function MobileExam({ sections }: { sections: SectionOption[] }) {
       <main className={styles.questionShell}>
         <div className={styles.progressRow}><strong>ข้อ {current + 1} จาก {TOTAL}</strong><span>ตอบแล้ว {answers.filter(Boolean).length}/{TOTAL}</span></div>
         <div className={styles.zoomBar}><button type="button" onClick={() => setZoom(Math.max(.8, zoom - .1))}>A-</button><button type="button" onClick={() => setZoom(Math.min(1.5, zoom + .1))}>A+</button></div>
-        <div className={styles.questionViewport}>
+        <div className={styles.questionViewport} ref={questionViewportRef}>
           {/* eslint-disable-next-line @next/next/no-img-element -- authenticated SVG has dynamic height and must not be optimized or cached */}
           <img key={`${current}-${session?.formCode}`} src={`/api/exam/question?index=${current}`} alt={`ภาพโจทย์ข้อ ${current + 1}`} draggable={false} style={{ width: `${zoom * 100}%` }} />
         </div>
