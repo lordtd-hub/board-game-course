@@ -39,7 +39,8 @@ export async function POST(request: Request) {
   }
 
   const studentId = normalizeStudentId(parsed.data.studentId);
-  const state = await examState(studentId);
+  const state = await examState(studentId).catch(() => null);
+  if (!state) return NextResponse.json({ error: "ตรวจสถานะการสอบจาก Google Sheet ไม่สำเร็จ กรุณาลองอีกครั้ง" }, { status: 503 });
   if (state.disqualified) return NextResponse.json({ error: "รหัสนี้ถูกตัดสิทธิ์จากการสอบแล้ว", status: "disqualified" }, { status: 423 });
   if (state.result) return NextResponse.json({ error: "รหัสนี้ส่งข้อสอบแล้ว", status: "submitted", receipt: state.result.receipt }, { status: 409 });
 
@@ -59,6 +60,7 @@ export async function POST(request: Request) {
   });
   return NextResponse.json({
     examId: EXAM_ID, studentId, studentName: session.studentName, sectionId: session.sectionId,
-    startedAt, expiresAt: session.expiresAt, total: EXAM_TOTAL, formCode: formCode(session.seed), leaveCount: state.leaveCount
+    startedAt, expiresAt: session.expiresAt, serverNow: new Date().toISOString(),
+    total: EXAM_TOTAL, formCode: formCode(session.seed), leaveCount: state.leaveCount
   });
 }

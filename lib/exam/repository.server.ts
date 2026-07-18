@@ -1,7 +1,8 @@
 import "server-only";
+import crypto from "node:crypto";
 import { appConfig } from "@/lib/config";
 import { listSections } from "@/lib/repository";
-import { appendRow, getRows, primeSheetRows, updateRowById } from "@/lib/sheets";
+import { appendRow, appendRowWithLock, getRows, getRowsFresh, primeSheetRows, updateRowById } from "@/lib/sheets";
 import type { ExamConfigRow, ExamEventRow, ExamResultRow } from "@/lib/exam/types";
 
 const EXAM_CONFIG_ID = "sma2106-week1-2-v1-config";
@@ -46,13 +47,29 @@ export async function primeExamAdmission() {
   }
 }
 
-export async function appendExamResult(row: ExamResultRow) {
+function resultLockName(examId: string, studentId: string) {
+  const digest = crypto.createHash("sha256").update(`${examId}:${studentId}`).digest("hex").slice(0, 40).toUpperCase();
+  return `EXAM_RESULT_${digest}`;
+}
+
+export async function appendExamResultOnce(row: ExamResultRow) {
   if (!appConfig.googleSheetId) {
-    if (process.env.NODE_ENV === "production") throw new Error("GOOGLE_SHEET_ID is required for exam results.");
+    const existing = developmentStore.results.find((item) => item.examId === row.examId && item.studentId === row.studentId);
+    if (existing) return existing;
     developmentStore.results.push(row);
-    return;
+    return row;
   }
-  await appendRow("exam_results", row);
+
+  const appended = await appendRowWithLock("exam_results", row, resultLockName(row.examId, row.studentId));
+  if (appended) return row;
+
+  for (let attempt = 0; attempt < 8; attempt += 1) {
+    const results = await getRowsFresh<ExamResultRow>("exam_results");
+    const existing = results.find((item) => item.examId === row.examId && item.studentId === row.studentId);
+    if (existing) return existing;
+    await new Promise((resolve) => setTimeout(resolve, 150 * (attempt + 1)));
+  }
+  throw new Error("EXAM_RESULT_WRITE_IN_PROGRESS");
 }
 
 export async function appendExamEvent(row: ExamEventRow) {

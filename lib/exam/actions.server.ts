@@ -1,6 +1,6 @@
 import "server-only";
 import { EXAM_ID, EXAM_TOTAL, formCode, receiptFor } from "@/lib/exam/core.server";
-import { appendExamEvent, appendExamResult, listExamEvents, listExamResults, primeExamState } from "@/lib/exam/repository.server";
+import { appendExamEvent, appendExamResultOnce, listExamEvents, listExamResults, primeExamState } from "@/lib/exam/repository.server";
 import type { ExamSession } from "@/lib/exam/types";
 import { id, nowIso } from "@/lib/utils";
 
@@ -26,13 +26,13 @@ export async function recordScreenHidden(session: ExamSession, clientCount: numb
   });
   if (status === "disqualified") {
     const receipt = receiptFor(session.studentId, occurredAt);
-    await appendExamResult({
+    const result = await appendExamResultOnce({
       id: id("exr"), examId: EXAM_ID, studentId: session.studentId, studentName: session.studentName,
       sectionId: session.sectionId, formCode: formCode(session.seed), answers: "[]", score: "0",
       maxScore: String(EXAM_TOTAL), startedAt: session.startedAt, submittedAt: occurredAt,
       leaveCount: String(eventCount), status: "disqualified", receipt
     });
-    return { leaveCount: eventCount, status, receipt };
+    return { leaveCount: Number(result.leaveCount) || eventCount, status: result.status, receipt: result.receipt };
   }
   return { leaveCount: eventCount, status };
 }

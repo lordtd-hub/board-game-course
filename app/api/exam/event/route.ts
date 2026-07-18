@@ -11,6 +11,10 @@ export async function POST(request: Request) {
   if (!session) return NextResponse.json({ error: "Session หมดอายุ" }, { status: 401 });
   const parsed = EventSchema.safeParse(await request.json().catch(() => null));
   if (!parsed.success) return NextResponse.json({ error: "ข้อมูลเหตุการณ์ไม่ถูกต้อง" }, { status: 400 });
-  const result = await recordScreenHidden(session, parsed.data.count, `clientAt=${parsed.data.clientAt || "unknown"}`);
-  return NextResponse.json(result);
+  try {
+    const result = await recordScreenHidden(session, parsed.data.count, `clientAt=${parsed.data.clientAt || "unknown"}`);
+    return NextResponse.json(result);
+  } catch {
+    return NextResponse.json({ error: "บันทึกเหตุการณ์ลง Google Sheet ไม่สำเร็จ กรุณาคงหน้านี้ไว้และลองอีกครั้ง" }, { status: 503 });
+  }
 }

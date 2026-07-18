@@ -53,7 +53,7 @@ export function encodeExamSession(session: ExamSession) {
   return `${payload}.${hmac(payload)}`;
 }
 
-export function decodeExamSession(value: string | undefined): ExamSession | null {
+export function decodeExamSession(value: string | undefined, options: { allowExpiredMs?: number } = {}): ExamSession | null {
   if (!value) return null;
   const [payload, signature] = value.split(".");
   if (!payload || !signature) return null;
@@ -62,7 +62,8 @@ export function decodeExamSession(value: string | undefined): ExamSession | null
   if (actual.length !== expected.length || !crypto.timingSafeEqual(actual, expected)) return null;
   try {
     const session = JSON.parse(Buffer.from(payload, "base64url").toString("utf8")) as ExamSession;
-    if (session.examId !== EXAM_ID || Date.parse(session.expiresAt) <= Date.now()) return null;
+    const expiresAt = Date.parse(session.expiresAt);
+    if (session.examId !== EXAM_ID || !Number.isFinite(expiresAt) || expiresAt + (options.allowExpiredMs || 0) <= Date.now()) return null;
     return session;
   } catch {
     return null;

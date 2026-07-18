@@ -6,7 +6,8 @@ import { examState } from "@/lib/exam/actions.server";
 export async function GET() {
   const session = decodeExamSession((await cookies()).get(EXAM_COOKIE)?.value);
   if (!session) return NextResponse.json({ status: "missing" });
-  const state = await examState(session.studentId);
+  const state = await examState(session.studentId).catch(() => null);
+  if (!state) return NextResponse.json({ error: "โหลดสถานะการสอบไม่สำเร็จ" }, { status: 503 });
   return NextResponse.json({
     status: state.disqualified ? "disqualified" : state.result?.status || "active",
     studentId: session.studentId, studentName: session.studentName, sectionId: session.sectionId,

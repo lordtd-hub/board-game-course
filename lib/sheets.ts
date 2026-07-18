@@ -12,14 +12,17 @@ const globalForSheets = globalThis as typeof globalThis & {
   __sheetRowsCache?: Map<SheetName, RowCacheEntry>;
   __sheetRowsInflight?: Map<string, Promise<void>>;
   __sheetAppendQueues?: Map<SheetName, AppendQueue>;
+  __sheetNumericIds?: Map<SheetName, number>;
 };
 
 const rowCache = globalForSheets.__sheetRowsCache || new Map<SheetName, RowCacheEntry>();
 const rowInflight = globalForSheets.__sheetRowsInflight || new Map<string, Promise<void>>();
 const appendQueues = globalForSheets.__sheetAppendQueues || new Map<SheetName, AppendQueue>();
+const sheetNumericIds = globalForSheets.__sheetNumericIds || new Map<SheetName, number>();
 globalForSheets.__sheetRowsCache = rowCache;
 globalForSheets.__sheetRowsInflight = rowInflight;
 globalForSheets.__sheetAppendQueues = appendQueues;
+globalForSheets.__sheetNumericIds = sheetNumericIds;
 
 const CACHE_TTL_MS: Partial<Record<SheetName, number>> = {
   sections: 60_000,
@@ -46,6 +49,13 @@ function isQuotaError(error: unknown) {
   return candidate.status === 429 || candidate.code === 429 || candidate.response?.status === 429;
 }
 
+function isNonRetryableClientError(error: unknown) {
+  if (!error || typeof error !== "object") return false;
+  const candidate = error as { status?: number; code?: number; response?: { status?: number } };
+  const status = candidate.status || candidate.code || candidate.response?.status || 0;
+  return status >= 400 && status < 500 && status !== 429;
+}
+
 async function withRetry<T>(fn: () => Promise<T>, attempts = 4): Promise<T> {
   let lastError: unknown;
   for (let i = 0; i < attempts; i += 1) {
@@ -53,6 +63,7 @@ async function withRetry<T>(fn: () => Promise<T>, attempts = 4): Promise<T> {
       return await fn();
     } catch (error) {
       lastError = error;
+      if (isNonRetryableClientError(error)) break;
       if (i + 1 >= attempts) break;
       const delay = isQuotaError(error) ? 21_000 * (i + 1) : 300 * (i + 1);
       await new Promise((resolve) => setTimeout(resolve, delay));
@@ -69,6 +80,93 @@ function sheetId() {
 export async function getRows<T extends Row>(sheetName: SheetName): Promise<T[]> {
   await primeSheetRows([sheetName]);
   return (rowCache.get(sheetName)?.rows || []) as T[];
+}
+
+export async function getRowsFresh<T extends Row>(sheetName: SheetName): Promise<T[]> {
+  rowCache.delete(sheetName);
+  await primeSheetRows([sheetName]);
+  return (rowCache.get(sheetName)?.rows || []) as T[];
+}
+
+async function numericSheetId(sheetName: SheetName) {
+  const cached = sheetNumericIds.get(sheetName);
+  if (cached !== undefined) return cached;
+  const sheets = getSheetsClient();
+  const result = await withRetry(() => sheets.spreadsheets.get({
+    spreadsheetId: sheetId(),
+    fields: "sheets.properties(sheetId,title)"
+  }));
+  for (const sheet of result.data.sheets || []) {
+    const title = sheet.properties?.title as SheetName | undefined;
+    const id = sheet.properties?.sheetId;
+    if (title && typeof id === "number") sheetNumericIds.set(title, id);
+  }
+  const resolved = sheetNumericIds.get(sheetName);
+  if (resolved === undefined) throw new Error(`Sheet not found: ${sheetName}`);
+  return resolved;
+}
+
+function duplicateNamedRange(error: unknown) {
+  if (!error || typeof error !== "object") return false;
+  const candidate = error as { message?: string; response?: { data?: { error?: { message?: string } } } };
+  const message = `${candidate.message || ""} ${candidate.response?.data?.error?.message || ""}`;
+  return /named range with that name already exists/i.test(message);
+}
+
+function rowCell(header: string, value: string) {
+  if (["score", "maxScore", "leaveCount", "eventCount"].includes(header) && value !== "" && Number.isFinite(Number(value))) {
+    return { userEnteredValue: { numberValue: Number(value) } };
+  }
+  return { userEnteredValue: { stringValue: value } };
+}
+
+export async function appendRowWithLock(sheetName: SheetName, row: Row, lockName: string) {
+  if (!/^[A-Z][A-Z0-9_]{1,249}$/.test(lockName)) throw new Error("Invalid sheet lock name.");
+  const headers = [...SHEET_SCHEMAS[sheetName]];
+  const values = headers.map((header) => rowCell(header, row[header] || ""));
+  const targetSheetId = await numericSheetId(sheetName);
+  const sheets = getSheetsClient();
+  try {
+    await withRetry(() => sheets.spreadsheets.batchUpdate({
+      spreadsheetId: sheetId(),
+      requestBody: {
+        requests: [
+          {
+            addNamedRange: {
+              namedRange: {
+                name: lockName,
+                range: {
+                  sheetId: targetSheetId,
+                  startRowIndex: 0,
+                  endRowIndex: 1,
+                  startColumnIndex: 0,
+                  endColumnIndex: 1
+                }
+              }
+            }
+          },
+          {
+            appendCells: {
+              sheetId: targetSheetId,
+              rows: [{ values }],
+              fields: "userEnteredValue"
+            }
+          }
+        ]
+      }
+    }));
+    const cached = rowCache.get(sheetName);
+    if (cached && cached.expiresAt > Date.now()) {
+      cached.rows.push({ ...row });
+      cached.expiresAt = Date.now() + cacheTtl(sheetName);
+    } else {
+      rowCache.delete(sheetName);
+    }
+    return true;
+  } catch (error) {
+    if (duplicateNamedRange(error)) return false;
+    throw error;
+  }
 }
 
 export async function primeSheetRows(sheetNames: SheetName[]) {

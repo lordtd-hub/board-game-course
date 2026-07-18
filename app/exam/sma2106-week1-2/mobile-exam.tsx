@@ -7,11 +7,18 @@ type SectionOption = { id: string; label: string };
 type Phase = "setup" | "active" | "warning" | "submitting" | "submitted" | "disqualified" | "error";
 type SessionInfo = {
   studentId: string; studentName: string; sectionId: string; startedAt: string; expiresAt: string;
-  total: number; formCode: string; leaveCount: number; receipt?: string; status?: string;
+  serverNow?: string; total: number; formCode: string; leaveCount: number; receipt?: string; status?: string;
 };
 
 const LETTERS = ["A", "B", "C", "D"] as const;
 const TOTAL = 24;
+
+async function responseData(response: Response): Promise<Record<string, unknown>> {
+  const text = await response.text();
+  if (!text) return { error: `เซิร์ฟเวอร์ไม่ส่งรายละเอียดกลับมา (HTTP ${response.status})` };
+  try { return JSON.parse(text) as Record<string, unknown>; }
+  catch { return { error: `เซิร์ฟเวอร์ตอบกลับในรูปแบบที่อ่านไม่ได้ (HTTP ${response.status})` }; }
+}
 
 function formatTime(milliseconds: number) {
   const seconds = Math.max(0, Math.ceil(milliseconds / 1000));
@@ -25,6 +32,8 @@ export function MobileExam({ sections }: { sections: SectionOption[] }) {
   const [answers, setAnswers] = useState<string[]>(Array(TOTAL).fill(""));
   const [remaining, setRemaining] = useState(60 * 60 * 1000);
   const [zoom, setZoom] = useState(1);
+  const [questionRetry, setQuestionRetry] = useState(0);
+  const [questionError, setQuestionError] = useState(false);
   const [message, setMessage] = useState("");
   const [online, setOnline] = useState(() => typeof navigator === "undefined" || navigator.onLine);
   const [checks, setChecks] = useState([false, false, false, false]);
@@ -33,6 +42,8 @@ export function MobileExam({ sections }: { sections: SectionOption[] }) {
   const phaseRef = useRef<Phase>("setup");
   const autoSubmitted = useRef(false);
   const hiddenPending = useRef(false);
+  const startingRef = useRef(false);
+  const clockOffsetRef = useRef(0);
   const questionViewportRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => { phaseRef.current = phase; }, [phase]);
@@ -52,13 +63,16 @@ export function MobileExam({ sections }: { sections: SectionOption[] }) {
   const hydrateSession = useCallback((data: SessionInfo) => {
     setSession(data);
     leaveCountRef.current = data.leaveCount || 0;
-    setRemaining(Date.parse(data.expiresAt) - Date.now());
+    const serverNow = Date.parse(data.serverNow || data.startedAt);
+    clockOffsetRef.current = Number.isFinite(serverNow) ? serverNow - Date.now() : 0;
+    setRemaining(Date.parse(data.expiresAt) - (Date.now() + clockOffsetRef.current));
     try {
       const saved = JSON.parse(localStorage.getItem(`sma2106-exam:${data.studentId}`) || "null");
       if (saved?.answers?.length === TOTAL) setAnswers(saved.answers);
       if (Number.isInteger(saved?.current)) setCurrent(Math.max(0, Math.min(TOTAL - 1, saved.current)));
       leaveCountRef.current = Math.max(leaveCountRef.current, Number(saved?.leaveCount) || 0);
     } catch { /* ignore corrupt local draft */ }
+    return leaveCountRef.current;
   }, []);
 
   useEffect(() => {
@@ -68,16 +82,26 @@ export function MobileExam({ sections }: { sections: SectionOption[] }) {
     window.addEventListener("offline", onOffline);
     fetch("/api/exam/status", { cache: "no-store" }).then(async (response) => {
       if (!response.ok) return;
-      const data = await response.json();
+      const data = await responseData(response) as SessionInfo;
       if (data.status === "disqualified") { hydrateSession(data); setPhase("disqualified"); return; }
       if (data.status === "submitted") { hydrateSession(data); setPhase("submitted"); return; }
-      if (data.status === "active") { hydrateSession(data); setPhase(data.leaveCount === 1 ? "warning" : "active"); }
+      if (data.status === "active") {
+        const effectiveLeaveCount = hydrateSession(data);
+        setPhase(effectiveLeaveCount === 1 ? "warning" : effectiveLeaveCount >= 2 ? "disqualified" : "active");
+        if (effectiveLeaveCount > (Number(data.leaveCount) || 0)) {
+          void fetch("/api/exam/event", {
+            method: "POST", headers: { "Content-Type": "application/json" }, keepalive: true,
+            body: JSON.stringify({ count: Math.min(2, effectiveLeaveCount), clientAt: new Date().toISOString() })
+          }).catch(() => undefined);
+        }
+      }
     }).catch(() => undefined);
     return () => { window.removeEventListener("online", onOnline); window.removeEventListener("offline", onOffline); };
   }, [hydrateSession]);
 
   const submitExam = useCallback(async (automatic = false) => {
     if (!session || phaseRef.current === "submitted" || phaseRef.current === "disqualified" || phaseRef.current === "submitting") return;
+    phaseRef.current = "submitting";
     setPhase("submitting");
     setMessage(automatic ? "หมดเวลา กำลังส่งคำตอบอัตโนมัติ..." : "กำลังส่งคำตอบ...");
     try {
@@ -85,14 +109,16 @@ export function MobileExam({ sections }: { sections: SectionOption[] }) {
         method: "POST", headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ answers, leaveCount: leaveCountRef.current })
       });
-      const data = await response.json();
+      const data = await responseData(response);
       if (data.status === "disqualified") { setPhase("disqualified"); return; }
-      if (!response.ok) throw new Error(data.error || "ส่งข้อสอบไม่สำเร็จ");
-      setSession((value) => value ? { ...value, receipt: data.receipt } : value);
+      if (!response.ok) throw new Error(String(data.error || "ส่งข้อสอบไม่สำเร็จ"));
+      setSession((value) => value ? { ...value, receipt: String(data.receipt || "") } : value);
       if (storageKey) localStorage.removeItem(storageKey);
+      phaseRef.current = "submitted";
       setPhase("submitted");
     } catch (error) {
       setMessage(error instanceof Error ? error.message : "ส่งข้อสอบไม่สำเร็จ โปรดลองอีกครั้ง");
+      phaseRef.current = "error";
       setPhase("error");
     }
   }, [answers, session, storageKey]);
@@ -100,7 +126,7 @@ export function MobileExam({ sections }: { sections: SectionOption[] }) {
   useEffect(() => {
     if (!session || !["active", "warning", "error"].includes(phase)) return;
     const tick = () => {
-      const next = Date.parse(session.expiresAt) - Date.now();
+      const next = Date.parse(session.expiresAt) - (Date.now() + clockOffsetRef.current);
       setRemaining(next);
       if (next <= 0 && !autoSubmitted.current) { autoSubmitted.current = true; void submitExam(true); }
     };
@@ -133,13 +159,18 @@ export function MobileExam({ sections }: { sections: SectionOption[] }) {
           const count = leaveCountRef.current;
           persist(answers, current);
           const body = JSON.stringify({ count, clientAt: new Date().toISOString() });
-          navigator.sendBeacon("/api/exam/event", new Blob([body], { type: "application/json" }));
+          const queued = navigator.sendBeacon("/api/exam/event", new Blob([body], { type: "application/json" }));
+          if (!queued) {
+            void fetch("/api/exam/event", {
+              method: "POST", headers: { "Content-Type": "application/json" }, body, keepalive: true
+            }).catch(() => undefined);
+          }
           setPhase(count >= 2 ? "disqualified" : "warning");
         }
-        fetch("/api/exam/status", { cache: "no-store" }).then((response) => response.json()).then((data) => {
+        fetch("/api/exam/status", { cache: "no-store" }).then(responseData).then((data) => {
           leaveCountRef.current = Math.max(leaveCountRef.current, Number(data.leaveCount) || 0);
           if (data.status === "disqualified" || leaveCountRef.current >= 2) setPhase("disqualified");
-          else if (data.status === "submitted") { setSession((value) => value ? { ...value, receipt: data.receipt } : value); setPhase("submitted"); }
+          else if (data.status === "submitted") { setSession((value) => value ? { ...value, receipt: String(data.receipt || "") } : value); setPhase("submitted"); }
         }).catch(() => undefined);
       }
     };
@@ -149,24 +180,27 @@ export function MobileExam({ sections }: { sections: SectionOption[] }) {
 
   async function startExam(event: FormEvent) {
     event.preventDefault();
+    if (startingRef.current) return;
     if (!checks.every(Boolean)) { setMessage("กรุณายืนยันการเตรียมมือถือและกติกาให้ครบ"); return; }
+    startingRef.current = true;
     setMessage("กำลังเปิดข้อสอบ...");
     try {
       const response = await fetch("/api/exam/start", {
         method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(entry)
       });
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.error || "ไม่สามารถเริ่มสอบได้");
-      hydrateSession(data);
+      const data = await responseData(response);
+      if (!response.ok) throw new Error(String(data.error || "ไม่สามารถเริ่มสอบได้"));
+      hydrateSession(data as SessionInfo);
       setAnswers(Array(TOTAL).fill("")); setCurrent(0); setMessage(""); setPhase("active");
     } catch (error) { setMessage(error instanceof Error ? error.message : "ไม่สามารถเริ่มสอบได้"); }
+    finally { startingRef.current = false; }
   }
 
   function choose(letter: string) {
     const next = [...answers]; next[current] = letter; setAnswers(next); persist(next);
   }
 
-  function moveTo(index: number) { const next = Math.max(0, Math.min(TOTAL - 1, index)); setCurrent(next); persist(answers, next); }
+  function moveTo(index: number) { const next = Math.max(0, Math.min(TOTAL - 1, index)); setQuestionError(false); setCurrent(next); persist(answers, next); }
 
   if (phase === "setup") return (
     <div className={styles.examRoot}>
@@ -204,8 +238,10 @@ export function MobileExam({ sections }: { sections: SectionOption[] }) {
         <div className={styles.progressRow}><strong>ข้อ {current + 1} จาก {TOTAL}</strong><span>ตอบแล้ว {answers.filter(Boolean).length}/{TOTAL}</span></div>
         <div className={styles.zoomBar}><button type="button" onClick={() => setZoom(Math.max(.8, zoom - .1))}>A-</button><button type="button" onClick={() => setZoom(Math.min(1.5, zoom + .1))}>A+</button></div>
         <div className={styles.questionViewport} ref={questionViewportRef}>
-          {/* eslint-disable-next-line @next/next/no-img-element -- authenticated SVG has dynamic height and must not be optimized or cached */}
-          <img key={`${current}-${session?.formCode}`} src={`/api/exam/question?index=${current}`} alt={`ภาพโจทย์ข้อ ${current + 1}`} draggable={false} style={{ width: `${zoom * 100}%` }} />
+          {questionError ? <div className={styles.submitStatus}><p>โหลดภาพคำถามไม่สำเร็จ กรุณาตรวจอินเทอร์เน็ตแล้วลองใหม่</p><button type="button" onClick={() => { setQuestionError(false); setQuestionRetry((value) => value + 1); }}>โหลดคำถามอีกครั้ง</button></div> : <>
+            {/* eslint-disable-next-line @next/next/no-img-element -- authenticated SVG has dynamic height and must not be optimized or cached */}
+            <img key={`${current}-${session?.formCode}-${questionRetry}`} src={`/api/exam/question?index=${current}&retry=${questionRetry}`} alt={`ภาพโจทย์ข้อ ${current + 1}`} draggable={false} onError={() => setQuestionError(true)} style={{ width: `${zoom * 100}%` }} />
+          </>}
         </div>
         <div className={styles.answerButtons}>{LETTERS.map((letter) => <button type="button" className={answers[current] === letter ? styles.selected : ""} onClick={() => choose(letter)} key={letter}>{letter}</button>)}</div>
         <div className={styles.navButtons}><button type="button" onClick={() => moveTo(current - 1)} disabled={current === 0}>ก่อนหน้า</button>{current < TOTAL - 1 ? <button type="button" onClick={() => moveTo(current + 1)}>ถัดไป</button> : <button type="button" className={styles.submitButton} onClick={() => { if (confirm(`ยืนยันส่งข้อสอบ? ยังไม่ตอบ ${answers.filter((answer) => !answer).length} ข้อ`)) void submitExam(false); }}>ส่งข้อสอบ</button>}</div>
