@@ -227,6 +227,7 @@ export function MobileExam({ sections }: { sections: SectionOption[] }) {
   );
 
   if (phase === "warning") return <div className={styles.blockScreen}><div className={styles.warningIcon}>⚠</div><h1>คำเตือนครั้งที่ 1</h1><p>ระบบตรวจพบว่าคุณออกจากหน้าสอบหรือสลับไปยังแอปอื่นแล้ว</p><strong>หากเกิดขึ้นอีกครั้ง ระบบจะยุติการสอบและให้คะแนน 0 ทันที</strong><p>เวลาสอบยังคงเดินต่อ</p><button className={styles.warningButton} onClick={() => setPhase("active")}>ข้าพเจ้ารับทราบและกลับเข้าสอบ</button></div>;
+  if (phase === "submitting") return <div className={styles.blockScreen}><div className={styles.warningIcon}>…</div><h1>กำลังส่งคำตอบ</h1><strong>กรุณารอจนกว่าหน้าจอจะแจ้งว่า “ส่งข้อสอบเรียบร้อย” และแสดงเลขรับผล</strong><p>หากนักศึกษาหลายคนกดส่งพร้อมกัน ระบบอาจใช้เวลาประมาณ 1–2 นาที</p><p>ห้ามปิดหน้านี้ ห้ามรีเฟรช และห้ามสลับไปแอปอื่นระหว่างรอ</p></div>;
   if (phase === "disqualified") return <div className={`${styles.blockScreen} ${styles.disqualified}`}><div className={styles.warningIcon}>×</div><h1>การสอบถูกยุติ</h1><p>ระบบตรวจพบการออกจากหน้าสอบเป็นครั้งที่ 2</p><strong>สถานะ: ทุจริต · คะแนน 0</strong><p>โปรดยกมือและติดต่อผู้คุมสอบโดยไม่ปิดหน้านี้</p></div>;
   if (phase === "submitted") return <div className={styles.blockScreen}><div className={styles.successIcon}>✓</div><h1>ส่งข้อสอบเรียบร้อย</h1><p>ระบบบันทึกคำตอบแล้ว กรุณาแสดงหน้านี้ต่อผู้คุมสอบก่อนปิด</p><div className={styles.receipt}>{session?.receipt || "กำลังออกเลขรับผล"}</div><p>ระบบจะไม่แสดงคะแนนหรือเฉลยในขณะนี้</p></div>;
 
@@ -246,7 +247,7 @@ export function MobileExam({ sections }: { sections: SectionOption[] }) {
         <div className={styles.answerButtons}>{LETTERS.map((letter) => <button type="button" className={answers[current] === letter ? styles.selected : ""} onClick={() => choose(letter)} key={letter}>{letter}</button>)}</div>
         <div className={styles.navButtons}><button type="button" onClick={() => moveTo(current - 1)} disabled={current === 0}>ก่อนหน้า</button>{current < TOTAL - 1 ? <button type="button" onClick={() => moveTo(current + 1)}>ถัดไป</button> : <button type="button" className={styles.submitButton} onClick={() => { if (confirm(`ยืนยันส่งข้อสอบ? ยังไม่ตอบ ${answers.filter((answer) => !answer).length} ข้อ`)) void submitExam(false); }}>ส่งข้อสอบ</button>}</div>
         <div className={styles.palette}>{answers.map((answer, index) => <button type="button" className={`${index === current ? styles.current : ""} ${answer ? styles.answered : ""}`} onClick={() => moveTo(index)} key={index}>{index + 1}</button>)}</div>
-        {phase === "submitting" || phase === "error" ? <div className={styles.submitStatus}><p>{message}</p>{phase === "error" ? <button onClick={() => void submitExam(false)}>ลองส่งอีกครั้ง</button> : null}</div> : null}
+        {phase === "error" ? <div className={styles.submitStatus}><p>{message}</p><button onClick={() => void submitExam(false)}>ลองส่งอีกครั้ง</button></div> : null}
       </main>
     </div>
   );
