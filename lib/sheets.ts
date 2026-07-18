@@ -125,6 +125,12 @@ export async function appendRowWithLock(sheetName: SheetName, row: Row, lockName
   const headers = [...SHEET_SCHEMAS[sheetName]];
   const values = headers.map((header) => rowCell(header, row[header] || ""));
   const targetSheetId = await numericSheetId(sheetName);
+  // Insert and write a concrete row in the same batch as the idempotency claim.
+  // appendCells is not safe here: concurrent batchUpdate calls can all resolve the
+  // append position from the same grid state and report success while overwriting
+  // one another. Inserting at the same logical end index is serialized by Sheets;
+  // each later insert pushes the previous row down before writing its own row.
+  const dataRowIndex = (await getRowsFresh<Row>(sheetName)).length + 1;
   const sheets = getSheetsClient();
   try {
     await withRetry(() => sheets.spreadsheets.batchUpdate({
@@ -146,8 +152,25 @@ export async function appendRowWithLock(sheetName: SheetName, row: Row, lockName
             }
           },
           {
-            appendCells: {
-              sheetId: targetSheetId,
+            insertDimension: {
+              range: {
+                sheetId: targetSheetId,
+                dimension: "ROWS",
+                startIndex: dataRowIndex,
+                endIndex: dataRowIndex + 1
+              },
+              inheritFromBefore: true
+            }
+          },
+          {
+            updateCells: {
+              range: {
+                sheetId: targetSheetId,
+                startRowIndex: dataRowIndex,
+                endRowIndex: dataRowIndex + 1,
+                startColumnIndex: 0,
+                endColumnIndex: headers.length
+              },
               rows: [{ values }],
               fields: "userEnteredValue"
             }
@@ -155,13 +178,9 @@ export async function appendRowWithLock(sheetName: SheetName, row: Row, lockName
         ]
       }
     }));
-    const cached = rowCache.get(sheetName);
-    if (cached && cached.expiresAt > Date.now()) {
-      cached.rows.push({ ...row });
-      cached.expiresAt = Date.now() + cacheTtl(sheetName);
-    } else {
-      rowCache.delete(sheetName);
-    }
+    // Another instance may have inserted at the same index immediately before
+    // this request. Discard the local ordering cache rather than guessing it.
+    rowCache.delete(sheetName);
     return true;
   } catch (error) {
     if (duplicateNamedRange(error)) return false;
