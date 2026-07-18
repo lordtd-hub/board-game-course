@@ -91,7 +91,7 @@ export function ExamControl() {
       const data = await responseData(response);
       if (!response.ok) throw new Error(String(data.error || "ดำเนินการไม่สำเร็จ"));
       setState(data as ControlState);
-      setMessage(body && "action" in body && body.action === "open" ? "เปิดรับเข้าสอบแล้ว" : "ปิดรับเข้าสอบแล้ว");
+      setMessage(body && "action" in body && body.action === "open" ? "เปิดรับนักศึกษาใหม่แล้ว" : "ปิดรับนักศึกษาใหม่ก่อนกำหนดแล้ว");
     } catch (error) {
       setMessage(error instanceof Error ? error.message : "ดำเนินการไม่สำเร็จ");
     } finally {
@@ -144,15 +144,15 @@ export function ExamControl() {
         <article className="card stack">
           <div>
             <span className="badge">1 · ตั้งค่าห้อง</span>
-            <h2>เปิดรับเข้าสอบ</h2>
-            <p className="muted">นักศึกษาที่เริ่มทันเวลาจะยังมีเวลาทำข้อสอบครบ 60 นาที</p>
+            <h2>เปิดรับนักศึกษาใหม่</h2>
+            <p className="muted">กำหนดช่วงเวลาที่นักศึกษาสามารถเริ่มสอบได้ ผู้ที่เริ่มทันเวลายังทำข้อสอบได้ครบ 60 นาที</p>
           </div>
           <label className="field">รหัสห้อง 6 หลัก
             <input value={roomCode} onChange={(event) => setRoomCode(event.target.value.replace(/\D/g, "").slice(0, 6))} inputMode="numeric" placeholder="เช่น 482731" autoComplete="off" />
           </label>
           <fieldset className="field">
-            <legend>เปิดรับนักศึกษาใหม่เป็นเวลา</legend>
-            <div className="nav" role="group" aria-label="ระยะเวลาเปิดรับเข้าสอบ">
+            <legend>อนุญาตให้เริ่มสอบภายในกี่นาที</legend>
+            <div className="nav" role="group" aria-label="ระยะเวลาที่อนุญาตให้นักศึกษาเริ่มสอบ">
               {ENTRY_WINDOW_OPTIONS.map((minutes) => (
                 <button
                   key={minutes}
@@ -165,7 +165,7 @@ export function ExamControl() {
                 </button>
               ))}
             </div>
-            <span className="muted">นับจากเวลาที่กดเปิดห้อง ไม่ใช่เวลาทำข้อสอบ นักศึกษายังได้ทำคนละ 60 นาที</span>
+            <span className="muted">ระบบจะปิดรับนักศึกษาใหม่อัตโนมัติเมื่อครบเวลานี้ ไม่ใช่เวลาทำข้อสอบของนักศึกษา</span>
           </fieldset>
           {state?.storageReady === false && <p role="alert"><strong>ยังไม่ได้เชื่อม Google Sheet จึงยังเปิดสอบไม่ได้</strong></p>}
           <button disabled={busy || state?.storageReady === false || roomCode.length !== 6} onClick={() => void command({
@@ -173,7 +173,7 @@ export function ExamControl() {
             roomCode,
             closeAt: new Date(Date.now() + entryWindowMinutes * 60_000).toISOString()
           })}>
-            {busy ? "กำลังบันทึก…" : live ? "อัปเดตรหัสและเวลา" : "เปิดรับเข้าสอบตอนนี้"}
+            {busy ? "กำลังบันทึก…" : live ? "อัปเดตรหัสและช่วงเวลา" : "เปิดรับนักศึกษาใหม่"}
           </button>
         </article>
 
@@ -196,12 +196,12 @@ export function ExamControl() {
       <section className="card stack">
         <div>
           <span className="badge">3 · ตรวจสถานะ</span>
-          <h2>{state === null ? "กำลังตรวจสอบ…" : live ? "กำลังเปิดรับเข้าสอบ" : "ยังไม่เปิดรับเข้าสอบ"}</h2>
-          {state?.closeAt && <p className="muted">ปิดรับเข้า: {new Date(state.closeAt).toLocaleString("th-TH")}</p>}
+          <h2>{state === null ? "กำลังตรวจสอบ…" : live ? "กำลังเปิดรับนักศึกษาใหม่" : "ขณะนี้ไม่รับนักศึกษาใหม่"}</h2>
+          {state?.closeAt && <p className="muted">ระบบจะปิดรับนักศึกษาใหม่อัตโนมัติ: {new Date(state.closeAt).toLocaleString("th-TH")}</p>}
         </div>
         {live && <button className="secondary" disabled={busy} onClick={() => {
-          if (window.confirm("ยืนยันปิดรับนักศึกษาใหม่เข้าสอบ? ผู้ที่เริ่มแล้วจะยังทำต่อได้")) void command({ action: "close" });
-        }}>ปิดรับเข้าสอบทันที</button>}
+          if (window.confirm("ยืนยันปิดรับนักศึกษาใหม่ก่อนกำหนด? ผู้ที่เริ่มสอบแล้วจะยังทำต่อได้จนครบเวลา")) void command({ action: "close" });
+        }}>ปิดรับก่อนกำหนด</button>}
         {message && <p role="status"><strong>{message}</strong></p>}
       </section>
     </div>
