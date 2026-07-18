@@ -139,27 +139,28 @@ function wrapThai(value: string, max = 50) {
 }
 
 export function renderQuestionSvg(question: AssembledQuestion, displayIndex: number, studentId: string, form: string) {
-  const promptLines = wrapThai(question.prompt, 54);
-  const choiceLines = question.choices.map((choice) => wrapThai(choice, 48));
-  const promptHeight = promptLines.length * 34;
-  const choiceHeights = choiceLines.map((lines) => Math.max(68, lines.length * 27 + 28));
-  const height = 150 + promptHeight + choiceHeights.reduce((sum, item) => sum + item + 14, 0) + 70;
-  let y = 112;
-  const prompt = promptLines.map((line) => `<text x="48" y="${y += 34}" class="prompt">${escapeXml(line)}</text>`).join("");
-  y += 28;
+  // Keep the SVG canvas narrow so text remains legible when fitted to a phone viewport.
+  const promptLines = wrapThai(question.prompt, 36);
+  const choiceLines = question.choices.map((choice) => wrapThai(choice, 34));
+  const promptHeight = promptLines.length * 42;
+  const choiceHeights = choiceLines.map((lines) => Math.max(82, lines.length * 34 + 34));
+  const height = 126 + promptHeight + choiceHeights.reduce((sum, item) => sum + item + 12, 0) + 54;
+  let y = 94;
+  const prompt = promptLines.map((line) => `<text x="34" y="${y += 42}" class="prompt">${escapeXml(line)}</text>`).join("");
+  y += 24;
   const letters = ["A", "B", "C", "D"];
   const choices = choiceLines.map((lines, index) => {
     const boxY = y;
     const boxHeight = choiceHeights[index];
-    const text = lines.map((line, lineIndex) => `<text x="112" y="${boxY + 39 + lineIndex * 27}" class="choice">${escapeXml(line)}</text>`).join("");
-    y += boxHeight + 14;
-    return `<rect x="44" y="${boxY}" width="872" height="${boxHeight}" rx="15" class="choiceBox"/><circle cx="78" cy="${boxY + 35}" r="20" class="letterCircle"/><text x="78" y="${boxY + 42}" text-anchor="middle" class="letter">${letters[index]}</text>${text}`;
+    const text = lines.map((line, lineIndex) => `<text x="90" y="${boxY + 47 + lineIndex * 34}" class="choice">${escapeXml(line)}</text>`).join("");
+    y += boxHeight + 12;
+    return `<rect x="30" y="${boxY}" width="620" height="${boxHeight}" rx="15" class="choiceBox"/><circle cx="61" cy="${boxY + 41}" r="22" class="letterCircle"/><text x="61" y="${boxY + 49}" text-anchor="middle" class="letter">${letters[index]}</text>${text}`;
   }).join("");
-  const watermark = Array.from({ length: 5 }, (_, index) => `<text x="${100 + index * 175}" y="${230 + index * 120}" transform="rotate(-25 ${100 + index * 175} ${230 + index * 120})" class="watermark">${escapeXml(studentId)} · ${escapeXml(form)}</text>`).join("");
-  return `<svg xmlns="http://www.w3.org/2000/svg" width="960" height="${height}" viewBox="0 0 960 ${height}">
-    <style>.bg{fill:#fffaf0}.bar{fill:#0f6f72}.kicker{font:700 18px Arial,'Noto Sans Thai',sans-serif;fill:#dffafa}.prompt{font:700 25px Arial,'Noto Sans Thai',sans-serif;fill:#211f1b}.choice{font:500 21px Arial,'Noto Sans Thai',sans-serif;fill:#2d2923}.choiceBox{fill:#fff;stroke:#ddcda9;stroke-width:2}.letterCircle{fill:#159a9c}.letter{font:700 18px Arial,sans-serif;fill:#fff}.watermark{font:700 15px Arial,sans-serif;fill:#9e7b50;opacity:.09}</style>
-    <rect width="960" height="${height}" class="bg"/><rect width="960" height="78" class="bar"/>
-    <text x="44" y="49" class="kicker">SMA2106 · ข้อ ${displayIndex + 1}/24 · ${escapeXml(studentId)} · ${escapeXml(form)}</text>
+  const watermark = Array.from({ length: 5 }, (_, index) => `<text x="${60 + index * 125}" y="${210 + index * 130}" transform="rotate(-25 ${60 + index * 125} ${210 + index * 130})" class="watermark">${escapeXml(studentId)} · ${escapeXml(form)}</text>`).join("");
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="680" height="${height}" viewBox="0 0 680 ${height}">
+    <style>.bg{fill:#fffaf0}.bar{fill:#0f6f72}.kicker{font:700 16px Arial,'Noto Sans Thai',sans-serif;fill:#dffafa}.prompt{font:700 32px Arial,'Noto Sans Thai',sans-serif;fill:#211f1b}.choice{font:500 27px Arial,'Noto Sans Thai',sans-serif;fill:#2d2923}.choiceBox{fill:#fff;stroke:#ddcda9;stroke-width:2}.letterCircle{fill:#159a9c}.letter{font:700 21px Arial,sans-serif;fill:#fff}.watermark{font:700 14px Arial,sans-serif;fill:#9e7b50;opacity:.09}</style>
+    <rect width="680" height="${height}" class="bg"/><rect width="680" height="70" class="bar"/>
+    <text x="30" y="44" class="kicker">SMA2106 · ข้อ ${displayIndex + 1}/24 · ${escapeXml(studentId)} · ${escapeXml(form)}</text>
     ${watermark}${prompt}${choices}
   </svg>`;
 }

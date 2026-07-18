@@ -22,18 +22,14 @@ async function responseData(response: Response): Promise<Record<string, unknown>
   }
 }
 
-function defaultCloseTime() {
-  const date = new Date(Date.now() + 20 * 60 * 1000);
-  const local = new Date(date.getTime() - date.getTimezoneOffset() * 60_000);
-  return local.toISOString().slice(0, 16);
-}
+const ENTRY_WINDOW_OPTIONS = [30, 60, 90, 120] as const;
 
 export function ExamControl() {
   const [state, setState] = useState<ControlState | null>(null);
   const [locked, setLocked] = useState<boolean | null>(null);
   const [pin, setPin] = useState("");
   const [roomCode, setRoomCode] = useState("");
-  const [closeAt, setCloseAt] = useState(defaultCloseTime);
+  const [entryWindowMinutes, setEntryWindowMinutes] = useState<number>(60);
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState("");
   const examUrl = useMemo(() => typeof window === "undefined" ? "" : `${window.location.origin}/exam/sma2106-week1-2`, []);
@@ -154,11 +150,29 @@ export function ExamControl() {
           <label className="field">รหัสห้อง 6 หลัก
             <input value={roomCode} onChange={(event) => setRoomCode(event.target.value.replace(/\D/g, "").slice(0, 6))} inputMode="numeric" placeholder="เช่น 482731" autoComplete="off" />
           </label>
-          <label className="field">ปิดรับเข้าสอบเวลา
-            <input type="datetime-local" value={closeAt} onChange={(event) => setCloseAt(event.target.value)} />
-          </label>
+          <fieldset className="field">
+            <legend>เปิดรับนักศึกษาใหม่เป็นเวลา</legend>
+            <div className="nav" role="group" aria-label="ระยะเวลาเปิดรับเข้าสอบ">
+              {ENTRY_WINDOW_OPTIONS.map((minutes) => (
+                <button
+                  key={minutes}
+                  type="button"
+                  className={entryWindowMinutes === minutes ? undefined : "secondary"}
+                  aria-pressed={entryWindowMinutes === minutes}
+                  onClick={() => setEntryWindowMinutes(minutes)}
+                >
+                  {minutes} นาที
+                </button>
+              ))}
+            </div>
+            <span className="muted">นับจากเวลาที่กดเปิดห้อง ไม่ใช่เวลาทำข้อสอบ นักศึกษายังได้ทำคนละ 60 นาที</span>
+          </fieldset>
           {state?.storageReady === false && <p role="alert"><strong>ยังไม่ได้เชื่อม Google Sheet จึงยังเปิดสอบไม่ได้</strong></p>}
-          <button disabled={busy || state?.storageReady === false || roomCode.length !== 6 || !closeAt} onClick={() => void command({ action: "open", roomCode, closeAt: new Date(closeAt).toISOString() })}>
+          <button disabled={busy || state?.storageReady === false || roomCode.length !== 6} onClick={() => void command({
+            action: "open",
+            roomCode,
+            closeAt: new Date(Date.now() + entryWindowMinutes * 60_000).toISOString()
+          })}>
             {busy ? "กำลังบันทึก…" : live ? "อัปเดตรหัสและเวลา" : "เปิดรับเข้าสอบตอนนี้"}
           </button>
         </article>
