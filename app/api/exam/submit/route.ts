@@ -2,11 +2,11 @@ import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import {
-  decodeExamSession, EXAM_COOKIE, EXAM_ID, EXAM_TOTAL, formCode, gradeExam, receiptFor
+  decodeExamSession, EXAM_COOKIE, EXAM_ID, EXAM_TOTAL, formCode, gradeExam, receiptFor, resultIdFor
 } from "@/lib/exam/core.server";
 import { examState } from "@/lib/exam/actions.server";
 import { appendExamResultOnce } from "@/lib/exam/repository.server";
-import { id, nowIso } from "@/lib/utils";
+import { nowIso } from "@/lib/utils";
 
 const SubmitSchema = z.object({
   answers: z.array(z.enum(["", "A", "B", "C", "D"])).length(EXAM_TOTAL),
@@ -26,11 +26,11 @@ export async function POST(request: Request) {
 
   const submittedAt = nowIso();
   const score = gradeExam(session.seed, parsed.data.answers);
-  const receipt = receiptFor(session.studentId, submittedAt);
+  const receipt = receiptFor(session.studentId, session.startedAt);
   let result;
   try {
     result = await appendExamResultOnce({
-      id: id("exr"), examId: EXAM_ID, studentId: session.studentId, studentName: session.studentName,
+      id: resultIdFor(session.studentId), examId: EXAM_ID, studentId: session.studentId, studentName: session.studentName,
       sectionId: session.sectionId, formCode: formCode(session.seed), answers: JSON.stringify(parsed.data.answers),
       score: String(score), maxScore: String(EXAM_TOTAL), startedAt: session.startedAt, submittedAt,
       leaveCount: String(Math.max(state.leaveCount, parsed.data.leaveCount)), status: "submitted", receipt

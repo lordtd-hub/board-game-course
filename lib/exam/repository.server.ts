@@ -1,17 +1,32 @@
 import "server-only";
-import crypto from "node:crypto";
 import { appConfig } from "@/lib/config";
 import { listSections } from "@/lib/repository";
-import { appendRow, appendRowWithLock, getRows, getRowsFresh, primeSheetRows, updateRowById } from "@/lib/sheets";
+import { appendRow, getRows, primeSheetRows, updateRowById } from "@/lib/sheets";
 import type { ExamConfigRow, ExamEventRow, ExamResultRow } from "@/lib/exam/types";
 
 const EXAM_CONFIG_ID = "sma2106-week1-2-v1-config";
 
 const globalForExam = globalThis as typeof globalThis & {
   __sma2106ExamDevelopmentStore?: { results: ExamResultRow[]; events: ExamEventRow[]; config: ExamConfigRow | null };
+  __sma2106ExamResultWrites?: Map<string, Promise<ExamResultRow>>;
 };
 const developmentStore = globalForExam.__sma2106ExamDevelopmentStore || { results: [], events: [], config: null };
+const resultWrites = globalForExam.__sma2106ExamResultWrites || new Map<string, Promise<ExamResultRow>>();
 globalForExam.__sma2106ExamDevelopmentStore = developmentStore;
+globalForExam.__sma2106ExamResultWrites = resultWrites;
+
+function dedupeExamResults(rows: ExamResultRow[]) {
+  const unique = new Map<string, ExamResultRow>();
+  for (const row of rows) {
+    const key = `${row.examId}:${row.studentId}`;
+    const existing = unique.get(key);
+    if (!existing || row.status === "disqualified" && existing.status !== "disqualified" ||
+      row.status === existing.status && row.submittedAt < existing.submittedAt) {
+      unique.set(key, row);
+    }
+  }
+  return [...unique.values()];
+}
 
 export async function listExamSections() {
   if (appConfig.googleSheetId) {
@@ -28,8 +43,8 @@ export async function listExamSections() {
 }
 
 export async function listExamResults() {
-  if (!appConfig.googleSheetId) return [...developmentStore.results];
-  return getRows<ExamResultRow>("exam_results");
+  if (!appConfig.googleSheetId) return dedupeExamResults([...developmentStore.results]);
+  return dedupeExamResults(await getRows<ExamResultRow>("exam_results"));
 }
 
 export async function listExamEvents() {
@@ -47,11 +62,6 @@ export async function primeExamAdmission() {
   }
 }
 
-function resultLockName(examId: string, studentId: string) {
-  const digest = crypto.createHash("sha256").update(`${examId}:${studentId}`).digest("hex").slice(0, 40).toUpperCase();
-  return `EXAM_RESULT_${digest}`;
-}
-
 export async function appendExamResultOnce(row: ExamResultRow) {
   if (!appConfig.googleSheetId) {
     const existing = developmentStore.results.find((item) => item.examId === row.examId && item.studentId === row.studentId);
@@ -60,16 +70,24 @@ export async function appendExamResultOnce(row: ExamResultRow) {
     return row;
   }
 
-  const appended = await appendRowWithLock("exam_results", row, resultLockName(row.examId, row.studentId));
-  if (appended) return row;
+  const key = `${row.examId}:${row.studentId}`;
+  const existing = (await listExamResults()).find((item) => item.examId === row.examId && item.studentId === row.studentId);
+  if (existing) return existing;
+  const pending = resultWrites.get(key);
+  if (pending) return pending;
 
-  for (let attempt = 0; attempt < 8; attempt += 1) {
-    const results = await getRowsFresh<ExamResultRow>("exam_results");
-    const existing = results.find((item) => item.examId === row.examId && item.studentId === row.studentId);
-    if (existing) return existing;
-    await new Promise((resolve) => setTimeout(resolve, 150 * (attempt + 1)));
+  const write = (async () => {
+    // values.append is concurrency-safe for different students. The deterministic
+    // row id and receipt make a rare cross-instance retry harmless and dedupable.
+    await appendRow("exam_results", row);
+    return row;
+  })();
+  resultWrites.set(key, write);
+  try {
+    return await write;
+  } finally {
+    if (resultWrites.get(key) === write) resultWrites.delete(key);
   }
-  throw new Error("EXAM_RESULT_WRITE_IN_PROGRESS");
 }
 
 export async function appendExamEvent(row: ExamEventRow) {

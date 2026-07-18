@@ -111,8 +111,12 @@ export function gradeExam(seed: string, answers: string[]) {
   return questions.reduce((score, question, index) => score + (answers[index] === letters[question.answer] ? 1 : 0), 0);
 }
 
-export function receiptFor(studentId: string, submittedAt: string) {
-  return `SMA-${hmac(`${EXAM_ID}:${studentId}:${submittedAt}`).slice(0, 10).toUpperCase()}`;
+export function resultIdFor(studentId: string) {
+  return `exr_${hmac(`${EXAM_ID}:${normalizeStudentId(studentId)}:result`).slice(0, 24)}`;
+}
+
+export function receiptFor(studentId: string, attemptStartedAt: string) {
+  return `SMA-${hmac(`${EXAM_ID}:${normalizeStudentId(studentId)}:${attemptStartedAt}`).slice(0, 10).toUpperCase()}`;
 }
 
 function escapeXml(value: string) {

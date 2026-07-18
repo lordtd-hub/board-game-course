@@ -12,17 +12,14 @@ const globalForSheets = globalThis as typeof globalThis & {
   __sheetRowsCache?: Map<SheetName, RowCacheEntry>;
   __sheetRowsInflight?: Map<string, Promise<void>>;
   __sheetAppendQueues?: Map<SheetName, AppendQueue>;
-  __sheetNumericIds?: Map<SheetName, number>;
 };
 
 const rowCache = globalForSheets.__sheetRowsCache || new Map<SheetName, RowCacheEntry>();
 const rowInflight = globalForSheets.__sheetRowsInflight || new Map<string, Promise<void>>();
 const appendQueues = globalForSheets.__sheetAppendQueues || new Map<SheetName, AppendQueue>();
-const sheetNumericIds = globalForSheets.__sheetNumericIds || new Map<SheetName, number>();
 globalForSheets.__sheetRowsCache = rowCache;
 globalForSheets.__sheetRowsInflight = rowInflight;
 globalForSheets.__sheetAppendQueues = appendQueues;
-globalForSheets.__sheetNumericIds = sheetNumericIds;
 
 const CACHE_TTL_MS: Partial<Record<SheetName, number>> = {
   sections: 60_000,
@@ -86,106 +83,6 @@ export async function getRowsFresh<T extends Row>(sheetName: SheetName): Promise
   rowCache.delete(sheetName);
   await primeSheetRows([sheetName]);
   return (rowCache.get(sheetName)?.rows || []) as T[];
-}
-
-async function numericSheetId(sheetName: SheetName) {
-  const cached = sheetNumericIds.get(sheetName);
-  if (cached !== undefined) return cached;
-  const sheets = getSheetsClient();
-  const result = await withRetry(() => sheets.spreadsheets.get({
-    spreadsheetId: sheetId(),
-    fields: "sheets.properties(sheetId,title)"
-  }));
-  for (const sheet of result.data.sheets || []) {
-    const title = sheet.properties?.title as SheetName | undefined;
-    const id = sheet.properties?.sheetId;
-    if (title && typeof id === "number") sheetNumericIds.set(title, id);
-  }
-  const resolved = sheetNumericIds.get(sheetName);
-  if (resolved === undefined) throw new Error(`Sheet not found: ${sheetName}`);
-  return resolved;
-}
-
-function duplicateNamedRange(error: unknown) {
-  if (!error || typeof error !== "object") return false;
-  const candidate = error as { message?: string; response?: { data?: { error?: { message?: string } } } };
-  const message = `${candidate.message || ""} ${candidate.response?.data?.error?.message || ""}`;
-  return /named range with that name already exists/i.test(message);
-}
-
-function rowCell(header: string, value: string) {
-  if (["score", "maxScore", "leaveCount", "eventCount"].includes(header) && value !== "" && Number.isFinite(Number(value))) {
-    return { userEnteredValue: { numberValue: Number(value) } };
-  }
-  return { userEnteredValue: { stringValue: value } };
-}
-
-export async function appendRowWithLock(sheetName: SheetName, row: Row, lockName: string) {
-  if (!/^[A-Z][A-Z0-9_]{1,249}$/.test(lockName)) throw new Error("Invalid sheet lock name.");
-  const headers = [...SHEET_SCHEMAS[sheetName]];
-  const values = headers.map((header) => rowCell(header, row[header] || ""));
-  const targetSheetId = await numericSheetId(sheetName);
-  // Insert and write a concrete row in the same batch as the idempotency claim.
-  // appendCells is not safe here: concurrent batchUpdate calls can all resolve the
-  // append position from the same grid state and report success while overwriting
-  // one another. Inserting at the same logical end index is serialized by Sheets;
-  // each later insert pushes the previous row down before writing its own row.
-  const dataRowIndex = (await getRowsFresh<Row>(sheetName)).length + 1;
-  const sheets = getSheetsClient();
-  try {
-    await withRetry(() => sheets.spreadsheets.batchUpdate({
-      spreadsheetId: sheetId(),
-      requestBody: {
-        requests: [
-          {
-            addNamedRange: {
-              namedRange: {
-                name: lockName,
-                range: {
-                  sheetId: targetSheetId,
-                  startRowIndex: 0,
-                  endRowIndex: 1,
-                  startColumnIndex: 0,
-                  endColumnIndex: 1
-                }
-              }
-            }
-          },
-          {
-            insertDimension: {
-              range: {
-                sheetId: targetSheetId,
-                dimension: "ROWS",
-                startIndex: dataRowIndex,
-                endIndex: dataRowIndex + 1
-              },
-              inheritFromBefore: true
-            }
-          },
-          {
-            updateCells: {
-              range: {
-                sheetId: targetSheetId,
-                startRowIndex: dataRowIndex,
-                endRowIndex: dataRowIndex + 1,
-                startColumnIndex: 0,
-                endColumnIndex: headers.length
-              },
-              rows: [{ values }],
-              fields: "userEnteredValue"
-            }
-          }
-        ]
-      }
-    }));
-    // Another instance may have inserted at the same index immediately before
-    // this request. Discard the local ordering cache rather than guessing it.
-    rowCache.delete(sheetName);
-    return true;
-  } catch (error) {
-    if (duplicateNamedRange(error)) return false;
-    throw error;
-  }
 }
 
 export async function primeSheetRows(sheetNames: SheetName[]) {
