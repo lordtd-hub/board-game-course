@@ -240,6 +240,102 @@
       line-height: .88;
     }
 
+    .flow.compact .flow-step {
+      min-height: 130px;
+      padding: 15px;
+    }
+
+    .flow.compact .flow-step b {
+      font-size: clamp(28px, 2.8vw, 44px);
+    }
+
+    .setup-grid,
+    .night-script,
+    .board-callouts,
+    .ready-grid {
+      display: grid;
+      gap: 14px;
+    }
+
+    .setup-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .setup-card,
+    .script-card,
+    .board-callout,
+    .ready-item {
+      background: rgba(255, 250, 240, .82);
+      border: 1px solid rgba(207, 178, 110, .78);
+      border-radius: 8px;
+      display: grid;
+      gap: 9px;
+      padding: 16px;
+    }
+
+    .setup-card strong,
+    .script-card strong,
+    .board-callout strong,
+    .ready-item strong {
+      color: var(--night);
+      font-size: clamp(17px, 1.35vw, 22px);
+      line-height: 1.2;
+    }
+
+    .setup-card span,
+    .script-card span {
+      align-items: center;
+      background: var(--night);
+      border-radius: 999px;
+      color: white;
+      display: inline-flex;
+      font-weight: 900;
+      height: 34px;
+      justify-content: center;
+      width: 34px;
+    }
+
+    .night-script {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .script-card.good { border-top: 7px solid var(--blue); }
+    .script-card.evil { border-top: 7px solid var(--red); }
+    .script-card.neutral { border-top: 7px solid var(--gold); }
+
+    .board-callouts {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .board-callout {
+      border-left: 7px solid var(--blue);
+      min-height: 118px;
+    }
+
+    .board-callout.warning { border-left-color: var(--red); }
+
+    .ready-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .ready-item {
+      align-items: start;
+      grid-template-columns: 34px 1fr;
+    }
+
+    .ready-item::before {
+      align-items: center;
+      background: var(--green);
+      border-radius: 999px;
+      color: white;
+      content: "✓";
+      display: inline-flex;
+      font-weight: 900;
+      height: 30px;
+      justify-content: center;
+      width: 30px;
+    }
+
     .role-photo-grid,
     .token-photo-row {
       display: grid;
@@ -271,6 +367,8 @@
     }
 
     .token-photo-row .photo-panel img { max-height: min(38svh, 330px); }
+    .token-photo-row.mini .photo-panel img { max-height: min(22svh, 180px); }
+    .photo-panel.board-focus img { max-height: min(60svh, 560px); }
 
     .role-card {
       background: var(--paper);
@@ -473,6 +571,10 @@
       .role-note-grid,
       .token-photo-row,
       .flow,
+      .setup-grid,
+      .night-script,
+      .board-callouts,
+      .ready-grid,
       .role-grid,
       .vote-box,
       .mission-board,
@@ -487,6 +589,10 @@
 
       .row {
         grid-template-columns: 1fr;
+      }
+
+      .ready-item {
+        grid-template-columns: 30px 1fr;
       }
 
       .slide {
@@ -515,7 +621,7 @@
     <div class="progress" id="progress"></div>
     <div class="meta">
       <span>The Resistance: Avalon</span>
-      <span id="counter">1/17</span>
+      <span id="counter">1/21</span>
       <span>Teach-to-play</span>
     </div>
 
@@ -575,6 +681,22 @@
     </section>
 
     <section class="slide">
+      <div class="stack">
+        <p class="kicker">setup in 60 seconds</p>
+        <h2>ตั้งเกมใน 60 วินาที</h2>
+        <div class="setup-grid">
+          <div class="setup-card"><span>1</span><strong>นับผู้เล่น</strong><p>ดูว่ามี 5-10 คน แล้วหยิบการ์ดฝ่ายดี/ฝ่ายร้ายตามจำนวนผู้เล่น</p></div>
+          <div class="setup-card"><span>2</span><strong>เลือกบทเกมแรก</strong><p>ใช้ Merlin, Assassin, Loyal Servant และ Minion ก่อน บทเสริมเก็บไว้รอบถัดไป</p></div>
+          <div class="setup-card"><span>3</span><strong>แจกบทบาทลับ</strong><p>สับการ์ดแล้วแจกคนละ 1 ใบ ทุกคนดูของตัวเองเงียบ ๆ</p></div>
+          <div class="setup-card"><span>4</span><strong>แจก token โหวต</strong><p>ทุกคนได้ Approve และ Reject เพื่อใช้โหวตทีม</p></div>
+          <div class="setup-card"><span>5</span><strong>วางบอร์ด</strong><p>เลือกด้านบอร์ดให้ตรงจำนวนผู้เล่น แล้ววาง marker ที่ Quest 1</p></div>
+          <div class="setup-card"><span>6</span><strong>เลือก Leader</strong><p>Leader คนแรกถือ token แล้วเตรียมเสนอทีมแรกหลังช่วงหลับตา</p></div>
+        </div>
+        <div class="note"><p>ย้ำกับผู้เล่นใหม่ก่อนเริ่ม: บทบาทเป็นความลับ แต่การคุย การโหวต และผลภารกิจเป็นข้อมูลที่ทุกคนใช้ตามเกมได้</p></div>
+      </div>
+    </section>
+
+    <section class="slide">
       <div class="wide-grid">
         <div class="stack">
           <p class="kicker">player count</p>
@@ -592,6 +714,25 @@
         <figure class="photo-panel tall">
           <img src="assets/quest-board.png" alt="บอร์ดภารกิจ Avalon แสดงจำนวนคนในแต่ละภารกิจและ vote track" />
           <figcaption class="caption">บอร์ดบอกจำนวนคนที่ต้องไปแต่ละภารกิจ และแถวล่างคือ vote track</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="wide-grid">
+        <div class="stack">
+          <p class="kicker">board anatomy</p>
+          <h2>ดูบอร์ดภารกิจอย่างไร</h2>
+          <div class="board-callouts">
+            <div class="board-callout"><strong>Quest 1-5</strong><p>เกมมี 5 ภารกิจ ใครทำสำเร็จหรือทำพังครบ 3 ภารกิจก่อนจะเข้าเงื่อนไขชนะ</p></div>
+            <div class="board-callout"><strong>ตัวเลขบน Quest</strong><p>บอกจำนวนคนที่ Leader ต้องเลือกไปทำภารกิจนั้น เช่น 2 คน, 3 คน หรือ 4 คน</p></div>
+            <div class="board-callout"><strong>Vote track</strong><p>ถ้าทีมถูก Reject ให้เลื่อน track ไปข้างหน้า ครบ 5 ครั้งใน Quest เดียว ฝ่ายร้ายชนะทันที</p></div>
+            <div class="board-callout warning"><strong>ข้อยกเว้นที่ต้องจำ</strong><p>Quest 4 เมื่อเล่น 7 คนขึ้นไป ต้องมี Fail 2 ใบ ภารกิจจึงล้มเหลว</p></div>
+          </div>
+        </div>
+        <figure class="photo-panel board-focus">
+          <img src="assets/quest-board.png" alt="บอร์ดภารกิจ Avalon แสดง Quest 1-5 จำนวนคนในทีม และ vote track" />
+          <figcaption class="caption">ให้ผู้เล่นดูบอร์ดก่อนทุก Quest ว่าต้องส่งคนกี่คน และตอนนี้ถูก Reject ไปกี่ครั้งแล้ว</figcaption>
         </figure>
       </div>
     </section>
@@ -624,15 +765,30 @@
 
     <section class="slide">
       <div class="stack">
+        <p class="kicker">night script</p>
+        <h2>ช่วงหลับตา: ใครรู้อะไร</h2>
+        <p>สำหรับเกมแรก ใช้ script สั้น ๆ นี้พอ เพื่อให้ทุกคนรู้ข้อมูลเริ่มต้นถูกต้องโดยไม่ต้องจำบทเสริม</p>
+        <div class="night-script">
+          <div class="script-card neutral"><span>1</span><strong>ทุกคนหลับตา</strong><p>“ทุกคนหลับตา กำมือไว้ข้างหน้า ห้ามพูด ห้ามชี้ชัดเกินจำเป็น”</p></div>
+          <div class="script-card evil"><span>2</span><strong>ฝ่ายร้ายลืมตา</strong><p>“Minion และ Assassin ลืมตา มองหากัน แล้วหลับตา”</p></div>
+          <div class="script-card good"><span>3</span><strong>Merlin เห็นฝ่ายร้าย</strong><p>“ฝ่ายร้ายยกนิ้วโป้งให้ Merlin เห็น Merlin ลืมตา ดูว่าใครเป็นฝ่ายร้าย แล้วหลับตา”</p></div>
+          <div class="script-card neutral"><span>4</span><strong>เริ่มเช้า</strong><p>“ทุกคนเอามือลง ลืมตาได้ Leader คนแรกเสนอทีมสำหรับ Quest 1”</p></div>
+        </div>
+        <div class="note warning"><p>เกมแรกยังไม่ต้องใช้ Percival, Morgana, Mordred หรือ Oberon จะได้โฟกัสที่วงจรเสนอทีม โหวตทีม และทำภารกิจก่อน</p></div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="stack">
         <p class="kicker">round loop</p>
         <h2>หนึ่งรอบเล่นแบบนี้</h2>
-        <div class="flow">
+        <div class="flow compact">
           <div class="flow-step"><b>1</b><h3>เสนอทีม</h3><p>Leader เลือกคนตามจำนวนที่ภารกิจต้องการ</p></div>
-          <div class="flow-step"><b>2</b><h3>คุยและโหวต</h3><p>ทุกคนโหวต Approve หรือ Reject ทีมนี้</p></div>
-          <div class="flow-step"><b>3</b><h3>ทำภารกิจ</h3><p>เฉพาะคนในทีมส่ง Success/Fail แบบลับ</p></div>
+          <div class="flow-step"><b>2</b><h3>โหวตทีม</h3><p>ทุกคนโหวต Approve หรือ Reject ว่าทีมนี้ควรผ่านไหม</p></div>
+          <div class="flow-step"><b>3</b><h3>ส่งภารกิจ</h3><p>เฉพาะคนในทีมเท่านั้นที่ส่ง Success/Fail แบบลับ</p></div>
           <div class="flow-step"><b>4</b><h3>อ่านผล</h3><p>สำเร็จหรือล้มเหลว แล้วเปลี่ยน Leader</p></div>
         </div>
-        <div class="token-photo-row">
+        <div class="token-photo-row mini">
           <figure class="photo-panel wide">
             <img src="assets/leader-team-tokens.png" alt="Leader token, team token และ quest marker ของ Avalon" />
             <figcaption class="caption">Leader และ token สำหรับเสนอทีม</figcaption>
@@ -655,11 +811,12 @@
           <p class="kicker">team vote</p>
           <h2>การโหวตทีมสำคัญพอ ๆ กับภารกิจ</h2>
           <ul>
-            <li>ทุกคนโหวต แม้ไม่ได้อยู่ในทีม</li>
-            <li>เสียงข้างมาก Approve ทีมจึงผ่าน</li>
-            <li>ถ้าคะแนนเสมอ ถือว่า Reject</li>
+            <li>Approve/Reject คือโหวตว่า “ทีมนี้ควรได้ไปทำภารกิจไหม”</li>
+            <li>ทุกคนโหวต แม้ตัวเองไม่ได้อยู่ในทีม</li>
+            <li>ต้องได้เสียงข้างมาก Approve ทีมจึงผ่าน ถ้าคะแนนเสมอ ถือว่า Reject</li>
             <li>Reject ครบ 5 ครั้งในภารกิจเดียว ฝ่ายร้ายชนะทันที</li>
           </ul>
+          <div class="note"><p>ช่วงนี้ยังไม่มีใครส่ง Success/Fail แค่ตัดสินใจก่อนว่าเชื่อใจทีมที่ Leader เสนอหรือไม่</p></div>
           <figure class="photo-panel wide compact">
             <img src="assets/vote-tokens.png" alt="Approve และ Reject token สำหรับโหวตทีม" />
             <figcaption class="caption">ผู้เล่นจะเลือก Approve หรือ Reject แล้วเปิดพร้อมกัน</figcaption>
@@ -691,11 +848,12 @@
           <h2>ภารกิจสำเร็จหรือล้มเหลวอย่างไร</h2>
           <ul>
             <li>เฉพาะคนในทีมเท่านั้นที่ส่งการ์ดภารกิจ</li>
+            <li>คนที่ไม่ได้อยู่ในทีม ไม่ส่ง Success/Fail ใน Quest นั้น</li>
             <li>ฝ่ายดีต้องส่ง Success</li>
             <li>ฝ่ายร้ายเลือกได้ว่าจะส่ง Success หรือ Fail</li>
             <li>ปกติ Fail 1 ใบก็ทำให้ภารกิจล้มเหลว</li>
           </ul>
-          <div class="note"><p>ข้อยกเว้นที่ต้องดูบนบอร์ด: บางจำนวนผู้เล่น ภารกิจที่ 4 อาจต้องใช้ Fail 2 ใบถึงจะล้มเหลว</p></div>
+          <div class="note"><p>ข้อยกเว้นที่ต้องดูบนบอร์ด: Quest 4 เมื่อเล่น 7 คนขึ้นไป ต้องมี Fail 2 ใบ ภารกิจจึงล้มเหลว</p></div>
         </div>
         <figure class="photo-panel tall">
           <img src="assets/success-fail-reference.png" alt="การ์ด Fail และ Success ของ Avalon แบบเห็นเต็มใบ" />
@@ -798,6 +956,22 @@
           <button class="choice" data-q="voteall" data-a="wrong">เฉพาะฝ่ายดีโหวต</button>
         </div>
         <div class="feedback" id="voteall-feedback">เลือกคำตอบเพื่อดู feedback</div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="stack">
+        <p class="kicker">ready checklist</p>
+        <h2>พร้อมเริ่มรอบแรก</h2>
+        <p>ก่อนปล่อยโต๊ะเล่นจริง ให้อาจารย์เช็ก 6 ข้อนี้กับนักศึกษาแบบเร็ว ๆ</p>
+        <div class="ready-grid">
+          <div class="ready-item"><div><strong>ทุกคนรู้บทตัวเอง</strong><p>ดูการ์ดตัวเองแล้วคว่ำไว้ ไม่เปิดให้คนอื่นเห็น</p></div></div>
+          <div class="ready-item"><div><strong>ฝ่ายร้ายรู้จักกัน</strong><p>หลังช่วงหลับตา Minion และ Assassin ควรรู้ว่าพวกเดียวกันคือใคร</p></div></div>
+          <div class="ready-item"><div><strong>Merlin เห็นฝ่ายร้าย</strong><p>Merlin ช่วยฝ่ายดีได้ แต่ต้องไม่ชี้ชัดจน Assassin จับได้</p></div></div>
+          <div class="ready-item"><div><strong>Leader เสนอทีมตามบอร์ด</strong><p>ดู Quest ปัจจุบันก่อนเสมอว่าต้องเลือกกี่คน</p></div></div>
+          <div class="ready-item"><div><strong>ทุกคนโหวตทีม</strong><p>Approve/Reject เปิดพร้อมกัน และคะแนนเสมอคือ Reject</p></div></div>
+          <div class="ready-item"><div><strong>เฉพาะคนในทีมส่งภารกิจ</strong><p>คนในทีมส่ง Success/Fail แบบลับ แล้วเปิดรวมเพื่อดูผล Quest</p></div></div>
+        </div>
       </div>
     </section>
 
