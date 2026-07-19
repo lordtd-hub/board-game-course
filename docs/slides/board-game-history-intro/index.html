@@ -1,0 +1,366 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Board Game History Intro</title>
+  <style>
+    :root {
+      --ink: #17130f;
+      --paper: #fff6df;
+      --cream: #f5e2b8;
+      --line: #d0a95d;
+      --teal: #096b68;
+      --blue: #235c9f;
+      --red: #9d2f41;
+      --gold: #d9a33c;
+      --clay: #9b5635;
+      --night: #111827;
+      --muted: #655847;
+    }
+
+    * { box-sizing: border-box; }
+
+    html,
+    body {
+      margin: 0;
+      min-height: 100%;
+    }
+
+    body {
+      background:
+        radial-gradient(circle at 10% 10%, rgba(217, 163, 60, .24), transparent 28%),
+        radial-gradient(circle at 88% 18%, rgba(9, 107, 104, .2), transparent 30%),
+        linear-gradient(135deg, #fff8e8, #f1d9a6 62%, #12343b);
+      color: var(--ink);
+      font-family: Arial, "Noto Sans Thai", sans-serif;
+    }
+
+    a { color: inherit; }
+
+    .stage {
+      display: grid;
+      min-height: 100svh;
+      padding: clamp(16px, 2.2vw, 34px);
+      place-items: center;
+    }
+
+    .slide {
+      aspect-ratio: 16 / 9;
+      background:
+        linear-gradient(135deg, rgba(255, 246, 223, .98), rgba(245, 226, 184, .96)),
+        radial-gradient(circle at 85% 80%, rgba(9, 107, 104, .13), transparent 32%);
+      border: 1px solid rgba(101, 88, 71, .28);
+      border-radius: 8px;
+      box-shadow: 0 32px 90px rgba(17, 24, 39, .26);
+      display: grid;
+      gap: clamp(14px, 1.6vw, 22px);
+      grid-template-rows: auto 1fr auto;
+      max-height: calc(100svh - 32px);
+      max-width: min(1560px, calc(100vw - 32px));
+      overflow: hidden;
+      padding: clamp(24px, 3.6vw, 58px);
+      position: relative;
+      width: 100%;
+    }
+
+    .slide::before {
+      background: linear-gradient(90deg, var(--teal), var(--gold), var(--red), var(--blue));
+      content: "";
+      height: 8px;
+      left: 0;
+      position: absolute;
+      right: 0;
+      top: 0;
+    }
+
+    .topline {
+      align-items: center;
+      color: var(--muted);
+      display: flex;
+      font-size: clamp(11px, .95vw, 15px);
+      font-weight: 900;
+      justify-content: space-between;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+
+    .main {
+      align-items: center;
+      display: grid;
+      gap: clamp(20px, 3vw, 48px);
+      grid-template-columns: minmax(0, .98fr) minmax(420px, 1.06fr);
+      min-height: 0;
+    }
+
+    .copy {
+      display: grid;
+      gap: clamp(15px, 1.7vw, 24px);
+    }
+
+    h1,
+    h2,
+    p { margin: 0; }
+
+    h1 {
+      color: var(--night);
+      font-size: clamp(46px, 5.6vw, 96px);
+      letter-spacing: 0;
+      line-height: .98;
+    }
+
+    .lead {
+      color: #2a241e;
+      font-size: clamp(18px, 1.8vw, 28px);
+      line-height: 1.38;
+      max-width: 780px;
+    }
+
+    .thesis {
+      background: rgba(255, 250, 239, .78);
+      border-left: 8px solid var(--teal);
+      border-radius: 8px;
+      color: #241d17;
+      display: grid;
+      gap: 8px;
+      padding: clamp(14px, 1.6vw, 22px);
+    }
+
+    .thesis strong {
+      color: var(--teal);
+      font-size: clamp(17px, 1.35vw, 22px);
+    }
+
+    .thesis p {
+      font-size: clamp(16px, 1.35vw, 22px);
+      line-height: 1.38;
+    }
+
+    .photo-board {
+      display: grid;
+      gap: 12px;
+      grid-template-columns: 1.05fr .88fr;
+      grid-template-rows: 1fr 1fr;
+      min-height: 0;
+    }
+
+    .tile {
+      background: #fffaf0;
+      border: 1px solid rgba(208, 169, 93, .78);
+      border-radius: 8px;
+      box-shadow: 0 18px 44px rgba(17, 24, 39, .13);
+      min-height: 0;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .tile.large { grid-row: span 2; }
+
+    .tile img {
+      display: block;
+      height: 100%;
+      object-fit: cover;
+      width: 100%;
+    }
+
+    .label {
+      background: rgba(17, 24, 39, .82);
+      border: 1px solid rgba(255, 246, 223, .42);
+      border-radius: 999px;
+      bottom: 10px;
+      color: white;
+      font-size: clamp(12px, .95vw, 15px);
+      font-weight: 900;
+      left: 10px;
+      padding: 7px 10px;
+      position: absolute;
+    }
+
+    .timeline {
+      display: grid;
+      gap: 10px;
+      grid-template-columns: repeat(4, 1fr);
+    }
+
+    .era {
+      background: rgba(255, 250, 239, .78);
+      border: 1px solid rgba(208, 169, 93, .8);
+      border-radius: 8px;
+      display: grid;
+      gap: 5px;
+      min-height: 92px;
+      padding: 12px 14px;
+    }
+
+    .era b {
+      color: var(--accent);
+      font-size: clamp(16px, 1.15vw, 21px);
+      line-height: 1.1;
+    }
+
+    .era span {
+      color: var(--muted);
+      font-size: clamp(12px, .9vw, 15px);
+      font-weight: 800;
+      line-height: 1.28;
+    }
+
+    .e1 { --accent: var(--clay); }
+    .e2 { --accent: var(--blue); }
+    .e3 { --accent: var(--red); }
+    .e4 { --accent: var(--teal); }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+      left: 50%;
+      position: fixed;
+      transform: translateX(-50%);
+      bottom: 12px;
+      z-index: 5;
+    }
+
+    .button {
+      background: var(--night);
+      border: 0;
+      border-radius: 999px;
+      color: var(--paper);
+      cursor: pointer;
+      font: inherit;
+      font-weight: 900;
+      padding: 10px 14px;
+      text-decoration: none;
+    }
+
+    .button.secondary {
+      background: #fffaf0;
+      border: 1px solid rgba(17, 24, 39, .22);
+      color: var(--night);
+    }
+
+    .credit {
+      bottom: 14px;
+      color: rgba(101, 88, 71, .82);
+      font-size: clamp(10px, .75vw, 12px);
+      left: clamp(24px, 3.6vw, 58px);
+      max-width: min(740px, 46%);
+      position: absolute;
+    }
+
+    .credit a {
+      color: var(--blue);
+      font-weight: 800;
+    }
+
+    @media (max-width: 900px) {
+      .stage {
+        display: block;
+        padding: 0;
+      }
+
+      .slide {
+        aspect-ratio: auto;
+        border: 0;
+        border-radius: 0;
+        max-height: none;
+        max-width: none;
+        min-height: 100svh;
+        overflow: visible;
+        padding: 64px 20px 108px;
+      }
+
+      .main,
+      .timeline {
+        grid-template-columns: 1fr;
+      }
+
+      .photo-board {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .tile {
+        min-height: 180px;
+      }
+
+      .tile.large {
+        grid-column: span 2;
+        grid-row: span 1;
+        min-height: 260px;
+      }
+
+      .credit {
+        bottom: 72px;
+        left: 20px;
+        right: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="stage">
+    <section class="slide" aria-label="สไลด์เปิดประวัติศาสตร์บอร์ดเกม">
+      <div class="topline">
+        <span>SMA2106 Board Game Course</span>
+        <span>Intro slide</span>
+      </div>
+
+      <div class="main">
+        <div class="copy">
+          <h1>บอร์ดเกมเดินทางมากับมนุษย์</h1>
+          <p class="lead">จากพิธีกรรมและการฝึกคิดในโลกโบราณ สู่สินค้าสมัยอุตสาหกรรม และกลายเป็นพื้นที่พบปะ เรียนรู้ ต่อรอง หลอกล่อ และร่วมมือกันในโลกสมัยใหม่</p>
+          <div class="thesis">
+            <strong>คำถามเปิดคาบ</strong>
+            <p>เวลาเราเล่นเกมหนึ่งเกม เราไม่ได้เห็นแค่กติกา แต่เห็นสังคม เศรษฐกิจ เทคโนโลยี และค่านิยมของยุคนั้นซ่อนอยู่ด้วย</p>
+          </div>
+        </div>
+
+        <div class="photo-board" aria-label="ภาพตัวอย่างบอร์ดเกมจากหลายยุค">
+          <figure class="tile large">
+            <img src="assets/senet.jpg" alt="กระดาน Senet จากอียิปต์โบราณ" />
+            <figcaption class="label">Senet · พิธีกรรมและชีวิตหลังความตาย</figcaption>
+          </figure>
+          <figure class="tile">
+            <img src="assets/royal-game-of-ur.jpg" alt="กระดาน Royal Game of Ur" />
+            <figcaption class="label">Ur · เกมในเมืองโบราณ</figcaption>
+          </figure>
+          <figure class="tile">
+            <img src="assets/go-board.jpg" alt="กระดาน Go พร้อมหมากดำขาว" />
+            <figcaption class="label">Go · กลยุทธ์บนพื้นที่ว่าง</figcaption>
+          </figure>
+        </div>
+      </div>
+
+      <div class="timeline" aria-label="ไทม์ไลน์ประวัติศาสตร์บอร์ดเกม">
+        <div class="era e1"><b>โบราณ</b><span>Senet, Ur, Go: เกมผูกกับพิธีกรรม เมือง และการฝึกคิด</span></div>
+        <div class="era e2"><b>ยุคกลาง</b><span>หมากรุก หมากฮอส Mancala: โครงสร้างสังคมและสงครามกลายเป็นระบบเล่น</span></div>
+        <div class="era e3"><b>อุตสาหกรรม</b><span>การพิมพ์และ mass production ทำให้เกมกลายเป็นสินค้าครอบครัว</span></div>
+        <div class="era e4"><b>Modern</b><span>Catan และ Eurogame ทำให้โต๊ะเล่นเกมเป็นพื้นที่เจรจาและปฏิสัมพันธ์</span></div>
+      </div>
+
+      <p class="credit">
+        Images:
+        <a href="https://commons.wikimedia.org/wiki/File:Double_gameboard,_wood_-_Museo_Egizio_Turin_S_8451_01_p04.jpg">Senet CC0</a>,
+        <a href="https://commons.wikimedia.org/wiki/File:Royal_game_of_Ur,_2010-08-03_circles_(cropped_and_adjusted).jpg">Ur by Szilas CC BY-SA 4.0</a>,
+        <a href="https://commons.wikimedia.org/wiki/File:Go_(13%C3%9713)_--_2021_--_6741.jpg">Go by Dietmar Rabich CC BY-SA 4.0</a>.
+      </p>
+    </section>
+  </main>
+
+  <div class="actions" aria-label="controls">
+    <a class="button secondary" href="../../">กลับ Hub</a>
+    <button class="button" id="fullscreen">เต็มจอ</button>
+  </div>
+
+  <script>
+    function toggleFullscreen() {
+      if (!document.fullscreenElement) document.documentElement.requestFullscreen?.();
+      else document.exitFullscreen?.();
+    }
+
+    document.querySelector('#fullscreen').addEventListener('click', toggleFullscreen);
+    document.addEventListener('keydown', (event) => {
+      if (event.key.toLowerCase() === 'f') toggleFullscreen();
+    });
+  </script>
+</body>
+</html>
