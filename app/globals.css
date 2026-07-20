@@ -180,6 +180,23 @@ button.secondary {
     linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(240, 252, 252, 0.95));
 }
 
+.hub-credit {
+  align-items: center;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  display: flex;
+  flex-wrap: wrap;
+  font-size: 13px;
+  gap: 6px 18px;
+  justify-content: space-between;
+  margin-top: 10px;
+  padding: 18px 4px 0;
+}
+
+.hub-credit strong {
+  color: var(--accent-strong);
+}
+
 .metric {
   color: var(--blue);
   font-size: 34px;

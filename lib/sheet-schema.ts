@@ -32,6 +32,16 @@ export const SHEET_SCHEMAS = {
   grades: ["id", "submissionId", "assignmentId", "studentEmail", "score", "feedback", "gradedBy", "gradedAt"],
   feedback: ["id", "submissionId", "studentEmail", "feedback", "createdBy", "createdAt"],
   material_progress: ["id", "studentEmail", "week", "sectionId", "status", "exitTicket", "completedAt", "updatedAt"],
+  exam_results: [
+    "id", "examId", "studentId", "studentName", "sectionId", "formCode", "answers", "score", "maxScore",
+    "startedAt", "submittedAt", "leaveCount", "status", "receipt"
+  ],
+  exam_events: [
+    "id", "examId", "studentId", "event", "eventCount", "occurredAt", "status", "detail"
+  ],
+  exam_config: [
+    "id", "examId", "roomCodeHash", "openAt", "closeAt", "status", "updatedBy", "updatedAt"
+  ],
   audit_logs: ["id", "actorEmail", "action", "entityType", "entityId", "detail", "createdAt"]
 } as const;
 
