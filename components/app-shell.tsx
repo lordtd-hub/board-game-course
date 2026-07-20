@@ -1,7 +1,14 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import type { SessionUser } from "@/lib/types";
 
 export function AppShell({ user, children }: { user: SessionUser | null; children: React.ReactNode }) {
+  const pathname = usePathname();
+  if (pathname.startsWith("/exam/")) return <main className="exam-public-main">{children}</main>;
+  if (pathname === "/instructor/exam-control") return <main className="container">{children}</main>;
+
   return (
     <div className="shell">
       <header className="topbar">

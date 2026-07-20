@@ -6,6 +6,8 @@ dist/
 coverage/
 *.tsbuildinfo
 .DS_Store
+output/pdf/sma2106-week1-2-exam-review.pdf
+tmp/pdfs/
 
 # LaTeX/book build artifacts that are not needed for the interactive app repo
 learning-materials/bookref/
@@ -24,3 +26,7 @@ learning-materials/**/*.zip
 *.out
 *.run.xml
 *.synctex.gz
+
+.vercel
+.env*
+.secrets/
