@@ -46,10 +46,28 @@ node -e "console.log(require('crypto').createHash('sha256').update('YOUR-CONTROL
 
 ## ทดสอบระบบก่อนวันสอบ
 
+ทดสอบ local โดยไม่เชื่อม Google Sheet ได้ด้วย memory mode ซึ่งระบบปิดไม่ให้ใช้ใน Production:
+
 ```powershell
+$env:EXAM_STORAGE_MODE='memory'
+npm.cmd run dev
+```
+
+เปิด PowerShell อีกหน้าต่างแล้วรัน:
+
+```powershell
+$env:EXAM_CONTROL_PIN='13579024'
+npm.cmd run exam:hotfix:validate
+npm.cmd run exam:smoke
 npm.cmd run build
 npx.cmd tsx tools\validate-exam-question-bank.ts
-node tools\smoke-test-exam.mjs http://localhost:3000
+```
+
+บน macOS ใช้คำสั่งเทียบเท่า:
+
+```bash
+EXAM_STORAGE_MODE=memory npm run dev
+EXAM_CONTROL_PIN=13579024 npm run exam:smoke
 ```
 
 การทดสอบ Production ให้ใช้รหัสห้องทดสอบและข้อมูลที่ขึ้นต้น `TEST-` เท่านั้น โดยแยกรอบเพื่อไม่ให้ชน Google Sheets quota:
@@ -76,6 +94,14 @@ node tools\smoke-test-exam.mjs https://board-game-course.vercel.app
 ```
 
 หลังทดสอบต้องตรวจจำนวนแถวใน `exam_results`/`exam_events`, ลบเฉพาะแถวที่ `studentId` ขึ้นต้น `TEST-` และคง `exam_config` เป็น `closed`
+
+ตรวจผลซ้ำทางกายภาพจาก `examId + studentId` ก่อนประกาศคะแนน:
+
+```powershell
+npm.cmd run exam:duplicates
+```
+
+คำสั่งนี้อ่านอย่างเดียวและคืน exit code 1 หากพบ key ที่มีมากกว่าหนึ่งแถว
 
 ทดสอบอย่างน้อยหนึ่งเครื่องบน Chrome Android และ Safari iPhone โดยใช้รหัสนักศึกษาทดสอบที่ไม่ซ้ำกับผู้เข้าสอบจริง
 

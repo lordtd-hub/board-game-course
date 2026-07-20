@@ -7,6 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
+    "exam:hotfix:validate": "node tools/validate-exam-hotfix.mjs",
+    "exam:duplicates": "node tools/check-exam-duplicates.mjs",
+    "exam:smoke": "node tools/smoke-test-exam.mjs",
     "sheets:init": "tsx scripts/init-google-sheet.ts"
   },
   "dependencies": {
