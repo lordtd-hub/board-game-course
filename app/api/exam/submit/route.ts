@@ -20,7 +20,10 @@ export async function POST(request: Request) {
   const parsed = SubmitSchema.safeParse(await request.json().catch(() => null));
   if (!parsed.success) return NextResponse.json({ error: "รูปแบบคำตอบไม่ถูกต้อง" }, { status: 400 });
   const state = await examState(session.studentId).catch(() => null);
-  if (!state) return NextResponse.json({ error: "ตรวจสถานะการสอบจาก Google Sheet ไม่สำเร็จ กรุณาลองส่งอีกครั้ง" }, { status: 503 });
+  if (!state) return NextResponse.json(
+    { error: "ตรวจสถานะการสอบจาก Google Sheet ไม่สำเร็จ กรุณาลองส่งอีกครั้ง" },
+    { status: 503, headers: { "Retry-After": "2" } }
+  );
   if (state.disqualified) return NextResponse.json({ error: "การสอบถูกตัดสิทธิ์", status: "disqualified" }, { status: 423 });
   if (state.result) return NextResponse.json({ status: state.result.status, receipt: state.result.receipt });
 
@@ -37,8 +40,10 @@ export async function POST(request: Request) {
     });
   } catch (error) {
     const pending = error instanceof Error && error.message === "EXAM_RESULT_WRITE_IN_PROGRESS";
-    return NextResponse.json({ error: pending ? "กำลังบันทึกผลสอบ กรุณากดลองส่งอีกครั้ง" : "บันทึกผลสอบลง Google Sheet ไม่สำเร็จ กรุณากดลองส่งอีกครั้ง" }, { status: pending ? 409 : 503 });
+    return NextResponse.json(
+      { error: pending ? "กำลังบันทึกผลสอบ กรุณากดลองส่งอีกครั้ง" : "บันทึกผลสอบลง Google Sheet ไม่สำเร็จ กรุณากดลองส่งอีกครั้ง" },
+      { status: pending ? 409 : 503, headers: { "Retry-After": "2" } }
+    );
   }
-  store.delete(EXAM_COOKIE);
   return NextResponse.json({ status: result.status, receipt: result.receipt });
 }

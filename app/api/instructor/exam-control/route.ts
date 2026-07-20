@@ -4,13 +4,18 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { appConfig } from "@/lib/config";
 import { EXAM_ID, hashRoomCode } from "@/lib/exam/core.server";
-import { getExamConfig, saveExamConfig } from "@/lib/exam/repository.server";
+import {
+  examUsesMemoryStorage,
+  getExamConfig,
+  getMemoryExamDiagnostics,
+  saveExamConfig
+} from "@/lib/exam/repository.server";
 
 const CONTROL_COOKIE = "sma2106_exam_control";
 const CONTROL_SESSION_MS = 8 * 60 * 60 * 1000;
 
 function storageIsReady() {
-  return Boolean(appConfig.googleSheetId && appConfig.googleServiceAccountEmail && appConfig.googlePrivateKey);
+  return examUsesMemoryStorage() || Boolean(appConfig.googleSheetId && appConfig.googleServiceAccountEmail && appConfig.googlePrivateKey);
 }
 
 const CommandSchema = z.discriminatedUnion("action", [
@@ -67,7 +72,7 @@ export async function GET() {
   if (!storageIsReady()) return NextResponse.json(publicConfig(null));
   try {
     const config = await getExamConfig(EXAM_ID);
-    return NextResponse.json(publicConfig(config));
+    return NextResponse.json({ ...publicConfig(config), diagnostics: getMemoryExamDiagnostics() });
   } catch (error) {
     console.error("Failed to read exam control configuration", error);
     return NextResponse.json({ error: "อ่าน Google Sheet ไม่สำเร็จ กรุณาตรวจการแชร์ Sheet และ Service Account" }, { status: 503 });

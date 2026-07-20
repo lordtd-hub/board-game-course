@@ -53,7 +53,7 @@ function isNonRetryableClientError(error: unknown) {
   return status >= 400 && status < 500 && status !== 429;
 }
 
-async function withRetry<T>(fn: () => Promise<T>, attempts = 4): Promise<T> {
+async function withRetry<T>(fn: () => Promise<T>, attempts = 3): Promise<T> {
   let lastError: unknown;
   for (let i = 0; i < attempts; i += 1) {
     try {
@@ -62,7 +62,9 @@ async function withRetry<T>(fn: () => Promise<T>, attempts = 4): Promise<T> {
       lastError = error;
       if (isNonRetryableClientError(error)) break;
       if (i + 1 >= attempts) break;
-      const delay = isQuotaError(error) ? 21_000 * (i + 1) : 300 * (i + 1);
+      const quotaError = isQuotaError(error);
+      const base = quotaError ? 800 : 250;
+      const delay = Math.min(quotaError ? 2_500 : 1_200, base * (2 ** i)) + Math.floor(Math.random() * 200);
       await new Promise((resolve) => setTimeout(resolve, delay));
     }
   }
@@ -125,7 +127,7 @@ async function appendRows(sheetName: SheetName, rows: Row[]) {
     sheets.spreadsheets.values.append({
       spreadsheetId: sheetId(),
       range: `${sheetName}!A:Z`,
-      valueInputOption: "USER_ENTERED",
+      valueInputOption: "RAW",
       insertDataOption: "INSERT_ROWS",
       requestBody: { values }
     })
@@ -183,7 +185,7 @@ export async function updateRowById(sheetName: SheetName, id: string, updates: R
     sheets.spreadsheets.values.update({
       spreadsheetId: sheetId(),
       range: `${sheetName}!A${sheetRowNumber}:Z${sheetRowNumber}`,
-      valueInputOption: "USER_ENTERED",
+      valueInputOption: "RAW",
       requestBody: { values: [next] }
     })
   );

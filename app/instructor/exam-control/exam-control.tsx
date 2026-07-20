@@ -197,7 +197,7 @@ export function ExamControl() {
         <div>
           <span className="badge">3 · ตรวจสถานะ</span>
           <h2>{state === null ? "กำลังตรวจสอบ…" : live ? "กำลังเปิดรับนักศึกษาใหม่" : "ขณะนี้ไม่รับนักศึกษาใหม่"}</h2>
-          {state?.closeAt && <p className="muted">ระบบจะปิดรับนักศึกษาใหม่อัตโนมัติ: {new Date(state.closeAt).toLocaleString("th-TH")}</p>}
+          {state?.closeAt && <p className="muted">{live ? "ระบบจะปิดรับนักศึกษาใหม่อัตโนมัติ" : "รอบล่าสุดปิดรับเมื่อ"}: {new Date(state.closeAt).toLocaleString("th-TH")}</p>}
         </div>
         {live && <button className="secondary" disabled={busy} onClick={() => {
           if (window.confirm("ยืนยันปิดรับนักศึกษาใหม่ก่อนกำหนด? ผู้ที่เริ่มสอบแล้วจะยังทำต่อได้จนครบเวลา")) void command({ action: "close" });

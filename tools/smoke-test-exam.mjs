@@ -1,10 +1,12 @@
 import assert from "node:assert/strict";
+import { randomUUID } from "node:crypto";
 
 const baseUrl = process.argv[2] || "http://localhost:3000";
 const mode = process.env.SMOKE_MODE || "basic";
 const controlPin = process.env.EXAM_CONTROL_PIN || "";
 const roomCode = process.env.EXAM_TEST_ROOM_CODE || "246810";
 const runId = Date.now().toString(36).toUpperCase().slice(-6);
+const eventId = () => randomUUID();
 
 async function request(path, options = {}, cookie = "") {
   return fetch(`${baseUrl}${path}`, {
@@ -65,6 +67,13 @@ async function closeExam(controlCookie) {
   assert.equal(payload.status, "closed");
 }
 
+async function diagnostics(controlCookie) {
+  if (!controlCookie) return null;
+  const response = await request("/api/instructor/exam-control", {}, controlCookie);
+  await assertStatus(response, 200, "control diagnostics failed");
+  return (await response.json()).diagnostics || null;
+}
+
 async function startAttempt(studentId, studentName = "Production QA") {
   const response = await jsonRequest("/api/exam/start", {
     studentId,
@@ -91,28 +100,57 @@ async function submitAttempt(cookie, leaveCount = 0) {
 
 async function runBasic(controlCookie) {
   const studentId = `TEST-NORMAL-${runId}`;
-  const { cookie, session } = await startAttempt(studentId, "Normal Flow Test");
+  const { cookie, session } = await startAttempt(studentId, '=HYPERLINK("https://example.invalid","Normal Flow Test")');
   assert.equal(session.total, 24);
+  const beforeQuestions = await diagnostics(controlCookie);
   const questions = [];
   for (let index = 0; index < 24; index += 1) questions.push(await fetchQuestion(cookie, index));
   assert.match(questions[0], new RegExp(studentId));
   assert.doesNotMatch(questions[0], /rationale|answer\s*:/i);
   assert.equal(await fetchQuestion(cookie, 0), questions[0], "refresh changed the seeded question");
+  const afterQuestions = await diagnostics(controlCookie);
+  if (beforeQuestions && afterQuestions) {
+    assert.equal(afterQuestions.stateReads, beforeQuestions.stateReads, "question requests read exam state storage");
+  }
 
   const submit = await submitAttempt(cookie);
   await assertStatus(submit, 200, "normal submit failed");
   const result = await submit.json();
   assert.match(result.receipt, /^SMA-[A-Z0-9_-]{10}$/);
+  const recoveredStatus = await request("/api/exam/status", {}, cookie);
+  await assertStatus(recoveredStatus, 200, "submitted status recovery failed");
+  const recovered = await recoveredStatus.json();
+  assert.equal(recovered.status, "submitted");
+  assert.equal(recovered.receipt, result.receipt, "status recovery changed the receipt");
   const duplicate = await submitAttempt(cookie);
   await assertStatus(duplicate, 200, "duplicate submit failed");
   assert.equal((await duplicate.json()).receipt, result.receipt, "duplicate submit changed the receipt");
 
+  const raceId = `TEST-RACE-${runId}`;
+  const race = await startAttempt(raceId, "Ten Concurrent Submits");
+  const beforeRace = await diagnostics(controlCookie);
+  const raceResponses = await Promise.all(Array.from({ length: 10 }, () => submitAttempt(race.cookie)));
+  for (const [index, response] of raceResponses.entries()) await assertStatus(response, 200, `race submit ${index + 1} failed`);
+  const raceReceipts = await Promise.all(raceResponses.map((response) => response.json().then((data) => data.receipt)));
+  assert.equal(new Set(raceReceipts).size, 1, "concurrent submits returned different receipts");
+  const afterRace = await diagnostics(controlCookie);
+  if (beforeRace && afterRace) {
+    assert.equal(afterRace.resultCount, beforeRace.resultCount + 1, "concurrent submits created physical duplicate rows");
+    assert.deepEqual(afterRace.duplicateResultKeys, [], "memory store contains duplicate result keys");
+  }
+
   const cheaterId = `TEST-CHEAT-${runId}`;
   const cheater = await startAttempt(cheaterId, "Visibility Test");
-  for (const count of [1, 2]) {
-    const event = await jsonRequest("/api/exam/event", { count, clientAt: new Date().toISOString() }, cheater.cookie);
+  const firstEventId = eventId();
+  const beforeEvents = await diagnostics(controlCookie);
+  for (const [count, id] of [[1, firstEventId], [1, firstEventId], [2, eventId()]]) {
+    const event = await jsonRequest("/api/exam/event", { eventId: id, count, clientAt: new Date().toISOString() }, cheater.cookie);
     await assertStatus(event, 200, `event ${count} failed`);
     assert.equal((await event.json()).status, count === 1 ? "warning" : "disqualified");
+  }
+  const afterEvents = await diagnostics(controlCookie);
+  if (beforeEvents && afterEvents) {
+    assert.equal(afterEvents.eventCount, beforeEvents.eventCount + 2, "duplicate eventId created a physical duplicate event");
   }
   const blockedSubmit = await submitAttempt(cheater.cookie, 2);
   assert.equal(blockedSubmit.status, 423);
@@ -165,7 +203,7 @@ async function runEventLoad() {
     return { studentId, ...(await startAttempt(studentId, `Event Test ${index + 1}`)) };
   }));
   const events = await Promise.all(attempts.map(async ({ studentId, cookie }) => {
-    const response = await jsonRequest("/api/exam/event", { count: 1, clientAt: new Date().toISOString() }, cookie);
+    const response = await jsonRequest("/api/exam/event", { eventId: eventId(), count: 1, clientAt: new Date().toISOString() }, cookie);
     if (response.status !== 200) throw new Error(`event failed for ${studentId}: ${await responseText(response)}`);
     return response.json();
   }));

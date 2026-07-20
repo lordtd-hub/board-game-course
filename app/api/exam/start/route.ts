@@ -40,7 +40,10 @@ export async function POST(request: Request) {
 
   const studentId = normalizeStudentId(parsed.data.studentId);
   const state = await examState(studentId).catch(() => null);
-  if (!state) return NextResponse.json({ error: "ตรวจสถานะการสอบจาก Google Sheet ไม่สำเร็จ กรุณาลองอีกครั้ง" }, { status: 503 });
+  if (!state) return NextResponse.json(
+    { error: "ตรวจสถานะการสอบจาก Google Sheet ไม่สำเร็จ กรุณาลองอีกครั้ง" },
+    { status: 503, headers: { "Retry-After": "2" } }
+  );
   if (state.disqualified) return NextResponse.json({ error: "รหัสนี้ถูกตัดสิทธิ์จากการสอบแล้ว", status: "disqualified" }, { status: 423 });
   if (state.result) return NextResponse.json({ error: "รหัสนี้ส่งข้อสอบแล้ว", status: "submitted", receipt: state.result.receipt }, { status: 409 });
 

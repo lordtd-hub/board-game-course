@@ -4,10 +4,13 @@ import { decodeExamSession, EXAM_COOKIE, EXAM_TOTAL, formCode } from "@/lib/exam
 import { examState } from "@/lib/exam/actions.server";
 
 export async function GET() {
-  const session = decodeExamSession((await cookies()).get(EXAM_COOKIE)?.value);
+  const session = decodeExamSession((await cookies()).get(EXAM_COOKIE)?.value, { allowExpiredMs: 5 * 60 * 1000 });
   if (!session) return NextResponse.json({ status: "missing" });
   const state = await examState(session.studentId).catch(() => null);
-  if (!state) return NextResponse.json({ error: "โหลดสถานะการสอบไม่สำเร็จ" }, { status: 503 });
+  if (!state) return NextResponse.json(
+    { error: "โหลดสถานะการสอบไม่สำเร็จ" },
+    { status: 503, headers: { "Retry-After": "2" } }
+  );
   return NextResponse.json({
     status: state.disqualified ? "disqualified" : state.result?.status || "active",
     studentId: session.studentId, studentName: session.studentName, sectionId: session.sectionId,
