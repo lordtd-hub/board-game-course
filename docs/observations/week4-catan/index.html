@@ -1,0 +1,419 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Week 4 Catan Risk Decision Note</title>
+  <style>
+    :root {
+      --ink: #172629;
+      --muted: #5f6c69;
+      --paper: #fff9e9;
+      --paper-2: #f0e5c9;
+      --sea: #087b78;
+      --deep: #153f47;
+      --gold: #dca72c;
+      --brick: #b65035;
+      --green: #4d875b;
+      --line: rgba(21, 63, 71, .18);
+      --shadow: 0 22px 65px rgba(10, 37, 42, .24);
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--ink);
+      font-family: Arial, "Noto Sans Thai", sans-serif;
+      background:
+        radial-gradient(circle at 8% 8%, rgba(220, 167, 44, .3), transparent 25%),
+        radial-gradient(circle at 92% 14%, rgba(8, 123, 120, .26), transparent 30%),
+        linear-gradient(135deg, #123d44, #297872 52%, #a75537);
+    }
+    button, input, select, textarea { font: inherit; }
+    .shell { max-width: 1120px; margin: 0 auto; padding: clamp(14px, 3vw, 36px); }
+    .hero, .section {
+      position: relative;
+      margin-bottom: 18px;
+      padding: clamp(20px, 3vw, 34px);
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,.55);
+      border-radius: 20px;
+      background: linear-gradient(135deg, rgba(255,249,233,.99), rgba(240,229,201,.97));
+      box-shadow: var(--shadow);
+    }
+    .hero::after {
+      content: "8";
+      position: absolute;
+      right: clamp(22px, 4vw, 52px);
+      top: clamp(25px, 4vw, 46px);
+      width: 76px;
+      height: 76px;
+      display: grid;
+      place-items: center;
+      border: 7px double #fff2c9;
+      border-radius: 50%;
+      color: white;
+      background: var(--brick);
+      font: 900 34px Georgia, serif;
+      box-shadow: 0 0 0 9px rgba(182,80,53,.16);
+    }
+    h1, h2, h3, p { margin-top: 0; }
+    h1 { max-width: 820px; margin-bottom: 12px; color: var(--deep); font-size: clamp(34px, 6vw, 66px); line-height: 1.08; }
+    h2 { margin-bottom: 14px; color: var(--deep); font-size: clamp(25px, 3.5vw, 40px); }
+    h3 { margin-bottom: 8px; color: var(--deep); font-size: clamp(19px, 2vw, 24px); }
+    p, label, input, select, textarea { font-size: clamp(16px, 1.55vw, 20px); line-height: 1.48; }
+    .lead { max-width: 850px; margin-bottom: 8px; font-size: clamp(18px, 2vw, 25px); }
+    .hint { margin: 7px 0 0; color: var(--muted); font-size: clamp(14px, 1.25vw, 17px); }
+    .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+    .field { display: grid; gap: 7px; }
+    .field > span, .field > label { color: var(--deep); font-weight: 900; }
+    input, select, textarea {
+      width: 100%;
+      padding: 13px 14px;
+      color: var(--ink);
+      background: #fffdf6;
+      border: 2px solid var(--line);
+      border-radius: 12px;
+    }
+    textarea { min-height: 105px; resize: vertical; }
+    input:focus, select:focus, textarea:focus, button:focus-visible { outline: 3px solid rgba(220,167,44,.5); outline-offset: 2px; }
+
+    .group { display: grid; gap: 12px; margin-top: 18px; padding-top: 18px; border-top: 1px solid var(--line); }
+    .option-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 10px; }
+    .option {
+      min-height: 58px;
+      padding: 12px 14px;
+      cursor: pointer;
+      text-align: left;
+      color: var(--ink);
+      background: #fffdf6;
+      border: 2px solid var(--line);
+      border-radius: 12px;
+      font-size: clamp(15px, 1.35vw, 18px);
+      font-weight: 800;
+    }
+    .option.active { border-color: var(--gold); background: #fff0bd; box-shadow: inset 0 0 0 2px rgba(220,167,44,.25); }
+
+    .number-picker { display: grid; grid-template-columns: repeat(5, 1fr); gap: 9px; }
+    .number {
+      min-height: 56px;
+      cursor: pointer;
+      border: 2px solid #c8ae72;
+      border-radius: 999px;
+      color: var(--deep);
+      background: #fff3ce;
+      font-size: 20px;
+      font-weight: 900;
+    }
+    .number.active { color: white; border-color: var(--brick); background: var(--brick); }
+    .ev-box {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      gap: 14px;
+      min-height: 84px;
+      padding: 16px 18px;
+      border-left: 6px solid var(--sea);
+      background: #e2f2ed;
+    }
+    .ev-box p { margin: 0; }
+    .ev-score { color: var(--sea); font: 900 clamp(28px, 4vw, 44px) Georgia, serif; }
+
+    .progress-track { height: 12px; overflow: hidden; border-radius: 999px; background: #d8d0bd; }
+    .progress-fill { width: 0; height: 100%; background: linear-gradient(90deg, var(--sea), var(--green), var(--gold)); transition: width .2s ease; }
+    .progress-row { display: flex; justify-content: space-between; gap: 12px; margin-bottom: 8px; color: var(--deep); font-weight: 800; }
+
+    .actions { display: flex; flex-wrap: wrap; gap: 10px; margin: 16px 0 10px; }
+    .primary, .secondary, .danger {
+      padding: 13px 18px;
+      cursor: pointer;
+      border-radius: 999px;
+      font-size: clamp(15px, 1.4vw, 18px);
+      font-weight: 900;
+    }
+    .primary { color: white; border: 0; background: var(--sea); }
+    .secondary { color: var(--deep); border: 1px solid #ccb87e; background: #fff3cf; }
+    .danger { color: #7a2b20; border: 1px solid rgba(182,80,53,.35); background: #f8ddd4; }
+    .status { min-height: 25px; color: var(--sea); font-weight: 900; }
+    .output { min-height: 330px; color: #fff9e9; background: #123a42; border-color: #123a42; line-height: 1.58; }
+
+    @media (max-width: 760px) {
+      .grid, .option-grid { grid-template-columns: 1fr; }
+      .number-picker { grid-template-columns: repeat(5, 1fr); }
+      .shell { padding: 12px; }
+      .hero, .section { border-radius: 16px; }
+      .hero::after { width: 48px; height: 48px; top: 22px; opacity: .62; font-size: 22px; }
+      .ev-box { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <section class="hero">
+      <h1>ใบงานหลังเล่น Catan</h1>
+      <p class="lead">เลือกจังหวะสำคัญจากเกม แล้ววิเคราะห์ด้วยค่าคาดหวัง ความเสี่ยง การกระจายทรัพยากร และพฤติกรรมของตนเอง</p>
+      <p class="hint">ข้อมูลจะบันทึกเป็น draft ในเครื่องนี้เท่านั้น ไม่มีฐานข้อมูลและไม่ส่งออกจากเบราว์เซอร์</p>
+    </section>
+
+    <section class="section">
+      <h2>ข้อมูลพื้นฐาน</h2>
+      <div class="grid">
+        <label class="field"><span>ชื่อ–สกุล</span><input id="studentName" autocomplete="name" placeholder="กรอกชื่อและนามสกุล" /></label>
+        <label class="field"><span>โต๊ะ/กลุ่ม</span><input id="tableName" placeholder="เช่น Table 2 หรือ กลุ่ม 4" /></label>
+        <label class="field"><span>จำนวนผู้เล่น</span><select id="playerCount"><option value="">เลือกจำนวนผู้เล่น</option><option>3</option><option>4</option><option>5</option><option>6</option></select></label>
+        <label class="field"><span>คะแนนสุดท้ายของคุณ</span><select id="finalScore"><option value="">เลือกคะแนน</option><option>0–3</option><option>4–6</option><option>7–9</option><option>10+</option></select></label>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>ประเมินตำแหน่งผลิตทรัพยากร</h2>
+      <p>เลือกเลขไม่เกิน 3 ช่องจากหมู่บ้านหนึ่งหลังที่คุณสร้างหรือจำได้ ระบบจะรวม “จำนวนวิธีจาก 36 แบบ” ให้</p>
+      <div class="number-picker" id="numberPicker"></div>
+      <div class="ev-box" style="margin-top:14px">
+        <p id="evExplanation">ยังไม่ได้เลือกเลข · เลข 7 ไม่ใช่ช่องผลิตทรัพยากร จึงไม่อยู่ในรายการ</p>
+        <div class="ev-score" id="evScore">0/36</div>
+      </div>
+      <p class="hint">ค่านี้เป็น production score เบื้องต้น: สมมติแต่ละช่องให้ทรัพยากร 1 ใบ และยังไม่หักผลของโจร</p>
+
+      <div class="group" data-group="positionJudgment" data-single="true">
+        <h3>เมื่อมองทั้ง EV และชนิดทรัพยากร คุณประเมินตำแหน่งนี้อย่างไร?</h3>
+        <div class="option-grid">
+          <button class="option" data-value="EV สูงและได้ทรัพยากรหลากหลาย จึงต่อยอดแผนได้ง่าย">EV สูงและของหลากหลาย</button>
+          <button class="option" data-value="EV สูงแต่พึ่งทรัพยากรไม่กี่ชนิด จึงเสี่ยงติดคอขวด">EV สูงแต่ของกระจุกตัว</button>
+          <button class="option" data-value="EV ไม่สูงมากแต่ได้ทรัพยากรหลายชนิด จึงมีความยืดหยุ่น">EV ปานกลางแต่ยืดหยุ่น</button>
+          <button class="option" data-value="EV ต่ำและยังขาดทรัพยากรสำคัญ ทำให้ต้องพึ่งการแลกมาก">EV ต่ำและต้องพึ่งการแลก</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>การตัดสินใจที่จำได้ที่สุด</h2>
+      <label class="field"><span>เล่าเหตุการณ์สั้น ๆ</span><textarea id="moment" maxlength="260" placeholder="เช่น ฉันเลือกสร้างถนนไปหาเลข 8 แทนซื้อไพ่พัฒนา เพราะต้องการเพิ่มโอกาสได้อิฐ"></textarea></label>
+
+      <div class="group" data-group="decision" data-single="true">
+        <h3>การตัดสินใจนั้นเกี่ยวข้องกับเรื่องใดมากที่สุด?</h3>
+        <div class="option-grid">
+          <button class="option" data-value="เลือกตำแหน่งตั้งหมู่บ้านหรือเมือง">เลือกตำแหน่งตั้งบ้าน/เมือง</button>
+          <button class="option" data-value="เลือกว่าจะสร้าง แลก หรือเก็บทรัพยากรรอ">สร้าง แลก หรือเก็บรอ</button>
+          <button class="option" data-value="เลือกกระจายเลขและชนิดทรัพยากร">กระจายเลขและทรัพยากร</button>
+          <button class="option" data-value="ตอบสนองหลังถูกโจรหรือเสียทรัพยากร">ตอบสนองหลังถูกโจร</button>
+        </div>
+      </div>
+
+      <div class="group" data-group="evidence">
+        <h3>คุณใช้ข้อมูลใดประกอบการตัดสินใจ? เลือกได้หลายข้อ</h3>
+        <div class="option-grid">
+          <button class="option" data-value="จำนวนจุดและความน่าจะเป็นของเลขบนกระดาน">โอกาสออกของตัวเลข</button>
+          <button class="option" data-value="ชนิดทรัพยากรที่ยังขาดสำหรับแผนถัดไป">ทรัพยากรที่ยังขาด</button>
+          <button class="option" data-value="เส้นทางและตำแหน่งที่คู่แข่งอาจแย่งไปก่อน">ตำแหน่งที่คู่แข่งอาจแย่ง</button>
+          <button class="option" data-value="คู่ค้า ท่าเรือ และอัตราแลกเปลี่ยนที่เข้าถึงได้">คู่ค้าและท่าเรือ</button>
+          <button class="option" data-value="ความรู้สึกว่าดวงน่าจะเปลี่ยนหลังเลขเดิมไม่ออกนาน">ความรู้สึกว่าเลขกำลังจะออก</button>
+          <button class="option" data-value="คะแนนและระยะห่างจากผู้เล่นที่กำลังนำ">สถานการณ์คะแนน</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>ความเสี่ยงและการกระจาย</h2>
+      <div class="group" data-group="diversification" data-single="true" style="margin-top:0;padding-top:0;border-top:0">
+        <h3>ทรัพยากรของคุณกระจายดีเพียงใด?</h3>
+        <div class="option-grid">
+          <button class="option" data-value="ค่อนข้างกระจาย ฉันผลิตได้หลายชนิดและไม่ต้องรอเลขเดียว">กระจายดี</button>
+          <button class="option" data-value="กระจายบางส่วน แต่ยังมีทรัพยากรหนึ่งชนิดเป็นคอขวด">ยังมีคอขวดหนึ่งชนิด</button>
+          <button class="option" data-value="ค่อนข้างกระจุก ฉันได้ของชนิดเดิมบ่อยแต่สร้างต่อไม่ได้">ของกระจุกตัว</button>
+          <button class="option" data-value="ประเมินยาก เพราะต้องพึ่งการแลกกับผู้เล่นอื่นเป็นหลัก">พึ่งการแลกเป็นหลัก</button>
+        </div>
+      </div>
+
+      <div class="group" data-group="riskAttitude" data-single="true">
+        <h3>ในเกมนี้ คุณมีท่าทีต่อความเสี่ยงแบบใดมากที่สุด?</h3>
+        <div class="option-grid">
+          <button class="option" data-value="ระมัดระวังความเสี่ยง โดยเลือกเลขและทรัพยากรที่กระจายเพื่อให้ผลิตสม่ำเสมอ">ระมัดระวัง เน้นความสม่ำเสมอ</button>
+          <button class="option" data-value="ค่อนข้างเป็นกลาง โดยเปรียบเทียบผลตอบแทนเฉลี่ยเป็นหลัก">เป็นกลาง เน้นค่าเฉลี่ย</button>
+          <button class="option" data-value="ยอมรับความเสี่ยง โดยทุ่มไปที่โอกาสทำแต้มก้อนใหญ่แม้ผลจะผันผวน">ชอบเสี่ยง หวังผลก้อนใหญ่</button>
+          <button class="option" data-value="เปลี่ยนไปตามคะแนน โดยยอมเสี่ยงมากขึ้นเมื่อเป็นฝ่ายตาม">ยอมเสี่ยงมากขึ้นเมื่อเป็นฝ่ายตาม</button>
+        </div>
+      </div>
+
+      <div class="group" data-group="bias" data-single="true">
+        <h3>มีอคติหรืออารมณ์ใดเกิดขึ้นกับคุณหรือไม่?</h3>
+        <div class="option-grid">
+          <button class="option" data-value="มี ฉันอยากเอาคืนหลังถูกโจรหรือเสียทรัพยากร จนยอมรับดีลที่แย่ลง">อยากเอาคืนหลังเสียของ</button>
+          <button class="option" data-value="มี ฉันคิดว่าเลขที่ไม่ออกมานานควรจะออกในตาถัดไป">คิดว่าเลขค้างต้องออก</button>
+          <button class="option" data-value="มี ฉันยึดแผนเดิมเพราะเสียดายทรัพยากรที่ลงทุนไปแล้ว">เสียดายสิ่งที่ลงทุนไปแล้ว</button>
+          <button class="option" data-value="ยังไม่เห็นชัด ฉันพยายามหยุดและประเมินทางเลือกใหม่จากข้อมูลปัจจุบัน">ยังไม่เห็นชัด/ประเมินใหม่ได้</button>
+        </div>
+      </div>
+
+      <label class="field group"><span>ถ้าเล่นอีกครั้ง คุณจะปรับการตัดสินใจเรื่องความเสี่ยงอย่างไร?</span><textarea id="nextTry" maxlength="220" placeholder="เช่น จะเทียบทั้ง production score และความหลากหลายของทรัพยากรก่อนเลือกตำแหน่ง"></textarea></label>
+    </section>
+
+    <section class="section">
+      <h2>สร้าง Risk Decision Note</h2>
+      <div class="progress-row"><span id="progressLabel">กรอกแล้ว 0/12 รายการ</span><span id="progressStatus">กำลังเขียน</span></div>
+      <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+      <div class="actions">
+        <button class="primary" id="generate">สร้างข้อความสรุป</button>
+        <button class="secondary" id="copy">Copy สำหรับ Classroom</button>
+        <button class="secondary" id="selectText">เลือกข้อความทั้งหมด</button>
+        <button class="danger" id="reset">ล้าง draft</button>
+      </div>
+      <p class="status" id="status">ระบบบันทึก draft ไว้ในเครื่องนี้อัตโนมัติ</p>
+      <textarea class="output" id="output" readonly placeholder="กด “สร้างข้อความสรุป” แล้วตรวจความถูกต้องก่อนส่ง"></textarea>
+    </section>
+  </main>
+
+  <script>
+    const STORAGE_KEY = "week4CatanRiskDecisionNote:v1";
+    const numberWays = { 2:1, 3:2, 4:3, 5:4, 6:5, 8:5, 9:4, 10:3, 11:2, 12:1 };
+    const fields = ["studentName", "tableName", "playerCount", "finalScore", "moment", "nextTry"];
+    const state = {
+      studentName: "", tableName: "", playerCount: "", finalScore: "", moment: "", nextTry: "",
+      numbers: [], positionJudgment: [], decision: [], evidence: [], diversification: [], riskAttitude: [], bias: []
+    };
+    const output = document.getElementById("output");
+    const status = document.getElementById("status");
+
+    function loadDraft() {
+      try { Object.assign(state, JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}); }
+      catch { status.textContent = "อ่าน draft เดิมไม่ได้ แต่ยังเริ่มทำใบงานใหม่ได้"; }
+      fields.forEach(id => document.getElementById(id).value = state[id] || "");
+      document.querySelectorAll(".group[data-group]").forEach(group => {
+        const values = Array.isArray(state[group.dataset.group]) ? state[group.dataset.group] : [];
+        group.querySelectorAll(".option").forEach(button => button.classList.toggle("active", values.includes(button.dataset.value)));
+      });
+      renderNumbers();
+      updateProgress();
+    }
+
+    function saveDraft() {
+      fields.forEach(id => state[id] = document.getElementById(id).value.trim());
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      updateProgress();
+    }
+
+    function renderNumbers() {
+      const picker = document.getElementById("numberPicker");
+      picker.innerHTML = "";
+      Object.keys(numberWays).forEach(value => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = `number${state.numbers.includes(value) ? " active" : ""}`;
+        button.textContent = value;
+        button.addEventListener("click", () => {
+          if (state.numbers.includes(value)) state.numbers = state.numbers.filter(item => item !== value);
+          else if (state.numbers.length < 3) state.numbers = [...state.numbers, value];
+          else { status.textContent = "เลือกได้ไม่เกิน 3 เลขต่อหนึ่งตำแหน่ง"; return; }
+          renderNumbers(); saveDraft();
+        });
+        picker.appendChild(button);
+      });
+      const score = state.numbers.reduce((sum, value) => sum + numberWays[value], 0);
+      document.getElementById("evScore").textContent = `${score}/36`;
+      document.getElementById("evExplanation").textContent = state.numbers.length
+        ? `เลขที่เลือก: ${state.numbers.join(", ")} · โอกาสผลิตรวมประมาณ ${(score / 36 * 100).toFixed(2)}% ต่อตา`
+        : "ยังไม่ได้เลือกเลข · เลข 7 ไม่ใช่ช่องผลิตทรัพยากร จึงไม่อยู่ในรายการ";
+    }
+
+    function joinThai(items, fallback = "ยังไม่ได้เลือก") {
+      const list = (items || []).filter(Boolean);
+      if (!list.length) return fallback;
+      if (list.length === 1) return list[0];
+      return `${list.slice(0,-1).join(", ")} และ${list[list.length-1]}`;
+    }
+
+    function updateProgress() {
+      const checks = [
+        state.studentName, state.tableName, state.playerCount, state.finalScore,
+        state.numbers.length, state.positionJudgment.length, state.moment,
+        state.decision.length, state.evidence.length, state.diversification.length,
+        state.riskAttitude.length, state.nextTry
+      ].map(Boolean);
+      const done = checks.filter(Boolean).length;
+      document.getElementById("progressLabel").textContent = `กรอกแล้ว ${done}/${checks.length} รายการ`;
+      document.getElementById("progressStatus").textContent = done === checks.length ? "พร้อมส่ง" : "กำลังเขียน";
+      document.getElementById("progressFill").style.width = `${done / checks.length * 100}%`;
+    }
+
+    function makeOutput() {
+      saveDraft();
+      const score = state.numbers.reduce((sum, value) => sum + numberWays[value], 0);
+      const createdAt = new Date().toLocaleString("th-TH", { dateStyle:"medium", timeStyle:"short" });
+      return [
+        "Week 4: Catan Risk Decision Note",
+        `ชื่อ: ${state.studentName || "-"}`,
+        `โต๊ะ/กลุ่ม: ${state.tableName || "-"}`,
+        `จำนวนผู้เล่น: ${state.playerCount || "-"}`,
+        `คะแนนสุดท้าย: ${state.finalScore || "-"}`,
+        `สร้างข้อความเมื่อ: ${createdAt}`,
+        "",
+        "1) ตำแหน่งและค่าคาดหวัง",
+        `เลขที่เลือก: ${state.numbers.length ? state.numbers.join(", ") : "-"}`,
+        `Production score: ${score}/36 หรือประมาณ ${(score/36*100).toFixed(2)}% ต่อตา`,
+        `การประเมินตำแหน่ง: ${joinThai(state.positionJudgment)}`,
+        "",
+        "2) การตัดสินใจที่จำได้ที่สุด",
+        state.moment || "ยังไม่ได้เขียนเหตุการณ์",
+        `การตัดสินใจนี้เกี่ยวข้องกับ: ${joinThai(state.decision)}`,
+        `ข้อมูลที่ใช้: ${joinThai(state.evidence)}`,
+        "",
+        "3) ความเสี่ยงและการกระจาย",
+        `การกระจายทรัพยากร: ${joinThai(state.diversification)}`,
+        `ท่าทีต่อความเสี่ยง: ${joinThai(state.riskAttitude)}`,
+        `อคติหรืออารมณ์ที่สังเกตพบ: ${joinThai(state.bias, "ยังไม่ได้ระบุ")}`,
+        "",
+        "4) ข้อสรุป",
+        "EV สูงสุดไม่ใช่คำตอบที่ดีที่สุดเสมอ เพราะต้องพิจารณาความผันผวน ความหลากหลายของทรัพยากร คอขวด และความยืดหยุ่นของแผนร่วมกัน",
+        `ถ้าเล่นอีกครั้ง: ${state.nextTry || "ยังไม่ได้เขียนสิ่งที่จะปรับ"}`
+      ].join("\n");
+    }
+
+    fields.forEach(id => {
+      document.getElementById(id).addEventListener("input", saveDraft);
+      document.getElementById(id).addEventListener("change", saveDraft);
+    });
+
+    document.querySelectorAll(".group[data-group]").forEach(group => {
+      const key = group.dataset.group;
+      group.querySelectorAll(".option").forEach(button => button.addEventListener("click", () => {
+        if (group.dataset.single === "true") {
+          state[key] = [button.dataset.value];
+          group.querySelectorAll(".option").forEach(item => item.classList.remove("active"));
+          button.classList.add("active");
+        } else {
+          const values = new Set(state[key] || []);
+          values.has(button.dataset.value) ? values.delete(button.dataset.value) : values.add(button.dataset.value);
+          state[key] = [...values];
+          button.classList.toggle("active");
+        }
+        saveDraft();
+      }));
+    });
+
+    document.getElementById("generate").addEventListener("click", () => {
+      output.value = makeOutput();
+      status.textContent = "สร้างข้อความแล้ว กรุณาตรวจชื่อ ตัวเลข และเหตุผลก่อนกด Copy";
+    });
+    document.getElementById("copy").addEventListener("click", async () => {
+      if (!output.value) output.value = makeOutput();
+      try { await navigator.clipboard.writeText(output.value); status.textContent = "คัดลอกแล้ว นำไปวางใน Google Classroom ได้เลย"; }
+      catch { output.focus(); output.select(); status.textContent = "Copy อัตโนมัติไม่ได้ ระบบเลือกข้อความไว้แล้ว ให้กด Copy จากเครื่อง"; }
+    });
+    document.getElementById("selectText").addEventListener("click", () => {
+      if (!output.value) output.value = makeOutput();
+      output.focus(); output.select(); status.textContent = "เลือกข้อความทั้งหมดแล้ว";
+    });
+    document.getElementById("reset").addEventListener("click", () => {
+      if (!confirm("ล้าง draft ในเครื่องนี้และเริ่มใหม่?")) return;
+      localStorage.removeItem(STORAGE_KEY);
+      Object.keys(state).forEach(key => state[key] = Array.isArray(state[key]) ? [] : "");
+      fields.forEach(id => document.getElementById(id).value = "");
+      document.querySelectorAll(".option").forEach(button => button.classList.remove("active"));
+      output.value = ""; status.textContent = "ล้าง draft แล้ว"; renderNumbers(); updateProgress();
+    });
+
+    loadDraft();
+  </script>
+</body>
+</html>
