@@ -1,0 +1,800 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>จาก Catan สู่ความน่าจะเป็นและความเสี่ยง</title>
+  <style>
+    :root {
+      --paper: #f6f0df;
+      --paper-2: #fffaf0;
+      --ink: #1e2525;
+      --muted: #596463;
+      --teal: #0a7771;
+      --deep: #13444b;
+      --gold: #e3a82b;
+      --rust: #b65335;
+      --green: #4d8b5f;
+      --line: #d8c99e;
+      --good: #dff2e4;
+      --bad: #f8dfd7;
+      --shadow: 0 18px 55px rgba(49, 45, 30, .16);
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; min-height: 100%; }
+    body {
+      background: #d9d3c1;
+      color: var(--ink);
+      font-family: "Noto Sans Thai", "Leelawadee UI", Tahoma, sans-serif;
+      overflow: hidden;
+    }
+    button, select { font: inherit; }
+    a { color: #075d91; }
+
+    .frame {
+      position: relative;
+      width: min(1280px, 100vw);
+      height: min(720px, 100vh);
+      margin: auto;
+      background: var(--paper);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+    .frame::before {
+      content: "";
+      position: absolute;
+      inset: 0 0 auto 0;
+      height: 8px;
+      background: linear-gradient(90deg, var(--teal), var(--green), var(--gold), var(--rust), var(--deep));
+      z-index: 20;
+    }
+    .topbar {
+      position: absolute;
+      inset: 28px 48px auto 48px;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      font-size: 14px;
+      font-weight: 700;
+      color: #5a5140;
+      z-index: 15;
+    }
+    .topbar span:nth-child(2) { justify-self: center; }
+    .topbar span:last-child { justify-self: end; }
+    .progress {
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      height: 4px;
+      width: 0;
+      background: var(--teal);
+      transition: width .22s ease;
+      z-index: 20;
+    }
+
+    .slide {
+      position: absolute;
+      inset: 0;
+      display: none;
+      padding: 82px 72px 56px;
+      overflow: hidden;
+    }
+    .slide.active { display: block; }
+    .layout { width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; }
+    .split { display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 34px; }
+    .wide-split { display: grid; grid-template-columns: .88fr 1.12fr; align-items: center; gap: 34px; }
+    .two-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+    .three-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+    .four-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+
+    h1, h2, h3, p { margin-top: 0; }
+    h1 { font-size: clamp(52px, 5.8vw, 78px); line-height: 1.05; margin-bottom: 18px; max-width: 780px; }
+    h2 { font-size: clamp(36px, 4.3vw, 58px); line-height: 1.08; margin-bottom: 22px; }
+    h3 { font-size: 23px; line-height: 1.25; margin-bottom: 8px; }
+    p, li { font-size: 22px; line-height: 1.48; }
+    ul { margin: 0; padding-left: 26px; }
+    li + li { margin-top: 8px; }
+    .lead { font-size: 28px; line-height: 1.45; color: #413b31; }
+    .eyebrow {
+      color: var(--teal);
+      font-size: 16px;
+      font-weight: 800;
+      margin-bottom: 10px;
+    }
+    .source {
+      margin: 10px 0 0;
+      font-size: 13px;
+      line-height: 1.35;
+      color: var(--muted);
+    }
+    .big-number { font-size: 72px; line-height: 1; font-weight: 900; color: var(--rust); }
+    .accent { color: var(--teal); }
+
+    .card, .panel {
+      background: rgba(255, 255, 255, .72);
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      padding: 20px;
+    }
+    .card p, .panel p { font-size: 18px; margin-bottom: 0; }
+    .card strong, .panel > strong { font-size: 22px; }
+    .callout {
+      border-left: 7px solid var(--gold);
+      background: rgba(255, 250, 232, .9);
+      padding: 17px 20px;
+      font-size: 25px;
+      line-height: 1.42;
+    }
+    .formula {
+      background: var(--deep);
+      color: white;
+      border-radius: 7px;
+      padding: 22px 26px;
+      text-align: center;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 34px;
+      line-height: 1.35;
+    }
+    .formula small { display: block; margin-top: 8px; font-family: inherit; font-size: 17px; color: #d9ebe8; }
+
+    .photo {
+      margin: 0;
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      padding: 10px;
+      box-shadow: 0 12px 28px rgba(59, 50, 26, .12);
+    }
+    .photo img { display: block; width: 100%; height: 390px; object-fit: cover; border-radius: 4px; }
+    .photo.overview img { object-fit: contain; background: white; }
+    .photo figcaption { margin-top: 7px; font-size: 12px; line-height: 1.35; color: var(--muted); }
+
+    .bridge {
+      display: grid;
+      grid-template-columns: 1fr 80px 1fr;
+      align-items: stretch;
+      gap: 18px;
+    }
+    .bridge .arrow { display: grid; place-items: center; font-size: 48px; color: var(--gold); }
+    .bridge .side { padding: 28px; border: 1px solid var(--line); background: white; border-radius: 7px; }
+    .bridge .side p { margin: 8px 0 0; }
+
+    .sample-wrap { display: grid; grid-template-columns: 1fr 300px; gap: 28px; align-items: center; }
+    .sample-space { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; }
+    .outcome {
+      height: 58px;
+      display: grid;
+      place-items: center;
+      border: 1px solid #d9ceb0;
+      background: white;
+      border-radius: 5px;
+      font-size: 18px;
+      font-weight: 800;
+      transition: .15s ease;
+    }
+    .outcome.dim { opacity: .18; }
+    .outcome.hit { background: #ffe3a2; border-color: var(--gold); transform: scale(1.05); }
+    .sum-buttons { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 14px; }
+
+    button {
+      border: 1px solid #cdbb89;
+      border-radius: 6px;
+      background: white;
+      color: var(--ink);
+      padding: 10px 14px;
+      cursor: pointer;
+      font-weight: 750;
+    }
+    button:hover { border-color: var(--teal); }
+    button.primary { background: var(--teal); border-color: var(--teal); color: white; }
+    button.correct { background: var(--good); border-color: var(--green); }
+    button.wrong { background: var(--bad); border-color: var(--rust); }
+
+    .histogram {
+      height: 310px;
+      display: grid;
+      grid-template-columns: repeat(11, 1fr);
+      align-items: end;
+      gap: 9px;
+      padding: 22px 18px 10px;
+      border-left: 2px solid #80755f;
+      border-bottom: 2px solid #80755f;
+      background: rgba(255, 255, 255, .5);
+    }
+    .bar-col { height: 100%; display: flex; flex-direction: column; justify-content: end; align-items: center; gap: 5px; }
+    .bar-value { font-size: 14px; font-weight: 800; }
+    .bar {
+      width: 100%;
+      min-height: 8px;
+      background: var(--teal);
+      border-radius: 5px 5px 0 0;
+      transition: height .2s ease, background .2s ease;
+    }
+    .bar.hot { background: var(--rust); }
+    .bar-label { font-size: 16px; font-weight: 800; }
+    .controls { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+    .result {
+      min-height: 48px;
+      margin-top: 12px;
+      padding: 11px 14px;
+      border-left: 5px solid var(--teal);
+      background: #e3f1ed;
+      font-size: 18px;
+      line-height: 1.45;
+    }
+
+    .token-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .number-token {
+      width: 104px;
+      height: 104px;
+      margin: 0 auto 12px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: #f6e6bd;
+      border: 3px solid #bfa66b;
+      font: 800 35px Georgia, serif;
+      box-shadow: inset 0 0 0 6px #fff5d9;
+    }
+    .number-token span { display: block; font: 800 12px sans-serif; color: var(--rust); }
+
+    .calc {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: stretch;
+      gap: 14px;
+    }
+    .calc .versus { display: grid; place-items: center; font-weight: 900; color: var(--rust); }
+    .calc-card { background: white; border: 1px solid var(--line); border-radius: 7px; padding: 20px; }
+    .calc-card .ev { font: 800 40px Georgia, serif; color: var(--teal); margin: 10px 0; }
+    .resource-pills { display: flex; flex-wrap: wrap; gap: 7px; }
+    .pill { border-radius: 999px; padding: 5px 10px; color: white; font-size: 14px; font-weight: 800; }
+    .wood { background: #477f55; } .brick { background: #b85b3b; } .grain { background: #b68b16; }
+    .ore { background: #697279; } .wool { background: #78a65e; }
+
+    .flow {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      align-items: center;
+      gap: 12px;
+    }
+    .flow .node { background: white; border: 1px solid var(--line); border-radius: 7px; padding: 18px; min-height: 118px; }
+    .flow .node::after { content: "→"; float: right; color: var(--gold); font-size: 30px; }
+    .flow .node:last-child::after { content: ""; }
+
+    .curve {
+      position: relative;
+      height: 300px;
+      background: linear-gradient(to right, transparent 49.8%, #9f967e 50%, transparent 50.2%),
+                  linear-gradient(to bottom, transparent 49.8%, #9f967e 50%, transparent 50.2%);
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      overflow: hidden;
+    }
+    .curve svg { width: 100%; height: 100%; }
+    .curve text { font: 15px "Noto Sans Thai", sans-serif; fill: var(--ink); }
+
+    .choice-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 14px; }
+    .quiz-choice { text-align: left; min-height: 60px; }
+
+    .scenario {
+      background: #fff8e8;
+      border: 1px solid #dfc882;
+      border-radius: 7px;
+      padding: 22px;
+      font-size: 24px;
+      line-height: 1.5;
+    }
+    .checklist { counter-reset: item; display: grid; gap: 10px; }
+    .checklist div { display: grid; grid-template-columns: 44px 1fr; align-items: center; gap: 12px; font-size: 21px; }
+    .checklist div::before { counter-increment: item; content: counter(item); width: 38px; height: 38px; display: grid; place-items: center; border-radius: 50%; background: var(--teal); color: white; font-weight: 900; }
+
+    .nav { position: absolute; right: 48px; bottom: 14px; display: flex; gap: 8px; z-index: 30; }
+    .nav button, .fullscreen { width: 42px; height: 42px; padding: 0; background: rgba(255,255,255,.86); }
+    .fullscreen { position: absolute; left: 48px; bottom: 14px; width: auto; padding: 0 14px; z-index: 30; }
+
+    body.presentation-mode .frame { width: 100vw; height: 100vh; box-shadow: none; }
+    body.presentation-mode .slide { padding: 10.8vh 5.6vw 7.4vh; }
+    @media (max-width: 850px) {
+      .frame { width: 100vw; height: 100vh; }
+      .slide { padding: 76px 42px 54px; }
+      .topbar { inset: 25px 28px auto; }
+      .split, .wide-split { grid-template-columns: 1fr 1fr; gap: 20px; }
+      p, li { font-size: 18px; }
+      .lead { font-size: 22px; }
+      .photo img { height: 42vh; }
+      .nav { right: 20px; }
+      .fullscreen { left: 20px; }
+    }
+    @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+  </style>
+</head>
+<body>
+  <main class="frame" id="frame">
+    <div class="topbar">
+      <span>SMA2106 · Week 4</span>
+      <span id="counter">1/18</span>
+      <span>ความน่าจะเป็นและความเสี่ยง</span>
+    </div>
+    <div class="progress" id="progress"></div>
+
+    <section class="slide active">
+      <div class="layout split">
+        <div>
+          <p class="eyebrow">จากประสบการณ์บนโต๊ะ สู่กรอบคิดในหนังสือ</p>
+          <h1>จาก Catan สู่ความน่าจะเป็นและความเสี่ยง</h1>
+          <p class="lead">ดวงกำหนดผลลูกเต๋า แต่การตัดสินใจของเรากำหนดว่า จะรับมือกับดวงอย่างไร</p>
+          <p class="source">อ้างอิงหลัก: หนังสือรายวิชา บทที่ 4 หน้า 33–40</p>
+        </div>
+        <figure class="photo overview">
+          <img src="../catan-teach/assets/catan-board-overview.jpg" alt="กระดาน Catan และอุปกรณ์จริงที่จัดวางพร้อมเล่น" />
+          <figcaption>ภาพทางการจาก <a href="https://www.catan.com/catan">CATAN – The Game</a> · © CATAN GmbH / CATAN Studio</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="layout">
+        <p class="eyebrow">คำถามเปิดบทเรียน</p>
+        <h2>บ้านที่ผลิตบ่อยกว่า เพราะโชคดีกว่า—จริงหรือ?</h2>
+        <div class="bridge">
+          <div class="side">
+            <h3>สิ่งที่ควบคุมไม่ได้</h3>
+            <p>ผลลูกเต๋าในตาถัดไป โจร และการตัดสินใจของผู้เล่นอื่น</p>
+          </div>
+          <div class="arrow">→</div>
+          <div class="side">
+            <h3>สิ่งที่ออกแบบได้</h3>
+            <p>ตำแหน่งบ้าน ความหลากหลายของเลขและทรัพยากร รวมถึงแผนสำรอง</p>
+          </div>
+        </div>
+        <div class="callout" style="margin-top:22px">กลยุทธ์ภายใต้ความเสี่ยง ไม่ได้ทำให้ความสุ่มหายไป แต่ช่วยให้เราเลือกโครงสร้างที่รับมือกับความสุ่มได้ดีขึ้น</div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="layout">
+        <p class="eyebrow">เมื่อจบบทเรียนนี้</p>
+        <h2>เราจะตอบคำถามได้ 4 เรื่อง</h2>
+        <div class="four-grid">
+          <div class="card"><strong>1 · ความเสี่ยง</strong><p>แยกความสุ่มที่คำนวณโอกาสได้ ออกจากความไม่แน่นอนแบบอื่น</p></div>
+          <div class="card"><strong>2 · ค่าคาดหวัง</strong><p>คำนวณผลผลิตเฉลี่ยของตำแหน่งตั้งบ้านจากเลขบนกระดาน</p></div>
+          <div class="card"><strong>3 · การกระจาย</strong><p>อธิบายว่าทำไม EV สูงอย่างเดียวอาจยังทำให้แผนติดขัด</p></div>
+          <div class="card"><strong>4 · พฤติกรรม</strong><p>มองเห็นการเกลียดการสูญเสียและความเชื่อผิดหลังลูกเต๋าไม่เป็นใจ</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="layout">
+        <p class="eyebrow">เชื่อมจาก Week 3</p>
+        <h2>Love Letter กับ Catan “ไม่แน่นอน” คนละแบบ</h2>
+        <div class="three-grid">
+          <div class="card"><strong>ความเสี่ยง (Risk)</strong><p>รู้ผลลัพธ์ที่เป็นไปได้ และพอคำนวณโอกาสได้ เช่น ผลรวมของลูกเต๋า 2 ลูก</p></div>
+          <div class="card"><strong>ความไม่แน่นอน</strong><p>ยังไม่รู้แม้แต่รูปแบบความน่าจะเป็นที่เหมาะสม จึงคำนวณตรง ๆ ได้ยาก</p></div>
+          <div class="card"><strong>ความไม่แน่นอนทางสังคม</strong><p>เกิดจากเจตนา คำพูด และกลยุทธ์ของคนอื่น เช่น การอ่านไพ่ใน Love Letter</p></div>
+        </div>
+        <p class="lead" style="margin-top:22px">Catan มีทั้งความเสี่ยงจากลูกเต๋า และความไม่แน่นอนทางสังคมจากการแลกเปลี่ยน</p>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="layout">
+        <p class="eyebrow">สร้างแบบจำลองจากของจริง</p>
+        <h2>ลูกเต๋า 2 ลูกมี 36 ผลลัพธ์ แต่ผลรวมไม่ได้มีโอกาสเท่ากัน</h2>
+        <div class="sample-wrap">
+          <div class="sample-space" id="sampleSpace" aria-label="ตารางผลลัพธ์ลูกเต๋าสองลูก 36 แบบ"></div>
+          <div class="panel">
+            <strong>ลองเลือกผลรวม</strong>
+            <p>ระบบจะเน้นคู่ลูกเต๋าที่รวมกันได้เลขนั้น</p>
+            <div class="sum-buttons" id="sumButtons"></div>
+            <div class="result" id="sampleResult">เลือกเลข 2–12</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="layout">
+        <p class="eyebrow">การแจกแจงของ 2d6</p>
+        <h2>เลขใกล้ 7 ออกบ่อยกว่าเลขที่อยู่ปลาย</h2>
+        <div class="histogram" id="histogram" aria-label="กราฟแท่งความถี่ผลรวมลูกเต๋าสองลูก"></div>
+        <div class="controls">
+          <button class="primary" id="rollOne">ทอย 1 ครั้ง</button>
+          <button id="rollSixty">จำลอง 60 ครั้ง</button>
+          <button id="resetRolls">กลับไปดูค่าทฤษฎี</button>
+        </div>
+        <div class="result" id="rollResult">ความสูงของแท่งแสดงจำนวนวิธีจากทั้งหมด 36 แบบ</div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="layout split">
+        <div>
+          <p class="eyebrow">อ่านข้อมูลบนชิ้นส่วน</p>
+          <h2>จุดใต้ตัวเลขคือ “ทางลัด” ของความน่าจะเป็น</h2>
+          <div class="token-row">
+            <div class="card"><div class="number-token">6<span>•••••</span></div><p>5 วิธีจาก 36</p></div>
+            <div class="card"><div class="number-token">5<span>••••</span></div><p>4 วิธีจาก 36</p></div>
+            <div class="card"><div class="number-token">3<span>••</span></div><p>2 วิธีจาก 36</p></div>
+          </div>
+          <p class="lead" style="margin-top:18px">จุดมาก ไม่ได้แปลว่าจะออกแน่ แต่แปลว่าเมื่อเล่นนานพอ เลขนั้นมีแนวโน้มผลิตบ่อยกว่า</p>
+        </div>
+        <figure class="photo">
+          <img src="../catan-teach/assets/catan-board-closeup.jpg" alt="ภาพใกล้ของแผ่นตัวเลข ถนน หมู่บ้าน และเมืองบนกระดาน Catan" />
+          <figcaption>ภาพทางการจาก <a href="https://www.catan.com/catan">CATAN – The Game</a> · คู่มือทางการแนะนำให้พิจารณาทั้งความหลากหลายของเลขและพื้นที่</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="layout split">
+        <div>
+          <p class="eyebrow">จากความน่าจะเป็นสู่การตัดสินใจ</p>
+          <h2>ค่าคาดหวังคือผลตอบแทนเฉลี่ยระยะยาว</h2>
+          <p>ถ้าผลลัพธ์แต่ละแบบให้ผลตอบแทนไม่เท่ากัน เรานำ “โอกาสเกิด” มาถ่วงน้ำหนักผลตอบแทนของแต่ละแบบ</p>
+          <div class="callout">EV ไม่ได้ทำนายตาถัดไป แต่ช่วยเปรียบเทียบทางเลือกก่อนตัดสินใจ</div>
+        </div>
+        <div class="formula">
+          E(X) = Σ p<sub>i</sub>x<sub>i</sub>
+          <small>ค่าคาดหวัง = ผลรวมของ (ความน่าจะเป็น × ผลตอบแทน)</small>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="layout">
+        <p class="eyebrow">ตัวอย่างจากหนังสือ</p>
+        <h2>บ้าน A ติดเลข 6, 8 และ 4 จะผลิตเฉลี่ยเท่าไร?</h2>
+        <div class="calc">
+          <div class="calc-card">
+            <h3>คิดทีละพื้นที่</h3>
+            <p>ไม้เลข 6 = 5/36</p>
+            <p>อิฐเลข 8 = 5/36</p>
+            <p>ข้าวเลข 4 = 3/36</p>
+          </div>
+          <div class="versus">→</div>
+          <div class="calc-card">
+            <h3>รวมผลผลิต</h3>
+            <div class="ev">13/36 ≈ 0.361</div>
+            <p>เฉลี่ยประมาณ 0.361 ใบต่อตา หากไม่มีโจรปิดพื้นที่</p>
+          </div>
+        </div>
+        <p class="source">หนังสือบทที่ 4 ตัวอย่างการคำนวณค่าคาดหวังใน Catan หน้า 38–39</p>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="layout">
+        <p class="eyebrow">เปรียบเทียบทางเลือก</p>
+        <h2>บ้าน A กับบ้าน B ต่างกันมากแค่ไหน?</h2>
+        <div class="calc">
+          <div class="calc-card">
+            <h3>บ้าน A: 6, 8, 4</h3>
+            <div class="resource-pills"><span class="pill wood">ไม้ 6</span><span class="pill brick">อิฐ 8</span><span class="pill grain">ข้าว 4</span></div>
+            <div class="ev">13/36</div>
+          </div>
+          <div class="versus">VS</div>
+          <div class="calc-card">
+            <h3>บ้าน B: 3, 11, 5</h3>
+            <div class="resource-pills"><span class="pill wood">ไม้ 3</span><span class="pill brick">อิฐ 11</span><span class="pill ore">แร่ 5</span></div>
+            <div class="ev">8/36</div>
+          </div>
+        </div>
+        <div class="controls">
+          <button class="primary" id="compareEV">คำนวณความต่าง</button>
+        </div>
+        <div class="result" id="compareResult">ก่อนกด ลองเดาว่า A สูงกว่า B กี่เปอร์เซ็นต์</div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="layout wide-split">
+        <div>
+          <p class="eyebrow">ค่าเฉลี่ยไม่ใช่คำสัญญา</p>
+          <h2>ระยะสั้นยังผันผวนได้มาก</h2>
+          <div class="formula">E(S) = 7<br />Var(S) = 35/6 ≈ 5.83<br />SD(S) ≈ 2.42</div>
+        </div>
+        <div>
+          <div class="scenario">แม้เลข 6 จะมีโอกาส 5/36 แต่การเล่น 10 ตาอาจยังไม่ออก 6 เลย หรืออาจออกติดกันหลายครั้งก็ได้</div>
+          <ul style="margin-top:18px">
+            <li><strong>ค่าคาดหวัง</strong> บอกจุดศูนย์กลางของผลลัพธ์ระยะยาว</li>
+            <li><strong>ความแปรปรวน</strong> บอกว่าผลลัพธ์กระจายห่างจากค่าเฉลี่ยเพียงใด</li>
+            <li>การตัดสินใจที่ดีต้องมองทั้งผลตอบแทนและความผันผวน</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="layout">
+        <p class="eyebrow">EV สูงอย่างเดียวอาจยังไม่พอ</p>
+        <h2>ทรัพยากรเยอะ แต่สร้างไม่ได้ ก็ยังติดล็อก</h2>
+        <div class="calc">
+          <div class="calc-card">
+            <h3>ทุ่มไม้: 6–8–5</h3>
+            <div class="resource-pills"><span class="pill wood">ไม้ 14/36</span></div>
+            <p>ผลิตไม้บ่อยมาก แต่ยังขาดอิฐ แกะ และข้าวสำหรับสร้างหมู่บ้าน</p>
+          </div>
+          <div class="versus">VS</div>
+          <div class="calc-card">
+            <h3>กระจาย: 6–8–9</h3>
+            <div class="resource-pills"><span class="pill wood">ไม้ 5/36</span><span class="pill brick">อิฐ 5/36</span><span class="pill grain">ข้าว 4/36</span></div>
+            <p>ผลผลิตรวมใกล้เคียง แต่มีทางต่อยอดแผนได้หลายกว่า</p>
+          </div>
+        </div>
+        <div class="choice-grid">
+          <button class="quiz-choice" data-diversify="specialist">เลือกแหล่งไม้ทั้งหมด เพราะได้ไม้ถี่ที่สุด</button>
+          <button class="quiz-choice" data-diversify="mixed">กระจายทรัพยากร เพื่อไม่ให้แผนหยุดเพราะของขาดชนิดเดียว</button>
+        </div>
+        <div class="result" id="diversifyResult">เลือกแนวคิดที่อธิบาย “การกระจายความเสี่ยง” ได้ดีกว่า</div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="layout">
+        <p class="eyebrow">ทำไมความหลากหลายจึงมีค่า</p>
+        <h2>การกระจายทรัพยากรลดการพึ่งพาจุดเดียว</h2>
+        <div class="flow">
+          <div class="node"><h3>เลขออก</h3><p>พื้นที่ของเราผลิตทรัพยากร</p></div>
+          <div class="node"><h3>ของในมือ</h3><p>มีของหลายชนิดหรือกองอยู่ชนิดเดียว</p></div>
+          <div class="node"><h3>ทางเลือก</h3><p>สร้างเอง แลกกับผู้เล่น หรือแลกธนาคาร</p></div>
+          <div class="node"><h3>ความยืดหยุ่น</h3><p>เดินแผนต่อได้แม้บางเลขไม่ออก</p></div>
+        </div>
+        <div class="callout" style="margin-top:24px">Diversification ไม่ได้ทำให้ทุกตาดีขึ้น แต่ลดโอกาสที่ระบบทั้งแผนจะหยุดเพราะคอขวดเดียว</div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="layout split">
+        <div>
+          <p class="eyebrow">Expected Utility</p>
+          <h2>คนสองคนอาจเห็น EV เท่ากัน แต่เลือกไม่เหมือนกัน</h2>
+          <ul>
+            <li><strong>ระมัดระวังความเสี่ยง</strong> ยอมลดผลตอบแทนเฉลี่ยเล็กน้อยเพื่อความสม่ำเสมอ</li>
+            <li><strong>เป็นกลางต่อความเสี่ยง</strong> ให้น้ำหนักกับค่าเฉลี่ยเป็นหลัก</li>
+            <li><strong>ชอบความเสี่ยง</strong> ยอมรับความผันผวนเพื่อโอกาสได้ผลตอบแทนก้อนใหญ่</li>
+          </ul>
+        </div>
+        <div class="curve">
+          <svg viewBox="0 0 520 300" role="img" aria-label="เส้นอรรถประโยชน์สำหรับท่าทีต่อความเสี่ยงสามแบบ">
+            <path d="M45 260 C115 120 250 70 480 48" fill="none" stroke="#0a7771" stroke-width="5" />
+            <path d="M45 260 L480 48" fill="none" stroke="#e3a82b" stroke-width="5" />
+            <path d="M45 260 C250 245 390 180 480 48" fill="none" stroke="#b65335" stroke-width="5" />
+            <text x="282" y="58">ระมัดระวัง</text>
+            <text x="326" y="130">เป็นกลาง</text>
+            <text x="330" y="228">ชอบความเสี่ยง</text>
+            <text x="420" y="285">ผลตอบแทน</text>
+            <text x="10" y="25">คุณค่า</text>
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="layout wide-split">
+        <div>
+          <p class="eyebrow">Prospect Theory</p>
+          <h2>เสียของ 3 ใบ เจ็บกว่าตอนได้มา 3 ใบ?</h2>
+          <div class="big-number">−3 แร่</div>
+          <p class="lead">เมื่อโจรทำให้ของที่คิดว่า “เป็นของเราแล้ว” หายไป จุดอ้างอิงทางใจก็เปลี่ยน</p>
+        </div>
+        <div class="panel">
+          <strong>สถานการณ์</strong>
+          <p>คุณเพิ่งเสียแร่ 3 ใบและตามผู้นำอยู่ จะทำอะไรในตาถัดไป?</p>
+          <div class="choice-grid">
+            <button class="quiz-choice" data-loss="chase">ยอมแลกเสียเปรียบ เพื่อรีบเอาแร่คืนมาให้เร็วที่สุด</button>
+            <button class="quiz-choice" data-loss="reset">หยุดประเมินใหม่ว่า แผนเดิมยังคุ้มที่สุดหรือไม่</button>
+          </div>
+          <div class="result" id="lossResult">เลือกคำตอบ แล้วพิจารณาว่าอารมณ์กำลังเปลี่ยนท่าทีต่อความเสี่ยงหรือไม่</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="layout split">
+        <div>
+          <p class="eyebrow">กับดักทางความคิด</p>
+          <h2>“เลข 8 ไม่ออกมานาน ตาหน้าต้องออกแน่”</h2>
+          <div class="big-number">ผิด</div>
+          <p class="lead">ถ้าลูกเต๋ายุติธรรม การทอยแต่ละครั้งเป็นอิสระจากครั้งก่อน</p>
+        </div>
+        <div class="panel">
+          <strong>ลองตอบ</strong>
+          <p>หลังจากเลข 8 ไม่ออกติดต่อกัน 10 ตา โอกาสออก 8 ในตาถัดไปเป็นเท่าไร?</p>
+          <div class="choice-grid">
+            <button class="quiz-choice" data-gambler="higher">มากกว่า 5/36 เพราะค้างมานาน</button>
+            <button class="quiz-choice" data-gambler="same">ยังคงเป็น 5/36 เท่าเดิม</button>
+          </div>
+          <div class="result" id="gamblerResult">เลือกคำตอบก่อนดูคำอธิบาย</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="layout">
+        <p class="eyebrow">ถ่ายโอนสู่โลกจริง</p>
+        <h2>Catan กำลังจำลองการออกแบบระบบที่รับมือความเสี่ยง</h2>
+        <div class="three-grid">
+          <div class="card"><strong>การลงทุน</strong><p>อย่ามองเฉพาะผลตอบแทนเฉลี่ย ต้องดูความผันผวนและการกระจายพอร์ตด้วย</p></div>
+          <div class="card"><strong>ห่วงโซ่อุปทาน</strong><p>ผู้ขายรายเดียวอาจถูกกว่า แต่ระบบจะเปราะถ้าแหล่งนั้นหยุดส่งของ</p></div>
+          <div class="card"><strong>บริหารโครงการ</strong><p>แผนที่ให้ผลดีที่สุดเมื่อทุกอย่างเป็นใจ อาจไม่ใช่แผนที่อยู่รอดได้ดีที่สุด</p></div>
+        </div>
+        <div class="callout" style="margin-top:24px">คำถามเดียวกันเสมอ: เรากำลังเพิ่มผลตอบแทนเฉลี่ย หรือกำลังลดโอกาสที่ทั้งระบบจะติดล็อก?</div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="layout">
+        <p class="eyebrow">Debrief จากเกมที่เพิ่งเล่น</p>
+        <h2>เลือกหนึ่งการตัดสินใจ แล้ววิเคราะห์เป็น 4 ชั้น</h2>
+        <div class="checklist">
+          <div><span><strong>หลักฐาน</strong> เลข ทรัพยากร ตำแหน่ง และสถานการณ์ตอนนั้นคืออะไร?</span></div>
+          <div><span><strong>ค่าคาดหวัง</strong> ทางเลือกใดน่าจะให้ผลตอบแทนเฉลี่ยสูงกว่า?</span></div>
+          <div><span><strong>ความเสี่ยง</strong> ทางเลือกใดผันผวนหรือทำให้ติดคอขวดมากกว่า?</span></div>
+          <div><span><strong>พฤติกรรม</strong> ความเสียดาย ความอยากเอาคืน หรือความเชื่อเรื่องดวงมีผลหรือไม่?</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="layout">
+        <p class="eyebrow">Exit Ticket</p>
+        <h2>EV สูงสุดใช่คำตอบที่ดีที่สุดเสมอไหม?</h2>
+        <div class="scenario">ตอบ 3–4 ประโยค โดยยกตัวอย่างจากตำแหน่งตั้งบ้านหรือเหตุการณ์ที่เกิดขึ้นจริงในเกมวันนี้</div>
+        <div class="two-grid" style="margin-top:18px">
+          <div class="card"><strong>คำตอบที่ยังไม่พอ</strong><p>“ไม่เสมอ เพราะเกมมีดวง”</p></div>
+          <div class="card"><strong>คำตอบที่มีเหตุผล</strong><p>ระบุ EV ความผันผวน ความหลากหลายของทรัพยากร และข้อจำกัดของแผนอย่างน้อยหนึ่งเรื่อง</p></div>
+        </div>
+        <p class="source">เชื่อมกับ Risk Decision Note ใน Course Map ของ Week 4</p>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="layout">
+        <p class="eyebrow">สรุปบทเรียน</p>
+        <h2>ดวงเป็นข้อมูลหนึ่งส่วน กลยุทธ์คือการจัดระบบรอบดวง</h2>
+        <div class="four-grid">
+          <div class="card"><strong>แจกแจง</strong><p>2d6 ไม่ได้ทำให้ผลรวมทุกเลขมีโอกาสเท่ากัน</p></div>
+          <div class="card"><strong>ค่าคาดหวัง</strong><p>ใช้เปรียบเทียบผลตอบแทนเฉลี่ย ไม่ใช่ทำนายตาถัดไป</p></div>
+          <div class="card"><strong>การกระจาย</strong><p>ลดโอกาสติดล็อกและเพิ่มความยืดหยุ่นของแผน</p></div>
+          <div class="card"><strong>รู้เท่าทันตนเอง</strong><p>การเกลียดการสูญเสียและความเชื่อผิดอาจพาออกนอกแผน</p></div>
+        </div>
+        <p class="source">แหล่งอ้างอิง: หนังสือรายวิชา บทที่ 4 · <a href="https://www.catan.com/catan">CATAN official game &amp; playing tips</a> · Kahneman &amp; Tversky (1979), DOI 10.2307/1914185 · <a href="https://www.itl.nist.gov/div898/handbook/eda/section3/eda361.htm">NIST Probability Distributions</a></p>
+      </div>
+    </section>
+
+    <button class="fullscreen" id="fullscreen">เต็มจอ</button>
+    <div class="nav">
+      <button id="prev" aria-label="สไลด์ก่อนหน้า">‹</button>
+      <button id="next" aria-label="สไลด์ถัดไป">›</button>
+    </div>
+  </main>
+
+  <script>
+    const slides = [...document.querySelectorAll('.slide')];
+    const counter = document.getElementById('counter');
+    const progress = document.getElementById('progress');
+    let current = 0;
+
+    function showSlide(index) {
+      current = Math.max(0, Math.min(slides.length - 1, index));
+      slides.forEach((slide, i) => slide.classList.toggle('active', i === current));
+      counter.textContent = `${current + 1}/${slides.length}`;
+      progress.style.width = `${((current + 1) / slides.length) * 100}%`;
+    }
+
+    const theoretical = [1, 2, 3, 4, 5, 6, 5, 4, 3, 2, 1];
+    const sampleSpace = document.getElementById('sampleSpace');
+    const sumButtons = document.getElementById('sumButtons');
+    for (let d1 = 1; d1 <= 6; d1++) {
+      for (let d2 = 1; d2 <= 6; d2++) {
+        const cell = document.createElement('div');
+        cell.className = 'outcome';
+        cell.dataset.sum = d1 + d2;
+        cell.textContent = `${d1}+${d2}`;
+        sampleSpace.appendChild(cell);
+      }
+    }
+    for (let sum = 2; sum <= 12; sum++) {
+      const button = document.createElement('button');
+      button.textContent = sum;
+      button.addEventListener('click', () => {
+        const ways = theoretical[sum - 2];
+        [...sampleSpace.children].forEach(cell => {
+          const hit = Number(cell.dataset.sum) === sum;
+          cell.classList.toggle('hit', hit);
+          cell.classList.toggle('dim', !hit);
+        });
+        document.getElementById('sampleResult').textContent = `ผลรวม ${sum} เกิดได้ ${ways} แบบจาก 36 แบบ หรือประมาณ ${(ways / 36 * 100).toFixed(2)}%`;
+      });
+      sumButtons.appendChild(button);
+    }
+
+    const histogram = document.getElementById('histogram');
+    function drawHistogram(values, theoreticalMode = true) {
+      histogram.innerHTML = '';
+      const max = Math.max(6, ...values);
+      values.forEach((value, index) => {
+        const sum = index + 2;
+        const col = document.createElement('div');
+        col.className = 'bar-col';
+        col.innerHTML = `<span class="bar-value">${value}</span><div class="bar ${sum === 7 ? 'hot' : ''}" style="height:${Math.max(8, value / max * 220)}px"></div><span class="bar-label">${sum}</span>`;
+        histogram.appendChild(col);
+      });
+      histogram.setAttribute('aria-label', theoreticalMode ? 'ความถี่เชิงทฤษฎีของผลรวมลูกเต๋าสองลูก' : 'ผลการจำลองการทอยลูกเต๋าสองลูก');
+    }
+    drawHistogram(theoretical);
+
+    let counts = Array(11).fill(0);
+    let totalRolls = 0;
+    function rollDice(times) {
+      let last = 0;
+      for (let i = 0; i < times; i++) {
+        last = 2 + Math.floor(Math.random() * 6) + Math.floor(Math.random() * 6);
+        counts[last - 2] += 1;
+        totalRolls += 1;
+      }
+      drawHistogram(counts, false);
+      document.getElementById('rollResult').textContent = times === 1
+        ? `ครั้งล่าสุดได้ ${last} · ทอยสะสม ${totalRolls} ครั้ง ลองสังเกตว่ากราฟยังไม่นิ่งเมื่อข้อมูลน้อย`
+        : `จำลองเพิ่ม ${times} ครั้ง · รวม ${totalRolls} ครั้ง รูปร่างโดยรวมจะค่อย ๆ เข้าใกล้การแจกแจงเชิงทฤษฎี`;
+    }
+    document.getElementById('rollOne').addEventListener('click', () => rollDice(1));
+    document.getElementById('rollSixty').addEventListener('click', () => rollDice(60));
+    document.getElementById('resetRolls').addEventListener('click', () => {
+      counts = Array(11).fill(0); totalRolls = 0; drawHistogram(theoretical);
+      document.getElementById('rollResult').textContent = 'ความสูงของแท่งแสดงจำนวนวิธีจากทั้งหมด 36 แบบ';
+    });
+
+    document.getElementById('compareEV').addEventListener('click', () => {
+      document.getElementById('compareResult').textContent = 'บ้าน A มี EV สูงกว่าบ้าน B เท่ากับ (13−8)/8 = 62.5% หรือประมาณ 63% ตามตัวอย่างในหนังสือ';
+    });
+
+    function wireChoices(selector, feedbackId, correctValue, correctText, wrongText) {
+      document.querySelectorAll(selector).forEach(button => {
+        button.addEventListener('click', () => {
+          const key = selector.match(/data-([a-z]+)/)[1];
+          const correct = button.dataset[key] === correctValue;
+          document.querySelectorAll(selector).forEach(item => item.classList.remove('correct', 'wrong'));
+          button.classList.add(correct ? 'correct' : 'wrong');
+          document.getElementById(feedbackId).textContent = correct ? correctText : wrongText;
+        });
+      });
+    }
+    wireChoices('[data-diversify]', 'diversifyResult', 'mixed',
+      'ถูกต้อง การกระจายไม่ได้รับประกันว่าผลรวมจะสูงกว่า แต่ช่วยลดโอกาสที่แผนจะหยุดเพราะขาดของชนิดเดียว',
+      'การผลิตไม้ถี่อาจดีเมื่อมีท่าเรือหรือคู่ค้า แต่ยังไม่ใช่การกระจายความเสี่ยง เพราะทั้งแผนพึ่งทรัพยากรชนิดเดียว');
+    wireChoices('[data-loss]', 'lossResult', 'reset',
+      'ทางเลือกนี้ช่วยแยก “สิ่งที่เสียไปแล้ว” ออกจากการตัดสินใจใหม่ และลดโอกาสไล่เอาคืนเพราะอารมณ์',
+      'นี่เป็นพฤติกรรมที่ทฤษฎีพรอสเปกต์เตือน: เมื่อรู้สึกว่าอยู่ในโซนขาดทุน เรามักยอมเสี่ยงมากขึ้นเพื่อเอาคืน');
+    wireChoices('[data-gambler]', 'gamblerResult', 'same',
+      'ถูกต้อง การทอยครั้งใหม่เป็นอิสระ โอกาสของเลข 8 จึงยังเป็น 5/36 เท่าเดิม',
+      'ยังไม่ถูก การไม่ออกในอดีตไม่ได้สะสมโอกาสให้ตาถัดไป นี่คือความเชื่อผิดแบบนักพนัน');
+
+    document.getElementById('prev').addEventListener('click', () => showSlide(current - 1));
+    document.getElementById('next').addEventListener('click', () => showSlide(current + 1));
+    window.addEventListener('keydown', event => {
+      if (['ArrowRight', 'PageDown', ' '].includes(event.key)) showSlide(current + 1);
+      if (['ArrowLeft', 'PageUp'].includes(event.key)) showSlide(current - 1);
+      if (event.key === 'Home') showSlide(0);
+      if (event.key === 'End') showSlide(slides.length - 1);
+    });
+    document.getElementById('fullscreen').addEventListener('click', async () => {
+      if (!document.fullscreenElement) {
+        document.body.classList.add('presentation-mode');
+        await document.documentElement.requestFullscreen();
+      } else {
+        await document.exitFullscreen();
+      }
+    });
+    document.addEventListener('fullscreenchange', () => {
+      document.body.classList.toggle('presentation-mode', Boolean(document.fullscreenElement));
+    });
+
+    const requested = Number.parseInt(new URLSearchParams(location.search).get('slide') || '1', 10) - 1;
+    showSlide(Number.isFinite(requested) ? requested : 0);
+  </script>
+</body>
+</html>

@@ -134,6 +134,52 @@
       font-size: clamp(14px, 1.25vw, 18px);
     }
 
+    .photo-frame {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: 0 18px 44px rgba(91, 54, 28, .14);
+      display: grid;
+      gap: 8px;
+      margin: 0;
+      overflow: hidden;
+      padding: 10px;
+    }
+
+    .photo-frame img {
+      background: #fff;
+      border-radius: 5px;
+      display: block;
+      height: min(57vh, 580px);
+      object-fit: contain;
+      width: 100%;
+    }
+
+    .photo-frame.closeup img {
+      object-fit: cover;
+      object-position: center;
+    }
+
+    .photo-caption {
+      color: var(--muted);
+      font-size: clamp(11px, 1vw, 14px);
+      line-height: 1.25;
+      padding: 0 4px 2px;
+    }
+
+    .photo-caption a {
+      font-weight: 800;
+    }
+
+    .equipment-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .equipment-list strong {
+      color: var(--teal);
+    }
+
     .panel, .mini-card {
       background: rgba(255,255,255,.82);
       border: 1px solid var(--line);
@@ -372,6 +418,7 @@
       h2 { font-size: clamp(32px, 10vw, 56px); }
       p, li { font-size: 18px; }
       .lead { font-size: 24px; }
+      .photo-frame img { height: auto; max-height: 48vh; }
     }
   </style>
 </head>
@@ -409,31 +456,50 @@
     </section>
 
     <section class="slide">
-      <div class="layout">
-        <p class="eyebrow">Game Goal</p>
-        <h2>ชนะเมื่อถึง 10 Victory Points</h2>
-        <div class="vp-track">
-          <div class="vp"><strong>1</strong><p>Settlement</p></div>
-          <div class="vp"><strong>2</strong><p>City</p></div>
-          <div class="vp"><strong>2</strong><p>Longest Road</p></div>
-          <div class="vp"><strong>2</strong><p>Largest Army</p></div>
-          <div class="vp"><strong>?</strong><p>Development VP</p></div>
+      <div class="layout split">
+        <div>
+          <p class="eyebrow">รู้จักอุปกรณ์</p>
+          <h2>มารู้จักอุปกรณ์จริงบนโต๊ะ</h2>
+          <div class="equipment-list">
+            <p><strong>แผ่นพื้นที่หกเหลี่ยม</strong> แต่ละแบบผลิตทรัพยากรต่างกัน</p>
+            <p><strong>วงกลมตัวเลข</strong> บอกว่าต้องทอยได้เลขไหน พื้นที่นั้นจึงจะผลิต</p>
+            <p><strong>ถนน หมู่บ้าน และเมือง</strong> วางตามขอบหรือจุดตัด ไม่ได้วางกลางแผ่น</p>
+            <p><strong>ไพ่ทรัพยากร</strong> ใช้สำหรับแลกเปลี่ยนและจ่ายค่าก่อสร้าง</p>
+          </div>
         </div>
-        <p class="lead">ให้ผู้เรียนจำก่อนว่า “สร้างเพิ่มและอัปเกรดเมืองคือทางหลักสู่ 10 คะแนน”</p>
+        <figure class="photo-frame">
+          <img src="assets/catan-board-overview.jpg" alt="กระดาน CATAN พร้อมแผ่นพื้นที่ หมายเลข ไพ่ ถนน หมู่บ้าน เมือง ลูกเต๋า และโจร" />
+          <figcaption class="photo-caption">ภาพอุปกรณ์จริงจาก <a href="https://www.catan.com/catan">CATAN – The Game</a> · © CATAN GmbH / CATAN Studio · ใช้ประกอบการเรียนการสอน</figcaption>
+        </figure>
       </div>
     </section>
 
     <section class="slide">
       <div class="layout">
-        <p class="eyebrow">Resources</p>
+        <p class="eyebrow">เป้าหมายของเกม</p>
+        <h2>ใครถึง 10 คะแนนก่อน คนนั้นชนะ</h2>
+        <div class="vp-track">
+          <div class="vp"><strong>1</strong><p>หมู่บ้าน</p></div>
+          <div class="vp"><strong>2</strong><p>เมือง</p></div>
+          <div class="vp"><strong>2</strong><p>ถนนยาวที่สุด</p></div>
+          <div class="vp"><strong>2</strong><p>กองทัพใหญ่ที่สุด</p></div>
+          <div class="vp"><strong>?</strong><p>ไพ่คะแนน</p></div>
+        </div>
+        <p class="lead">จำง่าย ๆ ว่า การสร้างหมู่บ้านเพิ่มและยกระดับเป็นเมืองคือทางหลักในการทำคะแนน</p>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="layout">
+        <p class="eyebrow">ทรัพยากรและค่าก่อสร้าง</p>
         <h2>ทรัพยากร 5 อย่าง และสิ่งที่สร้างได้</h2>
         <div class="three-grid">
-          <div class="mini-card"><strong>Road</strong><div class="cost"><span class="res brick">อิฐ</span><span class="res lumber">ไม้</span></div><p>ใช้ขยายพื้นที่วาง settlement ใหม่</p></div>
-          <div class="mini-card"><strong>Settlement</strong><div class="cost"><span class="res brick">อิฐ</span><span class="res lumber">ไม้</span><span class="res wool">แกะ</span><span class="res grain">ข้าว</span></div><p>ได้ 1 คะแนน และผลิต resource รอบ ๆ</p></div>
-          <div class="mini-card"><strong>City</strong><div class="cost"><span class="res ore">แร่ x3</span><span class="res grain">ข้าว x2</span></div><p>อัปเกรด settlement เป็น 2 คะแนน และผลิตสองเท่า</p></div>
-          <div class="mini-card"><strong>Development</strong><div class="cost"><span class="res ore">แร่</span><span class="res wool">แกะ</span><span class="res grain">ข้าว</span></div><p>ได้ Knight, Progress, หรือ VP card</p></div>
-          <div class="mini-card"><strong>Trade</strong><p>ถ้าขาดของ ให้แลกกับผู้เล่น ธนาคาร หรือท่าเรือ</p></div>
-          <div class="mini-card"><strong>Question</strong><p>อยากสร้าง settlement ต้องมี resource กี่ชนิด?</p></div>
+          <div class="mini-card"><strong>ถนน (Road)</strong><div class="cost"><span class="res brick">อิฐ</span><span class="res lumber">ไม้</span></div><p>ใช้ต่อเส้นทางไปยังจุดที่อยากสร้างหมู่บ้านใหม่</p></div>
+          <div class="mini-card"><strong>หมู่บ้าน (Settlement)</strong><div class="cost"><span class="res brick">อิฐ</span><span class="res lumber">ไม้</span><span class="res wool">แกะ</span><span class="res grain">ข้าว</span></div><p>ให้ 1 คะแนน และเพิ่มจุดรับทรัพยากร</p></div>
+          <div class="mini-card"><strong>เมือง (City)</strong><div class="cost"><span class="res ore">แร่ x3</span><span class="res grain">ข้าว x2</span></div><p>ยกระดับหมู่บ้านเป็น 2 คะแนน และรับทรัพยากรเพิ่มเป็นสองเท่า</p></div>
+          <div class="mini-card"><strong>ไพ่พัฒนา</strong><div class="cost"><span class="res ore">แร่</span><span class="res wool">แกะ</span><span class="res grain">ข้าว</span></div><p>อาจได้อัศวิน ความสามารถพิเศษ หรือคะแนนลับ</p></div>
+          <div class="mini-card"><strong>การแลกเปลี่ยน</strong><p>ถ้าขาดของ ลองแลกกับผู้เล่นคนอื่น ธนาคาร หรือท่าเรือ</p></div>
+          <div class="mini-card"><strong>ลองคิดดู</strong><p>ถ้าจะสร้างหมู่บ้าน เราต้องใช้ทรัพยากรกี่ชนิด?</p></div>
         </div>
       </div>
     </section>
@@ -441,35 +507,55 @@
     <section class="slide">
       <div class="layout split">
         <div>
-          <p class="eyebrow">Map Reading</p>
-          <h2>Hex ให้ชนิดทรัพยากร เลขบอกโอกาสผลิต</h2>
+          <p class="eyebrow">ตำแหน่งของชิ้นส่วน</p>
+          <h2>ชิ้นไหนวางตรงไหน</h2>
           <ul>
-            <li>Settlement/city ที่ติด hex จะได้ resource เมื่อเลขนั้นออก</li>
-            <li>เลข 6 และ 8 ออกบ่อย ควรสังเกตเป็นพิเศษ</li>
-            <li>ทะเลทรายไม่ผลิต resource และ robber เริ่มที่นี่</li>
+            <li><strong>หมู่บ้านและเมือง</strong> วางบนจุดตัดของแผ่นพื้นที่</li>
+            <li><strong>ถนน</strong> วางบนเส้นขอบ และต้องเชื่อมต่อกับเส้นทางของเรา</li>
+            <li><strong>วงกลมตัวเลข</strong> อยู่กลางพื้นที่ และบอกว่าพื้นที่จะผลิตเมื่อไร</li>
+            <li><strong>โจร</strong> ทำให้พื้นที่ที่มันยืนอยู่หยุดผลิตชั่วคราว</li>
+          </ul>
+          <p class="lead">ลองชี้ของบนโต๊ะ แล้วเรียกชื่อชิ้นส่วนไปพร้อมกัน</p>
+        </div>
+        <figure class="photo-frame closeup">
+          <img src="assets/catan-board-closeup.jpg" alt="ภาพระยะใกล้ของถนน หมู่บ้าน เมือง แผ่นหมายเลข และโจรบนกระดาน CATAN" />
+          <figcaption class="photo-caption">ภาพระยะใกล้จาก <a href="https://www.catan.com/catan">CATAN – The Game</a> · © CATAN GmbH / CATAN Studio · ใช้ประกอบการเรียนการสอน</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="layout split">
+        <div>
+          <p class="eyebrow">อ่านกระดานให้เป็น</p>
+          <h2>พื้นที่บอกชนิดทรัพยากร ตัวเลขบอกจังหวะผลิต</h2>
+          <ul>
+            <li>หมู่บ้านหรือเมืองที่ติดพื้นที่นั้นจะรับทรัพยากรเมื่อทอยได้เลขตรงกัน</li>
+            <li>เลข 6 และ 8 มีโอกาสออกบ่อย จึงควรสังเกตเป็นพิเศษ</li>
+            <li>ทะเลทรายไม่ผลิตทรัพยากร และเป็นจุดเริ่มต้นของโจร</li>
             <li>เมืองผลิต 2 ใบแทน 1 ใบ</li>
           </ul>
         </div>
         <div class="panel">
-          <strong>Dice probability demo</strong>
+          <strong>ลองดูโอกาสออกของลูกเต๋า</strong>
           <div class="dice-row" id="diceButtons"></div>
-          <div class="result" id="diceResult">กดเลขเพื่อดูความน่าจะออกโดยประมาณ</div>
+          <div class="result" id="diceResult">กดตัวเลขเพื่อดูว่ามีโอกาสออกมากน้อยแค่ไหน</div>
         </div>
       </div>
     </section>
 
     <section class="slide">
       <div class="layout">
-        <p class="eyebrow">Turn Loop</p>
-        <h2>หนึ่ง turn มี 3 จังหวะ</h2>
+        <p class="eyebrow">ลำดับในแต่ละตา</p>
+        <h2>ในหนึ่งตา ทำตาม 3 ขั้นตอนนี้</h2>
         <div class="three-grid">
-          <div class="mini-card"><strong>1. Roll</strong><p>ทอยลูกเต๋า ทุกคนที่ติดเลขนั้นได้ resource</p></div>
-          <div class="mini-card"><strong>2. Trade</strong><p>เจ้าของ turn แลกกับผู้เล่นอื่น หรือแลกกับ bank/harbor</p></div>
-          <div class="mini-card"><strong>3. Build</strong><p>สร้าง road, settlement, city หรือซื้อ development card</p></div>
+          <div class="mini-card"><strong>1. ทอย</strong><p>ทอยลูกเต๋า แล้วแจกทรัพยากรให้ทุกคนที่อยู่ติดเลขนั้น</p></div>
+          <div class="mini-card"><strong>2. แลก</strong><p>เจ้าของตาแลกกับผู้เล่นคนอื่น ธนาคาร หรือท่าเรือได้</p></div>
+          <div class="mini-card"><strong>3. สร้าง</strong><p>สร้างถนน หมู่บ้าน เมือง หรือซื้อไพ่พัฒนา</p></div>
         </div>
         <div class="panel">
           <strong>จำง่าย</strong>
-          <p class="lead">Roll → Trade → Build</p>
+          <p class="lead">ทอย → แลก → สร้าง</p>
         </div>
       </div>
     </section>
@@ -477,22 +563,22 @@
     <section class="slide">
       <div class="layout wide-split">
         <div class="panel">
-          <strong>Production simulator</strong>
-          <p>สมมติเรามี settlement ติดป่าเลข 8 และข้าวเลข 6 กดทอยเพื่อดูว่าได้อะไร</p>
+          <strong>ลองจำลองการรับทรัพยากร</strong>
+          <p>สมมติว่าเรามีหมู่บ้านติดป่าเลข 8 และทุ่งข้าวเลข 6 ลองกดผลลูกเต๋าแล้วดูว่าจะได้อะไร</p>
           <div class="sim-controls">
             <button class="primary" data-roll="8">ทอยได้ 8</button>
             <button data-roll="6">ทอยได้ 6</button>
             <button data-roll="7">ทอยได้ 7</button>
           </div>
-          <div class="result" id="productionResult">เลือกผลลูกเต๋า</div>
+          <div class="result" id="productionResult">เลือกผลลูกเต๋าเพื่อเริ่มทดลอง</div>
         </div>
         <div>
-          <p class="eyebrow">Production</p>
-          <h2>คนอื่นก็ได้ resource ใน turn ของเรา</h2>
+          <p class="eyebrow">การผลิตทรัพยากร</p>
+          <h2>ถึงเป็นตาของเรา คนอื่นก็รับทรัพยากรได้</h2>
           <ul>
             <li>การผลิตขึ้นกับเลข ไม่ได้ขึ้นกับว่าใครทอย</li>
-            <li>ทุกคนที่มี settlement/city ติด hex เลขนั้นได้ resource</li>
-            <li>ถ้า robber อยู่บน hex นั้น hex นั้นไม่ผลิต</li>
+            <li>ทุกคนที่มีหมู่บ้านหรือเมืองติดเลขนั้นจะได้รับทรัพยากร</li>
+            <li>ถ้าโจรยืนอยู่ พื้นที่นั้นจะไม่ผลิตทรัพยากร</li>
           </ul>
         </div>
       </div>
@@ -501,46 +587,46 @@
     <section class="slide">
       <div class="layout split">
         <div>
-          <p class="eyebrow">Placement</p>
-          <h2>กฎตั้ง settlement สำคัญมาก</h2>
+          <p class="eyebrow">การวางหมู่บ้าน</p>
+          <h2>หมู่บ้านใหม่ต้องวางให้ถูกตำแหน่ง</h2>
           <ul>
-            <li>Settlement ต้องอยู่บนจุดตัดของ hex</li>
-            <li>ต้องห่าง settlement/city อื่นอย่างน้อย 2 เส้นถนน</li>
-            <li>จะสร้าง settlement ใหม่ต้องเชื่อมด้วย road ของเรา</li>
-            <li>ตอน setup เลือกจุดที่ได้เลขดีและ resource หลากหลาย</li>
+            <li>หมู่บ้านต้องอยู่บนจุดตัดของแผ่นพื้นที่</li>
+            <li>ต้องมีจุดตัดว่างคั่นจากสิ่งปลูกสร้างอื่นอย่างน้อยหนึ่งจุด</li>
+            <li>หมู่บ้านที่สร้างระหว่างเกมต้องเชื่อมกับถนนของเรา</li>
+            <li>ตอนเริ่มเกม ควรเลือกจุดที่ได้ทั้งเลขดีและทรัพยากรหลายชนิด</li>
           </ul>
         </div>
         <div class="panel">
-          <strong>Placement check</strong>
+          <strong>ลองเลือกตำแหน่งที่ถูกต้อง</strong>
           <div class="choice-grid">
-            <button class="choice" data-place="near">วางติด settlement คนอื่นได้ถ้ามี road</button>
-            <button class="choice" data-place="distance">ต้องเว้นอย่างน้อย 2 เส้นถนน</button>
-            <button class="choice" data-place="anywhere">วางตรงไหนก็ได้บน hex</button>
-            <button class="choice" data-place="city">สร้าง city บนจุดว่างได้เลย</button>
+            <button class="choice" data-place="near">มีถนนถึง ก็วางติดหมู่บ้านคนอื่นได้</button>
+            <button class="choice" data-place="distance">ต้องมีจุดตัดว่างคั่นอย่างน้อยหนึ่งจุด</button>
+            <button class="choice" data-place="anywhere">วางตรงไหนก็ได้กลางแผ่นพื้นที่</button>
+            <button class="choice" data-place="city">สร้างเมืองบนจุดว่างได้ทันที</button>
           </div>
-          <div class="feedback" id="placeFeedback">เลือกคำตอบเพื่อดู feedback</div>
+          <div class="feedback" id="placeFeedback">เลือกคำตอบ แล้วระบบจะอธิบายให้ทันที</div>
         </div>
       </div>
     </section>
 
     <section class="slide">
       <div class="layout">
-        <p class="eyebrow">Trading</p>
-        <h2>ถ้าขาดของ ให้แลก</h2>
+        <p class="eyebrow">การแลกเปลี่ยน</p>
+        <h2>ขาดอะไร ลองชวนคนอื่นแลก</h2>
         <div class="three-grid">
-          <div class="mini-card"><strong>Player trade</strong><p>เจ้าของ turn ต่อรองกับผู้เล่นคนอื่นได้ เช่น ไม้ 1 แลกข้าว 1</p></div>
-          <div class="mini-card"><strong>Bank 4:1</strong><p>เอา resource ชนิดเดียวกัน 4 ใบแลก resource ที่ต้องการ 1 ใบ</p></div>
-          <div class="mini-card"><strong>Harbor</strong><p>ท่าเรือช่วยลดอัตราแลก เช่น 3:1 หรือ 2:1 สำหรับ resource เฉพาะ</p></div>
+          <div class="mini-card"><strong>แลกกับผู้เล่น</strong><p>เจ้าของตาต่อรองกับผู้เล่นคนอื่นได้ เช่น ไม้ 1 ใบ แลกข้าว 1 ใบ</p></div>
+          <div class="mini-card"><strong>แลกกับธนาคาร 4:1</strong><p>ใช้ทรัพยากรชนิดเดียวกัน 4 ใบ แลกของที่ต้องการ 1 ใบ</p></div>
+          <div class="mini-card"><strong>แลกที่ท่าเรือ</strong><p>ท่าเรือช่วยให้อัตราแลกดีขึ้นเป็น 3:1 หรือ 2:1 สำหรับของบางชนิด</p></div>
         </div>
-        <p class="lead">สอนผู้เล่นใหม่ว่า “Catan ไม่ใช่เกมรอของครบอย่างเดียว มันคือเกมต่อรอง”</p>
+        <p class="lead">อย่ารอให้ของมาครบเอง—การพูดคุยและต่อรองคือหัวใจสำคัญของ Catan</p>
       </div>
     </section>
 
     <section class="slide">
       <div class="layout wide-split">
         <div class="panel">
-          <strong>Build checker</strong>
-          <p>เรามี: ไม้ 1, อิฐ 1, แกะ 1, ข้าว 1 สร้างอะไรได้?</p>
+          <strong>ลองดูว่าเราสร้างอะไรได้</strong>
+          <p>เรามีไม้ อิฐ แกะ และข้าว อย่างละ 1 ใบ จะสร้างอะไรได้?</p>
           <div class="cost">
             <span class="res lumber">ไม้</span>
             <span class="res brick">อิฐ</span>
@@ -548,21 +634,21 @@
             <span class="res grain">ข้าว</span>
           </div>
           <div class="choice-grid">
-            <button class="choice" data-build="road">Road เท่านั้น</button>
-            <button class="choice" data-build="settlement">Settlement</button>
-            <button class="choice" data-build="city">City</button>
-            <button class="choice" data-build="dev">Development card</button>
+            <button class="choice" data-build="road">ถนนเท่านั้น</button>
+            <button class="choice" data-build="settlement">หมู่บ้าน</button>
+            <button class="choice" data-build="city">เมือง</button>
+            <button class="choice" data-build="dev">ไพ่พัฒนา</button>
           </div>
-          <div class="feedback" id="buildFeedback">เลือกคำตอบเพื่อดู feedback</div>
+          <div class="feedback" id="buildFeedback">เลือกคำตอบ แล้วระบบจะอธิบายให้ทันที</div>
         </div>
         <div>
-          <p class="eyebrow">Build Decision</p>
-          <h2>ดูของในมือ แล้วถามว่าสร้างอะไรได้</h2>
+          <p class="eyebrow">ตัดสินใจก่อนสร้าง</p>
+          <h2>ดูไพ่ในมือ แล้วเลือกว่าจะสร้างอะไร</h2>
           <ul>
-            <li>Road เปิดทาง แต่ยังไม่เพิ่มคะแนน</li>
-            <li>Settlement เพิ่มคะแนนและจุดผลิตใหม่</li>
-            <li>City ทำให้จุดผลิตเดิมแรงขึ้น</li>
-            <li>Development card ช่วยแก้เกมหรือเก็บแต้มซ่อน</li>
+            <li>ถนนช่วยเปิดทาง แต่ยังไม่เพิ่มคะแนนทันที</li>
+            <li>หมู่บ้านเพิ่มทั้งคะแนนและจุดรับทรัพยากร</li>
+            <li>เมืองทำให้จุดเดิมผลิตได้มากขึ้น</li>
+            <li>ไพ่พัฒนาช่วยพลิกสถานการณ์หรือซ่อนคะแนนไว้ได้</li>
           </ul>
         </div>
       </div>
@@ -571,77 +657,96 @@
     <section class="slide">
       <div class="layout split">
         <div>
-          <p class="eyebrow">Robber</p>
-          <h2>เลข 7 คือเหตุการณ์พิเศษ</h2>
+          <p class="eyebrow">เมื่อทอยได้ 7</p>
+          <h2>เลข 7 ไม่ผลิตทรัพยากร แต่ทำให้โจรเคลื่อนที่</h2>
           <ul>
-            <li>ถ้ามีไพ่ resource มากกว่า 7 ใบ ต้องทิ้งครึ่งหนึ่ง</li>
-            <li>ผู้ทอย 7 ย้าย robber ไปปิด hex หนึ่งช่อง</li>
-            <li>ขโมย resource 1 ใบจากผู้เล่นที่มีสิ่งปลูกสร้างติด hex นั้น</li>
-            <li>hex ที่มี robber ไม่ผลิต resource</li>
+            <li>ผู้ที่ถือไพ่ทรัพยากรมากกว่า 7 ใบ ต้องทิ้งครึ่งหนึ่ง</li>
+            <li>ผู้ที่ทอยได้ 7 ย้ายโจรไปปิดพื้นที่หนึ่งแห่ง</li>
+            <li>จากนั้นสุ่มหยิบทรัพยากร 1 ใบจากผู้เล่นที่สร้างติดพื้นที่นั้น</li>
+            <li>พื้นที่ที่มีโจรยืนอยู่จะหยุดผลิตทรัพยากร</li>
           </ul>
         </div>
         <div class="panel">
-          <strong>Robber check</strong>
-          <p>ถ้าเรามี resource 9 ใบแล้วมีคนทอย 7 ต้องทิ้งกี่ใบ?</p>
+          <strong>ลองคิดเมื่อโจรมา</strong>
+          <p>ถ้าเราถือไพ่ทรัพยากร 9 ใบ แล้วมีคนทอยได้ 7 เราต้องทิ้งกี่ใบ?</p>
           <div class="choice-grid">
             <button class="choice" data-robber="3">3 ใบ</button>
             <button class="choice" data-robber="4">4 ใบ</button>
             <button class="choice" data-robber="5">5 ใบ</button>
             <button class="choice" data-robber="0">ไม่ต้องทิ้ง</button>
           </div>
-          <div class="feedback" id="robberFeedback">เลือกคำตอบเพื่อดู feedback</div>
+          <div class="feedback" id="robberFeedback">เลือกคำตอบ แล้วระบบจะอธิบายให้ทันที</div>
         </div>
       </div>
     </section>
 
     <section class="slide">
       <div class="layout">
-        <p class="eyebrow">Development Cards</p>
-        <h2>Development card คือแผนสำรองและแต้มซ่อน</h2>
+        <p class="eyebrow">ไพ่พัฒนา</p>
+        <h2>ไพ่พัฒนาช่วยพลิกเกม และบางใบให้คะแนนลับ</h2>
         <div class="three-grid">
-          <div class="mini-card"><strong>Knight</strong><p>ย้าย robber และช่วยสะสม Largest Army</p></div>
-          <div class="mini-card"><strong>Progress</strong><p>เช่น Road Building, Year of Plenty, Monopoly</p></div>
-          <div class="mini-card"><strong>Victory Point</strong><p>เก็บซ่อนไว้ นับตอนประกาศชนะ</p></div>
+          <div class="mini-card"><strong>อัศวิน (Knight)</strong><p>ใช้ย้ายโจร และช่วยชิงกองทัพใหญ่ที่สุด</p></div>
+          <div class="mini-card"><strong>ความสามารถพิเศษ</strong><p>เช่น สร้างถนน รับทรัพยากร หรือผูกขาดทรัพยากร</p></div>
+          <div class="mini-card"><strong>คะแนนชัยชนะ</strong><p>เก็บเป็นความลับไว้จนกว่าจะประกาศชนะ</p></div>
         </div>
-        <p class="lead">กติกาสำคัญ: โดยทั่วไป development card ที่ซื้อใน turn นี้ ยังเล่นใน turn เดียวกันไม่ได้</p>
+        <p class="lead">ข้อควรจำ: ไพ่พัฒนาที่เพิ่งซื้อมา โดยทั่วไปยังใช้ในตาเดียวกันไม่ได้</p>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="layout wide-split">
+        <figure class="photo-frame">
+          <img src="assets/catan-5-6-components.jpg" alt="ตัวอย่างชุด CATAN พร้อมส่วนขยายสำหรับผู้เล่นห้าถึงหกคน กระดานใหญ่ขึ้นและมีชิ้นส่วนผู้เล่นเพิ่มสองสี" />
+          <figcaption class="photo-caption">ภาพตัวอย่างชุด 5–6 คนจาก <a href="https://www.catan.com/25th-anniversary-edition">CATAN 25th Anniversary Edition</a> · งานภาพของแต่ละ edition อาจต่างกัน</figcaption>
+        </figure>
+        <div>
+          <p class="eyebrow">เมื่อเล่น 5–6 คน</p>
+          <h2>ต่อเกาะให้ใหญ่ขึ้น แล้วเพิ่มชิ้นส่วนผู้เล่น</h2>
+          <ul>
+            <li>ใช้ชิ้นส่วนจากกล่องหลักร่วมกับชุดเสริม 5–6 คน</li>
+            <li>เพิ่มแผ่นพื้นที่ กรอบทะเล หมายเลข ไพ่ และผู้เล่นอีก 2 สี</li>
+            <li>ก่อนเริ่มสอน ควรแยกชิ้นส่วนตามสีและวางกองไพ่ให้หยิบง่าย</li>
+          </ul>
+          <p class="lead">ใช้ภาพนี้เทียบกับของบนโต๊ะ แล้วค่อยเริ่มจัดเกมไปพร้อมกัน</p>
+        </div>
       </div>
     </section>
 
     <section class="slide">
       <div class="layout">
-        <p class="eyebrow">Guided Opening</p>
+        <p class="eyebrow">ลองเล่นแบบมีผู้สอนนำ</p>
         <h2>กิจกรรมสอนเล่น 20 นาทีแรก</h2>
         <div class="four-grid">
-          <div class="mini-card"><strong>Turn 1</strong><p>ทอย แล้วให้ทุกคนชี้ว่าใครได้ resource</p></div>
-          <div class="mini-card"><strong>Turn 2</strong><p>ให้เจ้าของ turn ลอง trade อย่างน้อย 1 ครั้ง</p></div>
-          <div class="mini-card"><strong>Turn 3</strong><p>ถามว่า “ของในมือสร้างอะไรได้” ก่อน build</p></div>
-          <div class="mini-card"><strong>Turn 4</strong><p>ถ้าออก 7 สาธิต robber แบบช้า ๆ</p></div>
+          <div class="mini-card"><strong>ตาที่ 1</strong><p>ทอยลูกเต๋า แล้วให้ทุกคนช่วยกันชี้ว่าใครได้ทรัพยากร</p></div>
+          <div class="mini-card"><strong>ตาที่ 2</strong><p>ให้เจ้าของตาลองชวนคนอื่นแลกของอย่างน้อยหนึ่งครั้ง</p></div>
+          <div class="mini-card"><strong>ตาที่ 3</strong><p>ก่อนสร้าง ลองถามว่า “ไพ่ในมือชุดนี้สร้างอะไรได้บ้าง”</p></div>
+          <div class="mini-card"><strong>ตาที่ 4</strong><p>ถ้าทอยได้ 7 ให้สาธิตขั้นตอนของโจรช้า ๆ</p></div>
         </div>
-        <p class="lead">เป้าหมายช่วงแรกไม่ใช่เล่นเร็ว แต่คือเห็นวงจร Roll → Trade → Build</p>
+        <p class="lead">ช่วงแรกยังไม่ต้องรีบ เป้าหมายคือให้ทุกคนคุ้นกับจังหวะ “ทอย → แลก → สร้าง”</p>
       </div>
     </section>
 
     <section class="slide">
       <div class="layout">
-        <p class="eyebrow">Beginner Strategy</p>
+        <p class="eyebrow">กลยุทธ์สำหรับเกมแรก</p>
         <h2>3 แนวคิดเริ่มต้น</h2>
         <div class="three-grid">
           <div class="mini-card"><strong>เลขดี</strong><p>6/8/5/9 มักผลิตบ่อยกว่า 2/12</p></div>
-          <div class="mini-card"><strong>ของหลากหลาย</strong><p>อย่ามีแต่ resource เดียวจนสร้างอะไรไม่ได้</p></div>
-          <div class="mini-card"><strong>ทางขยาย</strong><p>ดูว่าถนนจะพาไปตั้ง settlement ใหม่ตรงไหน</p></div>
+          <div class="mini-card"><strong>ของหลากหลาย</strong><p>พยายามรับทรัพยากรหลายชนิด จะได้มีทางเลือกมากขึ้น</p></div>
+          <div class="mini-card"><strong>ทางขยาย</strong><p>มองล่วงหน้าว่าถนนจะพาเราไปตั้งหมู่บ้านใหม่ตรงไหน</p></div>
         </div>
-        <p class="lead">สำหรับเกมแรก ให้เล่นเพื่อ “ได้ของหลายแบบและสร้าง settlement เพิ่ม” ก่อนคิดแผนซับซ้อน</p>
+        <p class="lead">ในเกมแรก แค่พยายามเก็บของให้หลากหลายและสร้างหมู่บ้านเพิ่ม ก็ถือว่าเริ่มต้นได้ดีแล้ว</p>
       </div>
     </section>
 
     <section class="slide">
       <div class="layout">
-        <p class="eyebrow">Quick Check</p>
-        <h2>ก่อนเริ่มเล่นจริง</h2>
+        <p class="eyebrow">เช็กความเข้าใจ</p>
+        <h2>ลองตอบสั้น ๆ ก่อนเริ่มเกม</h2>
         <div class="panel">
           <p class="lead" id="quizQuestion">ข้อ 1: Catan ชนะเมื่อได้กี่คะแนน?</p>
           <div class="choice-grid" id="quizChoices"></div>
-          <div class="feedback" id="quizFeedback">เลือกคำตอบเพื่อดู feedback</div>
+          <div class="feedback" id="quizFeedback">เลือกคำตอบ แล้วระบบจะเฉลยพร้อมอธิบาย</div>
           <button class="choice" id="nextQuiz">ข้อถัดไป</button>
         </div>
       </div>
@@ -649,17 +754,16 @@
 
     <section class="slide">
       <div class="layout">
-        <p class="eyebrow">Wrap Up</p>
-        <h2>จำ 5 ประโยคนี้แล้วเริ่มเล่นได้</h2>
+        <p class="eyebrow">สรุปก่อนเริ่ม</p>
+        <h2>จำ 5 เรื่องนี้ ก็พร้อมเริ่มเกม</h2>
         <div class="two-grid">
           <div class="mini-card"><strong>1</strong><p>เป้าหมายคือ 10 คะแนน</p></div>
-          <div class="mini-card"><strong>2</strong><p>ทุก turn คือ Roll → Trade → Build</p></div>
-          <div class="mini-card"><strong>3</strong><p>เลขที่ออกทำให้ทุกคนที่ติด hex นั้นได้ resource</p></div>
-          <div class="mini-card"><strong>4</strong><p>ถ้าขาดของ ให้ trade ไม่ใช่รออย่างเดียว</p></div>
-          <div class="mini-card"><strong>5</strong><p>เลข 7 ย้าย robber และอาจทำให้คนถือไพ่เยอะต้องทิ้ง</p></div>
-          <div class="mini-card"><strong>References</strong><p><a href="https://www.catan.com/understand-catan/game-rules">Official game rules</a> | <a href="https://catanboard.com/en/rules/gettingStarted">Getting Started</a> | <a href="https://catanboard.com/en/rules/turnOverview">Turn Overview</a></p></div>
+          <div class="mini-card"><strong>2</strong><p>แต่ละตาให้จำว่า ทอย → แลก → สร้าง</p></div>
+          <div class="mini-card"><strong>3</strong><p>เมื่อเลขออก ทุกคนที่สร้างติดเลขนั้นจะได้รับทรัพยากร</p></div>
+          <div class="mini-card"><strong>4</strong><p>ถ้าขาดของ ลองชวนคนอื่นแลก แทนที่จะรออย่างเดียว</p></div>
+          <div class="mini-card"><strong>5</strong><p>เลข 7 ทำให้โจรย้าย และคนที่ถือไพ่เกิน 7 ใบอาจต้องทิ้งครึ่งหนึ่ง</p></div>
+          <div class="mini-card"><strong>แหล่งอ้างอิง</strong><p><a href="https://www.catan.com/understand-catan/game-rules">กติกาทางการ</a> | <a href="https://www.catan.com/catan">เกมและภาพทางการ</a> | <a href="https://www.catan.com/25th-anniversary-edition">ภาพชุด 5–6 คน</a></p><p class="note">ภาพทางการ © CATAN GmbH / CATAN Studio ใช้ประกอบการสอน ส่วนแผนภาพอื่นจัดทำขึ้นใหม่</p></div>
         </div>
-        <p class="note">ภาพประกอบในสไลด์นี้เป็น diagram/ไอคอนที่วาดใหม่เพื่อการสอน ไม่ใช่ artwork official ของ Catan</p>
       </div>
     </section>
 
@@ -690,7 +794,7 @@
       button.className = "die";
       button.textContent = value;
       button.addEventListener("click", () => {
-        document.getElementById("diceResult").textContent = `เลข ${value} มีโอกาสประมาณ ${diceOdds[value]} วิธีจาก 36 วิธี ${value === "6" || value === "8" ? "จึงเป็นเลขร้อนที่ผู้เล่นใหม่ควรสังเกต" : ""}`;
+        document.getElementById("diceResult").textContent = `ผลรวม ${value} เกิดได้ ${diceOdds[value]} แบบ จากทั้งหมด 36 แบบ ${value === "6" || value === "8" ? "จึงเป็นเลขที่มีโอกาสออกบ่อยและน่าจับตา" : ""}`;
       });
       diceButtons.appendChild(button);
     });
@@ -699,9 +803,9 @@
       button.addEventListener("click", () => {
         const roll = button.dataset.roll;
         const text = {
-          8: "ทอยได้ 8: settlement ที่ติดป่าเลข 8 ได้ไม้ 1 ใบ ถ้าเป็น city จะได้ 2 ใบ",
-          6: "ทอยได้ 6: settlement ที่ติดข้าวเลข 6 ได้ข้าว 1 ใบ ผู้เล่นอื่นที่ติดเลข 6 ก็ได้ด้วย",
-          7: "ทอยได้ 7: ไม่มี hex ผลิต resource ให้ย้าย robber และคนถือเกิน 7 ใบต้องทิ้งครึ่งหนึ่ง"
+          8: "ทอยได้ 8: หมู่บ้านที่ติดป่าเลข 8 รับไม้ 1 ใบ ถ้าเป็นเมืองจะรับ 2 ใบ",
+          6: "ทอยได้ 6: หมู่บ้านที่ติดทุ่งข้าวเลข 6 รับข้าว 1 ใบ ผู้เล่นคนอื่นที่สร้างติดเลข 6 ก็ได้รับด้วย",
+          7: "ทอยได้ 7: ไม่มีพื้นที่ใดผลิตทรัพยากร ให้ย้ายโจร และผู้ที่ถือไพ่เกิน 7 ใบต้องทิ้งครึ่งหนึ่ง"
         };
         document.getElementById("productionResult").textContent = text[roll];
       });
@@ -718,15 +822,15 @@
       });
     }
 
-    wireChoice("[data-place]", "distance", "placeFeedback", "ถูกต้อง ต้องเว้นอย่างน้อย 2 เส้นถนนจาก settlement/city อื่น", "ยังไม่ใช่ กฎ distance rule เป็นจุดที่ผู้เล่นใหม่พลาดบ่อย");
-    wireChoice("[data-build]", "settlement", "buildFeedback", "ถูกต้อง มีครบ brick + lumber + wool + grain จึงสร้าง settlement ได้", "ยังไม่ใช่ ชุด resource นี้ตรงกับ cost ของ settlement");
-    wireChoice("[data-robber]", "4", "robberFeedback", "ถูกต้อง 9 ใบต้องทิ้งครึ่งหนึ่งปัดลง คือ 4 ใบ", "ยังไม่ใช่ ถ้ามีมากกว่า 7 ใบ ต้องทิ้งครึ่งหนึ่งและปัดลง");
+    wireChoice("[data-place]", "distance", "placeFeedback", "ถูกต้อง ต้องมีจุดตัดว่างคั่นระหว่างสิ่งปลูกสร้างอย่างน้อยหนึ่งจุด", "ยังไม่ถูก ลองนับจุดตัดระหว่างหมู่บ้านอีกครั้ง ต้องมีจุดว่างคั่นอย่างน้อยหนึ่งจุด");
+    wireChoice("[data-build]", "settlement", "buildFeedback", "ถูกต้อง ไม้ + อิฐ + แกะ + ข้าว ครบชุดสำหรับสร้างหมู่บ้านพอดี", "ยังไม่ถูก ลองเทียบไพ่ในมือกับค่าก่อสร้างของหมู่บ้านอีกครั้ง");
+    wireChoice("[data-robber]", "4", "robberFeedback", "ถูกต้อง ครึ่งหนึ่งของ 9 คือ 4.5 และต้องปัดลง จึงทิ้ง 4 ใบ", "ยังไม่ถูก เมื่อถือเกิน 7 ใบ ให้ทิ้งครึ่งหนึ่งและปัดเศษลง");
 
     const quizItems = [
-      { prompt: "ข้อ 1: Catan ชนะเมื่อได้กี่คะแนน?", choices: ["7", "10", "12", "20"], answer: 1, feedback: "ถูกต้อง ผู้เล่นที่ถึง 10 Victory Points ใน turn ของตัวเองชนะ" },
-      { prompt: "ข้อ 2: ถ้าทอยได้เลข 8 ใครได้ resource?", choices: ["เฉพาะคนทอย", "ทุกคนที่มี settlement/city ติด hex เลข 8", "คนที่มีถนนยาวที่สุด", "ไม่มีใครได้"], answer: 1, feedback: "ถูกต้อง การผลิตเกิดกับทุกคนที่ติดเลขนั้น" },
-      { prompt: "ข้อ 3: สร้าง road ต้องใช้อะไร?", choices: ["อิฐ + ไม้", "แกะ + ข้าว", "แร่ x3 + ข้าว x2", "แร่ + แกะ + ข้าว"], answer: 0, feedback: "ถูกต้อง road ใช้ brick + lumber" },
-      { prompt: "ข้อ 4: ทอยได้ 7 เกิดอะไร?", choices: ["ทุกคนได้ resource", "ย้าย robber และคนถือไพ่เกิน 7 ทิ้งครึ่งหนึ่ง", "จบเกมทันที", "สร้างฟรีหนึ่งอย่าง"], answer: 1, feedback: "ถูกต้อง เลข 7 คือ robber event" }
+      { prompt: "ข้อ 1: ต้องมีอย่างน้อยกี่คะแนนจึงจะชนะ Catan?", choices: ["7", "10", "12", "20"], answer: 1, feedback: "ถูกต้อง เมื่อมีอย่างน้อย 10 คะแนนในตาของตัวเอง ก็ประกาศชัยชนะได้" },
+      { prompt: "ข้อ 2: ถ้าทอยได้เลข 8 ใครจะได้รับทรัพยากร?", choices: ["เฉพาะคนทอย", "ทุกคนที่มีหมู่บ้านหรือเมืองติดเลข 8", "คนที่มีถนนยาวที่สุด", "ไม่มีใครได้"], answer: 1, feedback: "ถูกต้อง ทุกคนที่สร้างติดเลข 8 จะได้รับทรัพยากร ไม่ว่าใครเป็นคนทอย" },
+      { prompt: "ข้อ 3: ถ้าจะสร้างถนน ต้องใช้อะไรบ้าง?", choices: ["อิฐ + ไม้", "แกะ + ข้าว", "แร่ x3 + ข้าว x2", "แร่ + แกะ + ข้าว"], answer: 0, feedback: "ถูกต้อง ถนนหนึ่งเส้นใช้อิฐ 1 ใบ และไม้ 1 ใบ" },
+      { prompt: "ข้อ 4: เมื่อทอยได้ 7 จะเกิดอะไรขึ้น?", choices: ["ทุกคนได้ทรัพยากร", "ย้ายโจร และคนที่ถือไพ่เกิน 7 ใบต้องทิ้งครึ่งหนึ่ง", "จบเกมทันที", "สร้างได้ฟรีหนึ่งอย่าง"], answer: 1, feedback: "ถูกต้อง เลข 7 ทำให้โจรเคลื่อนที่ และอาจบังคับให้ผู้เล่นทิ้งไพ่" }
     ];
     let quizIndex = 0;
 
@@ -734,7 +838,7 @@
       const item = quizItems[quizIndex];
       const choicesEl = document.getElementById("quizChoices");
       document.getElementById("quizQuestion").textContent = item.prompt;
-      document.getElementById("quizFeedback").textContent = "เลือกคำตอบเพื่อดู feedback";
+      document.getElementById("quizFeedback").textContent = "เลือกคำตอบ แล้วระบบจะเฉลยพร้อมอธิบาย";
       choicesEl.innerHTML = "";
       item.choices.forEach((choice, index) => {
         const button = document.createElement("button");
