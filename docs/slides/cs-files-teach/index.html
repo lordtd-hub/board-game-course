@@ -1,0 +1,542 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>C.S. Files Teach-to-Play</title>
+  <style>
+    :root {
+      --ink: #171513;
+      --paper: #fff4dc;
+      --paper-2: #f4dfb8;
+      --night: #161826;
+      --wine: #8e2333;
+      --blood: #b63b36;
+      --amber: #d59b2d;
+      --jade: #197167;
+      --blue: #265f90;
+      --muted: #6c5f50;
+      --line: rgba(86, 61, 32, .28);
+      --shadow: 0 22px 58px rgba(22, 24, 38, .22);
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; min-height: 100%; }
+    body {
+      background:
+        radial-gradient(circle at 9% 14%, rgba(213, 155, 45, .24), transparent 24%),
+        radial-gradient(circle at 85% 20%, rgba(142, 35, 51, .24), transparent 28%),
+        linear-gradient(135deg, #151723, #293145 48%, #59202b);
+      color: var(--ink);
+      font-family: Arial, "Noto Sans Thai", sans-serif;
+      overflow: hidden;
+    }
+    button { font: inherit; }
+    a { color: #0d5f85; font-weight: 900; }
+
+    .deck {
+      background:
+        linear-gradient(135deg, rgba(255, 244, 220, .99), rgba(244, 223, 184, .98)),
+        radial-gradient(circle at 88% 78%, rgba(25, 113, 103, .12), transparent 28%);
+      height: 100svh;
+      overflow: hidden;
+      position: relative;
+    }
+    .deck::before {
+      background: linear-gradient(90deg, var(--wine), var(--amber), var(--jade), var(--blue));
+      content: "";
+      height: 8px;
+      inset: 0 0 auto 0;
+      position: fixed;
+      z-index: 9;
+    }
+    .progress {
+      background: var(--night);
+      height: 5px;
+      inset: auto auto 0 0;
+      position: fixed;
+      transition: width .18s ease;
+      z-index: 9;
+    }
+    .meta {
+      color: var(--muted);
+      display: grid;
+      font-size: clamp(11px, .92vw, 13px);
+      font-weight: 900;
+      grid-template-columns: 1fr auto 1fr;
+      left: clamp(22px, 4vw, 68px);
+      position: fixed;
+      right: clamp(34px, 5vw, 86px);
+      top: clamp(18px, 2.2vw, 32px);
+      z-index: 10;
+    }
+    .meta span:nth-child(2) { justify-self: center; }
+    .meta span:last-child { justify-self: end; }
+
+    .slide {
+      display: none;
+      height: 100svh;
+      overflow: hidden;
+      padding: clamp(72px, 7vw, 104px) clamp(34px, 6vw, 98px) clamp(84px, 7vw, 112px);
+    }
+    .slide.active { display: grid; }
+    .layout {
+      align-content: center;
+      display: grid;
+      gap: clamp(16px, 2vw, 26px);
+      height: 100%;
+    }
+    .split {
+      align-items: center;
+      display: grid;
+      gap: clamp(22px, 3vw, 44px);
+      grid-template-columns: minmax(0, 1fr) minmax(360px, .9fr);
+    }
+    .wide {
+      align-items: center;
+      display: grid;
+      gap: clamp(20px, 3vw, 38px);
+      grid-template-columns: minmax(0, .85fr) minmax(420px, 1fr);
+    }
+    .stack { display: grid; gap: clamp(13px, 1.6vw, 22px); }
+
+    h1, h2, h3, p { margin: 0; }
+    h1 {
+      color: var(--night);
+      font-size: clamp(54px, 7.6vw, 112px);
+      letter-spacing: 0;
+      line-height: .95;
+      max-width: 1060px;
+    }
+    h2 {
+      color: var(--night);
+      font-size: clamp(34px, 4.8vw, 68px);
+      letter-spacing: 0;
+      line-height: 1.05;
+    }
+    h3 { color: var(--night); font-size: clamp(20px, 2vw, 30px); line-height: 1.16; }
+    p, li { font-size: clamp(17px, 1.65vw, 24px); line-height: 1.42; }
+    ul, ol { display: grid; gap: 10px; margin: 0; padding-left: 1.15em; }
+    .kicker {
+      color: var(--wine);
+      font-size: clamp(14px, 1.25vw, 18px);
+      font-weight: 900;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+    .lead { color: #342b23; font-size: clamp(22px, 2.3vw, 34px); line-height: 1.28; max-width: 980px; }
+    .note {
+      background: rgba(25, 113, 103, .1);
+      border-left: 8px solid var(--jade);
+      border-radius: 8px;
+      padding: 16px 18px;
+    }
+    .warn { background: rgba(182, 59, 54, .1); border-left-color: var(--blood); }
+    .small { color: var(--muted); font-size: clamp(13px, 1.05vw, 17px); line-height: 1.35; }
+
+    .panel, .photo-panel, .card {
+      background: rgba(255, 250, 240, .82);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+      padding: clamp(16px, 2vw, 24px);
+    }
+    .evidence-board {
+      background:
+        linear-gradient(135deg, rgba(22,24,38,.95), rgba(60,33,38,.93)),
+        repeating-linear-gradient(0deg, transparent 0 34px, rgba(255,255,255,.04) 35px 36px);
+      border: 1px solid rgba(255, 244, 220, .28);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+      color: var(--paper);
+      display: grid;
+      gap: 15px;
+      justify-self: end;
+      max-width: 560px;
+      padding: clamp(18px, 2vw, 28px);
+      position: relative;
+      width: 100%;
+    }
+    .case-row, .mini-grid, .role-grid, .phase-grid, .resource-grid {
+      display: grid;
+      gap: 14px;
+    }
+    .case-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .mini-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .role-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .phase-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .resource-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+
+    .e-card {
+      background: var(--paper);
+      border-radius: 7px;
+      color: var(--ink);
+      min-height: 154px;
+      padding: 16px;
+      position: relative;
+    }
+    .e-card::before {
+      background: var(--accent, var(--wine));
+      border-radius: 7px 7px 0 0;
+      content: "";
+      height: 8px;
+      inset: 0 0 auto 0;
+      position: absolute;
+    }
+    .e-card.means { --accent: var(--blue); }
+    .e-card.clue { --accent: var(--wine); }
+    .e-card.scene { --accent: var(--jade); }
+    .e-card.role { --accent: var(--amber); }
+    .e-card strong { display: block; font-size: clamp(18px, 1.5vw, 24px); margin: 12px 0 8px; }
+    .e-card p { font-size: clamp(14px, 1.15vw, 17px); }
+
+    .badge {
+      align-items: center;
+      background: var(--night);
+      border-radius: 999px;
+      color: white;
+      display: inline-flex;
+      font-weight: 900;
+      height: 42px;
+      justify-content: center;
+      width: 42px;
+    }
+    .flow-step {
+      background: rgba(255, 250, 240, .82);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      display: grid;
+      gap: 8px;
+      min-height: 152px;
+      padding: 16px;
+    }
+    .flow-step b { color: var(--wine); font-size: clamp(32px, 3vw, 50px); line-height: .9; }
+
+    .tile {
+      background: #fff9ea;
+      border: 2px solid rgba(25, 113, 103, .3);
+      border-radius: 8px;
+      color: var(--ink);
+      display: grid;
+      gap: 8px;
+      padding: 16px;
+    }
+    .marker {
+      background: var(--blood);
+      border: 4px solid #f6d58c;
+      border-radius: 999px;
+      color: white;
+      display: inline-grid;
+      font-weight: 900;
+      height: 34px;
+      place-items: center;
+      width: 34px;
+    }
+
+    .choice-row { display: grid; gap: 12px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .choice {
+      background: #fffaf0;
+      border: 2px solid rgba(22,24,38,.18);
+      border-radius: 8px;
+      color: var(--ink);
+      cursor: pointer;
+      font-weight: 900;
+      min-height: 66px;
+      padding: 14px 16px;
+      text-align: left;
+    }
+    .choice:hover, .choice:focus-visible { border-color: var(--jade); outline: 3px solid rgba(25,113,103,.22); }
+    .choice.correct { background: #ddf1e7; border-color: var(--jade); }
+    .choice.wrong { background: #f8ddd8; border-color: var(--blood); }
+    .feedback {
+      background: rgba(255, 250, 240, .86);
+      border: 1px dashed rgba(22,24,38,.36);
+      border-radius: 8px;
+      color: var(--night);
+      font-size: clamp(16px, 1.35vw, 21px);
+      font-weight: 800;
+      min-height: 56px;
+      padding: 13px 15px;
+    }
+
+    .controls {
+      align-items: center;
+      bottom: 10px;
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      left: 50%;
+      position: fixed;
+      transform: translateX(-50%);
+      z-index: 20;
+    }
+    .nav {
+      background: var(--night);
+      border: 0;
+      border-radius: 999px;
+      color: var(--paper);
+      cursor: pointer;
+      font-weight: 900;
+      min-width: 48px;
+      padding: 10px 15px;
+    }
+    .nav.secondary { background: #fffaf0; border: 1px solid var(--line); color: var(--night); }
+
+    @media (max-width: 980px) {
+      body { overflow: auto; }
+      .deck { min-height: 100svh; height: auto; }
+      .slide { min-height: 100svh; height: auto; overflow-y: auto; padding-inline: 22px; padding-bottom: 108px; }
+      .split, .wide, .case-row, .mini-grid, .role-grid, .phase-grid, .resource-grid, .choice-row { grid-template-columns: 1fr; }
+      .controls { background: rgba(255, 244, 220, .94); border-radius: 999px; padding: 6px; }
+      .meta { left: 18px; right: 26px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="deck">
+    <div class="meta"><span>C.S. Files / Deception</span><span id="counter">1/12</span><span>Teach-to-play</span></div>
+    <div class="progress" id="progress"></div>
+
+    <section class="slide active">
+      <div class="split">
+        <div class="stack">
+          <p class="kicker">deduction · evidence · one-shot guess</p>
+          <h1>สอนเล่น C.S. Files</h1>
+          <p class="lead">เกมสืบสวนที่มีฆาตกรนั่งอยู่ในวงเดียวกับเรา นักสืบต้องอ่านหลักฐานให้ถูก ส่วนคนร้ายต้องทำให้โต๊ะหลงทาง</p>
+          <div class="note"><p><strong>เป้าหมาย:</strong> เล่นรอบแรกให้ได้ โดยรู้ว่าอะไรคือหลักฐาน อะไรคือคำอ้าง และทำไมการเดา 1 ครั้งจึงมีราคาแพงมาก</p></div>
+        </div>
+        <div class="evidence-board" aria-label="โต๊ะสืบสวนจำลอง">
+          <div class="case-row">
+            <div class="e-card means"><strong>Means</strong><p>วิธีฆาตกรรมที่ต้องหาให้ถูก</p></div>
+            <div class="e-card clue"><strong>Clue</strong><p>หลักฐานสำคัญที่คนร้ายทิ้งไว้</p></div>
+          </div>
+          <div class="tile"><span class="marker">1</span><h3>Scene tile</h3><p>Forensic Scientist วาง marker เพื่อบอกทิศทาง แต่ห้ามพูดใบ้คำตอบ</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="layout">
+        <p class="kicker">game in one minute</p>
+        <h2>เกมนี้ถาม 2 อย่าง</h2>
+        <div class="case-row">
+          <div class="panel"><span class="badge">1</span><h3>Means of Murder</h3><p>ฆาตกรใช้ “อะไร” หรือ “วิธีไหน” ในการก่อเหตุ</p></div>
+          <div class="panel"><span class="badge">2</span><h3>Key Evidence</h3><p>หลักฐานชิ้นไหนคือสิ่งที่เชื่อมไปถึงฆาตกรจริง ๆ</p></div>
+        </div>
+        <div class="note warn"><p>แค่ทายตัวคนร้ายถูกยังไม่พอ ต้องชี้ Means และ Clue ที่ถูกทั้งคู่ด้วย</p></div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="layout">
+        <p class="kicker">setup</p>
+        <h2>ตั้งเกมให้พร้อม</h2>
+        <div class="phase-grid">
+          <div class="flow-step"><b>1</b><h3>แจกการ์ดหน้าโต๊ะ</h3><p>ผู้เล่นแต่ละคนได้ Clue 4 ใบ และ Means 4 ใบ วางให้ทุกคนเห็น</p></div>
+          <div class="flow-step"><b>2</b><h3>แจกบทบาทลับ</h3><p>Forensic Scientist เปิดตัว คนอื่นเก็บบทบาทเป็นความลับ</p></div>
+          <div class="flow-step"><b>3</b><h3>แจก Badge</h3><p>ทุกคนยกเว้น Forensic Scientist ได้ Badge 1 อัน แปลว่ายังมีสิทธิ์เดา</p></div>
+        </div>
+        <div class="note"><p>เกมแรกให้ใช้ Forensic Scientist, Murderer และ Investigators ก่อน ถ้าผู้เล่น 6 คนขึ้นไปค่อยเพิ่ม Accomplice/Witness เมื่อพร้อม</p></div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="layout">
+        <p class="kicker">roles</p>
+        <h2>ใครทำอะไร</h2>
+        <div class="role-grid">
+          <div class="e-card role"><strong>Forensic Scientist</strong><p>รู้คำตอบและให้ clue ด้วย Scene tiles แต่ห้ามใบ้ด้วยคำพูด ท่าทาง หรือสายตา</p></div>
+          <div class="e-card clue"><strong>Murderer</strong><p>เลือก Means + Clue เป็นคำตอบ แล้วพยายามทำให้คนอื่นเดาผิด</p></div>
+          <div class="e-card means"><strong>Investigators</strong><p>อ่าน Scene tiles ฟังข้อเสนอของคนอื่น และใช้สิทธิ์เดาให้คุ้ม</p></div>
+          <div class="e-card scene"><strong>Optional roles</strong><p>Accomplice ช่วยคนร้าย ส่วน Witness รู้ฝ่ายร้ายแต่ไม่รู้ว่าใครเป็น Murderer</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="wide">
+        <div class="stack">
+          <p class="kicker">crime phase</p>
+          <h2>ช่วงก่อเหตุ: คำตอบถูกตั้งไว้แล้ว</h2>
+          <ol>
+            <li>ทุกคนหลับตา</li>
+            <li>Murderer ลืมตา แล้วชี้ Means 1 ใบ + Clue 1 ใบหน้าโต๊ะของตัวเอง</li>
+            <li>Forensic Scientist จำคำตอบ แล้วให้ Murderer หลับตา</li>
+            <li>ทุกคนลืมตา เริ่มสืบสวน</li>
+          </ol>
+          <div class="note"><p>หลังจากนี้ Forensic Scientist รู้คำตอบมากที่สุด แต่สื่อสารได้จำกัดที่สุด</p></div>
+        </div>
+        <div class="evidence-board">
+          <div class="case-row">
+            <div class="e-card means"><strong>Selected Means</strong><p>เช่น ยาพิษ / เชือก / อุบัติเหตุจัดฉาก</p></div>
+            <div class="e-card clue"><strong>Selected Clue</strong><p>เช่น แก้วน้ำ / รูปถ่าย / ถุงมือ</p></div>
+          </div>
+          <p style="color:var(--paper)">คนอื่นเห็นการ์ดทั้งหมดบนโต๊ะ แต่ไม่รู้ว่า 2 ใบไหนคือคำตอบจริง</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="layout">
+        <p class="kicker">scene tiles</p>
+        <h2>Forensic Scientist พูดผ่าน Scene tiles</h2>
+        <div class="mini-grid">
+          <div class="tile"><span class="marker">A</span><h3>Cause of Death</h3><p>บอกลักษณะการตาย เช่น บาดเจ็บ เลือดออก ขาดอากาศ</p></div>
+          <div class="tile"><span class="marker">B</span><h3>Location</h3><p>บอกสถานที่เกิดเหตุ เช่น บ้าน ที่ทำงาน ร้านอาหาร</p></div>
+          <div class="tile"><span class="marker">C</span><h3>Scene detail</h3><p>บอกบริบทเพิ่ม เช่น สภาพศพ เวลา อารมณ์ เหตุการณ์แวดล้อม</p></div>
+        </div>
+        <div class="note warn"><p>Golden rule: Forensic Scientist ใช้ marker บน Scene tiles เท่านั้น และตอบ attempt ได้แค่ใช่/ไม่ใช่</p></div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="layout">
+        <p class="kicker">investigation loop</p>
+        <h2>หนึ่งรอบสืบสวนไหลแบบนี้</h2>
+        <div class="phase-grid">
+          <div class="flow-step"><b>1</b><h3>ดู clue ใหม่</h3><p>Forensic Scientist วาง marker บน Scene tile</p></div>
+          <div class="flow-step"><b>2</b><h3>คุยและตั้งสมมติฐาน</h3><p>นักสืบอ่านความเชื่อมโยง ส่วนคนร้ายพยายามพาออกนอกทาง</p></div>
+          <div class="flow-step"><b>3</b><h3>Presentation</h3><p>แต่ละคนพูดข้อสันนิษฐานสั้น ๆ ประมาณ 30 วินาที</p></div>
+        </div>
+        <div class="note"><p>เกมมี 3 รอบหลัก ถ้ายังไม่มีใคร solve ถูกหลังรอบสุดท้าย ฝ่าย Murderer รอด</p></div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="split">
+        <div class="stack">
+          <p class="kicker">solve once</p>
+          <h2>Badge คือสิทธิ์เดา 1 ครั้ง</h2>
+          <ul>
+            <li>ใครก็ตามที่ยังมี Badge สามารถประกาศ `Solve the Crime` ได้</li>
+            <li>ต้องชี้ Means 1 ใบ และ Clue 1 ใบ หน้าโต๊ะผู้เล่นคนหนึ่ง</li>
+            <li>ถ้าถูกทั้งคู่ เกมจบทันที นักสืบชนะ</li>
+            <li>ถ้าผิด เสีย Badge และเดาไม่ได้อีก แต่ยังคุย/นำเสนอได้</li>
+          </ul>
+        </div>
+        <div class="panel">
+          <h3>กติกาที่ต้องย้ำก่อนเล่น</h3>
+          <p class="lead">เดาเร็วเกินไปอาจเสียโอกาส แต่รอนานเกินไปอาจหมดเวลา</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="layout">
+        <p class="kicker">quick check</p>
+        <h2>ถ้าทาย Murderer ถูก แต่เลือก Means ผิด ชนะไหม?</h2>
+        <div class="choice-row">
+          <button class="choice" data-q="solve" data-a="wrong">ชนะ เพราะเจอตัวคนร้ายแล้ว</button>
+          <button class="choice" data-q="solve" data-a="correct">ไม่ชนะ ต้องถูกทั้ง Means และ Key Evidence</button>
+        </div>
+        <div class="feedback" id="solve-feedback">เลือกคำตอบเพื่อดู feedback</div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="layout">
+        <p class="kicker">table habits</p>
+        <h2>มือใหม่ควรเล่นอย่างไร</h2>
+        <div class="resource-grid">
+          <div class="e-card scene"><strong>อ่านหลักฐานก่อนคน</strong><p>อย่าเริ่มจาก “ใครดูน่าสงสัย” อย่างเดียว</p></div>
+          <div class="e-card means"><strong>แยกคำอ้างกับหลักฐาน</strong><p>คำพูดคือข้อมูลชนิดหนึ่ง แต่ยังไม่ใช่หลักฐานยืนยัน</p></div>
+          <div class="e-card clue"><strong>ตั้งสมมติฐาน 2-3 ทาง</strong><p>อย่าล็อกคำตอบเดียวเร็วเกินไป</p></div>
+          <div class="e-card role"><strong>ดูคนพาโต๊ะ</strong><p>ใครพยายามให้ทุกคนมองข้ามการ์ดบางใบ</p></div>
+          <div class="e-card scene"><strong>ใช้ Badge ให้มีราคา</strong><p>เดาเมื่อมีข้อมูลพอ ไม่ใช่แค่รู้สึก</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="layout">
+        <p class="kicker">quick check</p>
+        <h2>Forensic Scientist ทำอะไรได้?</h2>
+        <div class="choice-row">
+          <button class="choice" data-q="scientist" data-a="correct">วาง marker บน Scene tiles และตอบใช่/ไม่ใช่ตอนมีคน solve</button>
+          <button class="choice" data-q="scientist" data-a="wrong">พูดว่า “ใกล้แล้ว” หรือทำท่าทางให้คนเดาถูก</button>
+        </div>
+        <div class="feedback" id="scientist-feedback">เลือกคำตอบเพื่อดู feedback</div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="split">
+        <div class="stack">
+          <p class="kicker">ready to play</p>
+          <h2>C.S. Files ใน 6 ประโยค</h2>
+          <ol>
+            <li>คนร้ายเลือก Means และ Key Evidence จากการ์ดหน้าโต๊ะตัวเอง</li>
+            <li>Forensic Scientist รู้คำตอบ แต่ใบ้ได้ผ่าน Scene tiles เท่านั้น</li>
+            <li>นักสืบต้องอ่าน clue และคำพูดของคนในโต๊ะ</li>
+            <li>คนร้ายชนะถ้าทำให้โต๊ะเดาผิดหรือหมดเวลา</li>
+            <li>Badge คือโอกาส solve เพียง 1 ครั้ง</li>
+            <li>ชนะได้เมื่อเลือก Means และ Key Evidence ถูกทั้งคู่</li>
+          </ol>
+        </div>
+        <div class="panel">
+          <h3>อ้างอิงกติกา</h3>
+          <p class="small"><a href="https://www.rulespal.com/deception-murder-hong-kong/rulebook">RulesPal rulebook</a></p>
+          <p class="small"><a href="https://www.ultraboardgames.com/deception-murder-in-hong-kong/game-rules.php">UltraBoardGames rules</a></p>
+          <p class="small"><a href="https://cdn.1j1ju.com/medias/1c/e3/c9-deception-murder-in-hong-kong-rulebook.pdf">Rulebook PDF via 1jour-1jeu</a></p>
+        </div>
+      </div>
+    </section>
+
+    <div class="controls">
+      <button class="nav secondary" id="prev">ก่อนหน้า</button>
+      <button class="nav" id="fullscreen">เต็มจอ</button>
+      <button class="nav secondary" id="next">ถัดไป</button>
+    </div>
+  </main>
+
+  <script>
+    const slides = Array.from(document.querySelectorAll(".slide"));
+    const counter = document.querySelector("#counter");
+    const progress = document.querySelector("#progress");
+    const requested = Number(new URLSearchParams(location.search).get("slide"));
+    let index = Number.isFinite(requested) ? Math.max(0, Math.min(slides.length - 1, requested - 1)) : 0;
+
+    function showSlide(next) {
+      index = Math.max(0, Math.min(slides.length - 1, next));
+      slides.forEach((slide, i) => slide.classList.toggle("active", i === index));
+      counter.textContent = `${index + 1}/${slides.length}`;
+      progress.style.width = `${((index + 1) / slides.length) * 100}%`;
+    }
+    function toggleFullscreen() {
+      if (!document.fullscreenElement) document.documentElement.requestFullscreen?.();
+      else document.exitFullscreen?.();
+    }
+
+    document.querySelector("#next").addEventListener("click", () => showSlide(index + 1));
+    document.querySelector("#prev").addEventListener("click", () => showSlide(index - 1));
+    document.querySelector("#fullscreen").addEventListener("click", toggleFullscreen);
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "ArrowRight" || event.key === "PageDown" || event.key === " ") showSlide(index + 1);
+      if (event.key === "ArrowLeft" || event.key === "PageUp") showSlide(index - 1);
+      if (event.key.toLowerCase() === "f") toggleFullscreen();
+    });
+
+    const feedback = {
+      solve: {
+        correct: "ถูกต้อง ต้องชี้ทั้ง Means และ Key Evidence ให้ถูก จึงปิดคดีได้",
+        wrong: "ยังไม่ใช่ เกมนี้ไม่ได้จับแค่ตัวคนร้าย ต้องระบุหลักฐานและวิธีฆาตกรรมให้ถูกด้วย"
+      },
+      scientist: {
+        correct: "ถูกต้อง Forensic Scientist สื่อสารผ่าน Scene tiles เท่านั้น และตอบ attempt ได้แค่ใช่/ไม่ใช่",
+        wrong: "ยังไม่ใช่ ท่าทางหรือคำใบ้เพิ่มจะทำให้เกมเสีย เพราะ Forensic Scientist รู้คำตอบอยู่แล้ว"
+      }
+    };
+
+    document.querySelectorAll(".choice").forEach((button) => {
+      button.addEventListener("click", () => {
+        const q = button.dataset.q;
+        const ok = button.dataset.a === "correct";
+        document.querySelectorAll(`.choice[data-q="${q}"]`).forEach((other) => other.classList.remove("correct", "wrong"));
+        button.classList.add(ok ? "correct" : "wrong");
+        document.querySelector(`#${q}-feedback`).textContent = feedback[q][ok ? "correct" : "wrong"];
+      });
+    });
+    showSlide(index);
+  </script>
+</body>
+</html>

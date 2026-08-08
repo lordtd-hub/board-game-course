@@ -93,7 +93,7 @@ export const materialWeeks: MaterialWeek[] = [
     submissionTitle: "Information Structure Log",
     submissionPrompt: "บันทึก key decision 2 ครั้ง และระบุว่าข้อมูลใดเปิดเผย ซ่อนอยู่ หรือไม่สมมาตร",
     exitTicket: { title: "Information Structure Log", prompt: "วันนี้มีข้อมูลอะไรที่เปลี่ยนการตัดสินใจของคุณมากที่สุด" },
-    status: "placeholder"
+    status: "complete"
   },
   {
     week: 3,
@@ -125,7 +125,7 @@ export const materialWeeks: MaterialWeek[] = [
     submissionTitle: "Credible or Cheap Talk",
     submissionPrompt: "เลือกจังหวะหนึ่งจาก Love Letter แล้ววิเคราะห์ว่าตัดสินใจจากหลักฐาน คำพูด หรือการเดาเพราะข้อมูลไม่ครบ",
     exitTicket: { title: "Credible or Cheap Talk", prompt: "หลักฐานแบบไหนทำให้คุณเชื่อหรือไม่เชื่อผู้เล่นคนหนึ่ง" },
-    status: "placeholder"
+    status: "complete"
   },
   {
     week: 4,
@@ -151,6 +151,42 @@ export const materialWeeks: MaterialWeek[] = [
   },
   {
     week: 5,
+    title: "ข้อมูล หลักฐาน และการอนุมาน",
+    englishTitle: "Evidence, Credibility, and Limited Inference",
+    chapterSource: "chapters/ch02.tex, chapters/ch03.tex, chapters/ch05.tex",
+    games: ["C.S. Files / Deception: Murder in Hong Kong"],
+    learningOutcomes: ["แยกหลักฐาน คำอ้าง และการตีความได้", "วิเคราะห์ hidden/asymmetric information และ cheap talk ได้", "เชื่อมสิทธิ์เดา เวลา clue และความน่าเชื่อถือกับทรัพยากรจำกัดได้"],
+    concepts: ["hidden information", "asymmetric information", "evidence", "cheap talk", "credibility", "deduction", "opportunity cost", "information resource"],
+    classFlow: defaultClassFlow,
+    teachToPlay: [
+      {
+        game: "C.S. Files / Deception",
+        goal: "หาทั้ง Means of Murder และ Key Evidence ให้ถูก ก่อนที่โอกาสเดาและเวลา discussion จะหมด",
+        turnLoop: ["Forensic Scientist วาง marker บน Scene tile", "ผู้เล่นคุยและตั้งสมมติฐาน", "presentation สั้น", "ใช้ Badge เพื่อ solve ได้ครั้งเดียว"],
+        firstDecisions: ["ควรเชื่อ Scene tile หรือคำพูดของผู้เล่นคนใด", "ควรใช้ Badge ตอนนี้หรือรอข้อมูลเพิ่ม", "คำอ้างไหนมีหลักฐานรองรับจริง"],
+        doNotWorryYet: ["การใช้ role เสริมทุกตัว", "meta reading ขั้นสูง", "การจำการ์ดทุกใบ"],
+        playNowPrompt: "เล่นรอบแรกโดยให้ทุกคนจดจังหวะที่อยากใช้ Badge หรือเปลี่ยนใจจาก clue ใหม่",
+        debriefPrompt: "ข้อมูลชิ้นใดเป็นหลักฐาน ข้อมูลชิ้นใดเป็นคำอ้าง และสิทธิ์เดา 1 ครั้งมีต้นทุนอะไร"
+      }
+    ],
+    conceptBlocks: [
+      { title: "Evidence vs Claim", body: "หลักฐานคือสิ่งที่คนอื่นตรวจตามได้ ส่วนคำอ้างคือสิ่งที่ผู้เล่นอยากให้โต๊ะเชื่อ" },
+      { title: "Information Resource", body: "เวลา clue ความสนใจ ความน่าเชื่อถือ และ Badge เป็นทรัพยากรจำกัดที่ต้องใช้ให้คุ้ม" },
+      { title: "Opportunity Cost of Guessing", body: "การเดาตอนนี้แลกกับโอกาสรอข้อมูลเพิ่ม และถ้าเดาผิดจะเสีย Badge ไปถาวร" }
+    ],
+    activities: [
+      { id: "cs-files-teach", title: "C.S. Files teach-to-play deck", purpose: "ให้ผู้เล่นใหม่เริ่มเล่นได้เร็ว", kind: "slides" },
+      { id: "evidence-claim-map", title: "Evidence vs claim map", purpose: "แยกหลักฐานออกจากคำพูดและการตีความ", kind: "prompt" },
+      { id: "badge-cost", title: "Badge opportunity-cost checkpoint", purpose: "เห็นต้นทุนของการใช้สิทธิ์เดา 1 ครั้ง", kind: "checkpoint" }
+    ],
+    worksheet: "Game Observation Worksheet",
+    submissionTitle: "Evidence and Information Resource Reflection",
+    submissionPrompt: "เลือกจังหวะหนึ่งจาก C.S. Files แล้วอธิบายว่าคุณใช้หลักฐาน คำอ้าง หรือทรัพยากรข้อมูลใดในการตัดสินใจ",
+    exitTicket: { title: "Evidence and Information Resource Reflection", prompt: "ข้อมูลชิ้นไหนทำให้คุณเปลี่ยนใจ และคุณเสียโอกาสอะไรจากการตัดสินใจนั้น" },
+    status: "complete"
+  },
+  {
+    week: 6,
     title: "การบริหารทรัพยากร",
     englishTitle: "Resource Management",
     chapterSource: "chapters/ch05.tex",
@@ -172,7 +208,7 @@ export const materialWeeks: MaterialWeek[] = [
     status: "placeholder"
   },
   {
-    week: 6,
+    week: 7,
     title: "กลยุทธ์การวาง Worker",
     englishTitle: "Worker Placement and Scheduling Strategy",
     chapterSource: "chapters/ch06.tex",
@@ -194,7 +230,7 @@ export const materialWeeks: MaterialWeek[] = [
     status: "placeholder"
   },
   {
-    week: 7,
+    week: 8,
     title: "กลยุทธ์เศรษฐกิจและการแข่งขัน",
     englishTitle: "Economic Strategy and Competition",
     chapterSource: "chapters/ch07.tex",
@@ -216,7 +252,7 @@ export const materialWeeks: MaterialWeek[] = [
     status: "placeholder"
   },
   {
-    week: 8,
+    week: 9,
     title: "แนวคิด Game Theory",
     englishTitle: "Game Theory Concepts",
     chapterSource: "chapters/ch08.tex",
@@ -238,7 +274,7 @@ export const materialWeeks: MaterialWeek[] = [
     status: "placeholder"
   },
   {
-    week: 9,
+    week: 10,
     title: "กลยุทธ์เชิงพื้นที่",
     englishTitle: "Spatial Strategy",
     chapterSource: "chapters/ch09.tex",
@@ -260,7 +296,7 @@ export const materialWeeks: MaterialWeek[] = [
     status: "placeholder"
   },
   {
-    week: 10,
+    week: 11,
     title: "กลยุทธ์เชิงปรับตัว",
     englishTitle: "Adaptive Strategy",
     chapterSource: "chapters/ch10.tex",
@@ -282,7 +318,7 @@ export const materialWeeks: MaterialWeek[] = [
     status: "placeholder"
   },
   {
-    week: 11,
+    week: 12,
     title: "ระบบกลยุทธ์ซับซ้อน",
     englishTitle: "Complex Adaptive Systems",
     chapterSource: "chapters/ch11.tex",
@@ -304,7 +340,7 @@ export const materialWeeks: MaterialWeek[] = [
     status: "placeholder"
   },
   {
-    week: 12,
+    week: 13,
     title: "การวิเคราะห์และประยุกต์ใช้กลยุทธ์",
     englishTitle: "Strategic Analysis and Application",
     chapterSource: "chapters/ch12.tex",
