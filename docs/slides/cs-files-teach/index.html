@@ -166,6 +166,52 @@
     .role-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
     .phase-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
     .resource-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+    .equipment-grid {
+      display: grid;
+      gap: 14px;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+    }
+    .equipment {
+      background: #fffaf0;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      display: grid;
+      gap: 8px;
+      min-width: 0;
+      min-height: 156px;
+      overflow-wrap: anywhere;
+      padding: 15px;
+    }
+    .equipment b {
+      align-items: center;
+      border-radius: 6px;
+      color: white;
+      display: inline-flex;
+      font-size: 15px;
+      justify-content: center;
+      min-height: 34px;
+      padding: 4px 8px;
+      width: max-content;
+    }
+    .equipment.role b { background: #1c1d2b; }
+    .equipment.means b { background: var(--blue); }
+    .equipment.clue b { background: var(--wine); }
+    .equipment.scene b { background: var(--jade); }
+    .equipment.badge-card b { background: var(--amber); color: var(--night); }
+    .source-grid {
+      display: grid;
+      gap: 12px;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+    .source-card {
+      background: rgba(255, 250, 240, .9);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      min-width: 0;
+      overflow-wrap: anywhere;
+      padding: 14px;
+    }
+    .source-card strong { display: block; font-size: clamp(17px, 1.25vw, 20px); margin-bottom: 4px; }
 
     .e-card {
       background: var(--paper);
@@ -286,7 +332,7 @@
       body { overflow: auto; }
       .deck { min-height: 100svh; height: auto; }
       .slide { min-height: 100svh; height: auto; overflow-y: auto; padding-inline: 22px; padding-bottom: 108px; }
-      .split, .wide, .case-row, .mini-grid, .role-grid, .phase-grid, .resource-grid, .choice-row { grid-template-columns: 1fr; }
+      .split, .wide, .case-row, .mini-grid, .role-grid, .phase-grid, .resource-grid, .choice-row, .equipment-grid, .source-grid { grid-template-columns: 1fr; }
       .controls { background: rgba(255, 244, 220, .94); border-radius: 999px; padding: 6px; }
       .meta { left: 18px; right: 26px; }
     }
@@ -337,6 +383,25 @@
           <div class="flow-step"><b>3</b><h3>แจก Badge</h3><p>ทุกคนยกเว้น Forensic Scientist ได้ Badge 1 อัน แปลว่ายังมีสิทธิ์เดา</p></div>
         </div>
         <div class="note"><p>เกมแรกให้ใช้ Forensic Scientist, Murderer และ Investigators ก่อน ถ้าผู้เล่น 6 คนขึ้นไปค่อยเพิ่ม Accomplice/Witness เมื่อพร้อม</p></div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="layout">
+        <p class="kicker">visual guide</p>
+        <h2>อุปกรณ์จริงต้องมองหาอะไร</h2>
+        <div class="equipment-grid">
+          <div class="equipment role"><b>Role</b><h3>บทบาทลับ</h3><p>มี Forensic Scientist เปิดตัว ส่วน Murderer / Investigator เก็บเป็นความลับ</p></div>
+          <div class="equipment means"><b>Means</b><h3>วิธีฆาตกรรม</h3><p>การ์ดสีน้ำเงิน ผู้เล่นแต่ละคนวางไว้หน้าโต๊ะ 4 ใบ</p></div>
+          <div class="equipment clue"><b>Clue</b><h3>หลักฐานสำคัญ</h3><p>การ์ดสีแดง ผู้เล่นแต่ละคนวางไว้หน้าโต๊ะ 4 ใบ</p></div>
+          <div class="equipment scene"><b>Scene</b><h3>กระเบื้องข้อมูล</h3><p>Forensic Scientist ใช้ marker ชี้ข้อมูลแทนการพูดใบ้</p></div>
+          <div class="equipment badge-card"><b>Badge</b><h3>สิทธิ์เดา</h3><p>ใครใช้ผิดจะเสียสิทธิ์ solve ทันที แต่ยังคุยในเกมต่อได้</p></div>
+        </div>
+        <div class="source-grid">
+          <div class="source-card"><strong>ดูภาพกล่อง/อุปกรณ์</strong><p class="small"><a href="https://www.gen42.com/product/deception-mhk/">Gen42 product page</a> ระบุ component ในกล่องและมีภาพประกอบทางการ</p></div>
+          <div class="source-card"><strong>ดูตัวอย่าง setup</strong><p class="small"><a href="https://cdn.1j1ju.com/medias/1c/e3/c9-deception-murder-in-hong-kong-rulebook.pdf">Rulebook PDF</a> มีภาพ Scene tiles และ marker ในบริบทกติกา</p></div>
+          <div class="source-card"><strong>ดูภาพจากผู้เล่น</strong><p class="small"><a href="https://boardgamegeek.com/boardgame/156129/deception-murder-in-hong-kong/images">BoardGameGeek gallery</a> ใช้ดูของจริงเพิ่มเติม ไม่ฝังภาพลงสไลด์เพื่อเลี่ยงปัญหาสิทธิ์ภาพ</p></div>
+        </div>
       </div>
     </section>
 
@@ -408,7 +473,7 @@
           <p class="kicker">solve once</p>
           <h2>Badge คือสิทธิ์เดา 1 ครั้ง</h2>
           <ul>
-            <li>ใครก็ตามที่ยังมี Badge สามารถประกาศ `Solve the Crime` ได้</li>
+            <li>ผู้เล่นทุกคนที่ยังมี Badge ยกเว้น Forensic Scientist สามารถประกาศ `Solve the Crime` ได้</li>
             <li>ต้องชี้ Means 1 ใบ และ Clue 1 ใบ หน้าโต๊ะผู้เล่นคนหนึ่ง</li>
             <li>ถ้าถูกทั้งคู่ เกมจบทันที นักสืบชนะ</li>
             <li>ถ้าผิด เสีย Badge และเดาไม่ได้อีก แต่ยังคุย/นำเสนอได้</li>
@@ -478,6 +543,8 @@
           <p class="small"><a href="https://www.rulespal.com/deception-murder-hong-kong/rulebook">RulesPal rulebook</a></p>
           <p class="small"><a href="https://www.ultraboardgames.com/deception-murder-in-hong-kong/game-rules.php">UltraBoardGames rules</a></p>
           <p class="small"><a href="https://cdn.1j1ju.com/medias/1c/e3/c9-deception-murder-in-hong-kong-rulebook.pdf">Rulebook PDF via 1jour-1jeu</a></p>
+          <p class="small"><a href="https://www.gen42.com/product/deception-mhk/">Gen42 product/component page</a></p>
+          <p class="small"><a href="https://boardgamegeek.com/boardgame/156129/deception-murder-in-hong-kong/images">BoardGameGeek image gallery</a></p>
         </div>
       </div>
     </section>
