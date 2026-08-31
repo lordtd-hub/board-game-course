@@ -267,6 +267,53 @@
     },
     {
       "week": 6,
+      "chapter": "ข้อมูลลับ ความน่าเชื่อถือ และการตัดสินใจเป็นกลุ่ม",
+      "englishTitle": "Hidden Roles, Credible Communication, and Group Decision",
+      "sourceFiles": [
+        "chapters/ch02.tex",
+        "chapters/ch03.tex",
+        "chapters/ch08.tex"
+      ],
+      "games": [
+        "The Resistance: Avalon"
+      ],
+      "learningOutcomes": [
+        "แยกข้อมูลที่รู้จริง คำอ้าง และหลักฐานจากพฤติกรรมบนโต๊ะได้",
+        "อธิบาย hidden roles, asymmetric information, cheap talk และ credible communication ผ่าน Avalon ได้",
+        "วิเคราะห์ vote pattern และผล Quest เพื่อประเมินความน่าเชื่อถือของผู้เล่นได้",
+        "อธิบายปัญหา Merlin ว่าทำไมคนที่รู้มากที่สุดจึงพูดตรงทั้งหมดไม่ได้"
+      ],
+      "coreConcepts": [
+        "hidden roles",
+        "asymmetric information",
+        "cheap talk",
+        "credible communication",
+        "vote pattern",
+        "collective decision",
+        "strategic ambiguity",
+        "signaling"
+      ],
+      "playFirstFlow": [
+        "ทวนกติกา Avalon แบบสั้นและตั้งเกมด้วย Merlin กับ Assassin เท่านั้น",
+        "demo หนึ่ง Quest ให้เห็นความต่างระหว่างการโหวตทีมกับการส่งภารกิจ",
+        "เล่นจริง 1-2 รอบ โดยให้ผู้เรียนจับหนึ่งจังหวะที่ความเชื่อใจเปลี่ยน",
+        "debrief ว่าข้อมูลใดเป็นหลักฐาน ข้อมูลใดเป็นคำอ้าง และเสียงโหวตช่วยหรือหลอกเราอย่างไร"
+      ],
+      "interactiveHtmlIdeas": [
+        "Avalon teach-to-play deck",
+        "Vote pattern discussion prompt",
+        "Claim vs evidence credibility board",
+        "Avalon post-play reflection worksheet"
+      ],
+      "worksheet": "game-observation",
+      "submission": {
+        "type": "post-play-reflection",
+        "title": "Avalon Trust and Evidence Reflection",
+        "prompt": "เลือกจังหวะหนึ่งจาก Avalon แล้วอธิบายว่าคุณใช้ข้อมูลลับ คำอ้าง หลักฐาน หรือเสียงโหวตอย่างไรในการตัดสินใจ"
+      }
+    },
+    {
+      "week": 7,
       "chapter": "การบริหารทรัพยากร",
       "englishTitle": "Resource Management",
       "sourceFiles": [
@@ -312,7 +359,7 @@
       }
     },
     {
-      "week": 7,
+      "week": 8,
       "chapter": "กลยุทธ์การวางคนงาน",
       "englishTitle": "Worker Placement Strategy",
       "sourceFiles": [
@@ -359,7 +406,7 @@
       }
     },
     {
-      "week": 8,
+      "week": 9,
       "chapter": "กลยุทธ์เศรษฐกิจและการแข่งขัน",
       "englishTitle": "Economic and Competitive Strategy",
       "sourceFiles": [
@@ -406,7 +453,7 @@
       }
     },
     {
-      "week": 9,
+      "week": 10,
       "chapter": "แนวคิด Game Theory",
       "englishTitle": "Game Theory Concepts",
       "sourceFiles": [
@@ -452,7 +499,7 @@
       }
     },
     {
-      "week": 10,
+      "week": 11,
       "chapter": "กลยุทธ์เชิงพื้นที่",
       "englishTitle": "Spatial Strategy",
       "sourceFiles": [
@@ -498,7 +545,7 @@
       }
     },
     {
-      "week": 11,
+      "week": 12,
       "chapter": "กลยุทธ์เชิงปรับตัว",
       "englishTitle": "Adaptive Strategy",
       "sourceFiles": [
@@ -546,7 +593,7 @@
       }
     },
     {
-      "week": 12,
+      "week": 13,
       "chapter": "ระบบกลยุทธ์ซับซ้อน",
       "englishTitle": "Complex Adaptive Systems",
       "sourceFiles": [
@@ -592,7 +639,7 @@
       }
     },
     {
-      "week": 13,
+      "week": 14,
       "chapter": "การวิเคราะห์และประยุกต์ใช้กลยุทธ์",
       "englishTitle": "Strategic Analysis and Application",
       "sourceFiles": [

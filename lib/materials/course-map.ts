@@ -187,6 +187,42 @@ export const materialWeeks: MaterialWeek[] = [
   },
   {
     week: 6,
+    title: "ข้อมูลลับ ความน่าเชื่อถือ และการตัดสินใจเป็นกลุ่ม",
+    englishTitle: "Hidden Roles, Credible Communication, and Group Decision",
+    chapterSource: "chapters/ch02.tex, chapters/ch03.tex, chapters/ch08.tex",
+    games: ["The Resistance: Avalon"],
+    learningOutcomes: ["แยกข้อมูลที่รู้จริง คำอ้าง และหลักฐานจากพฤติกรรมบนโต๊ะได้", "อธิบาย hidden roles, asymmetric information, cheap talk และ credible communication ผ่าน Avalon ได้", "วิเคราะห์ vote pattern และผล Quest เพื่อประเมินความน่าเชื่อถือของผู้เล่นได้"],
+    concepts: ["hidden roles", "asymmetric information", "cheap talk", "credible communication", "vote pattern", "collective decision", "strategic ambiguity"],
+    classFlow: defaultClassFlow,
+    teachToPlay: [
+      {
+        game: "Avalon",
+        goal: "ฝ่ายดีต้องทำ Quest สำเร็จ 3 ครั้งและปกป้อง Merlin ส่วนฝ่ายร้ายต้องทำ Quest fail หรือให้ Assassin ทาย Merlin ถูก",
+        turnLoop: ["Leader เสนอทีม", "ทุกคนโหวต Approve/Reject", "ทีมที่ผ่านโหวตส่ง Success/Fail", "เปิดผล Quest แล้วคุยจากหลักฐานใหม่"],
+        firstDecisions: ["ควร Approve ทีมนี้หรือไม่", "คำพูดไหนมีหลักฐานรองรับ", "ผล Quest เปลี่ยนความเชื่อใจอย่างไร", "ถ้ารู้ข้อมูลมากควรพูดแค่ไหนไม่ให้เปิดตัว"],
+        doNotWorryYet: ["บทบาทเสริมทุกตัว", "meta reading ขั้นสูง", "การจับผิดจากน้ำเสียงล้วน ๆ"],
+        playNowPrompt: "เริ่มด้วย Merlin, Assassin, Loyal Servant และ Minion เท่านั้น แล้วเล่น 1-2 รอบพร้อมจด vote pattern สำคัญ",
+        debriefPrompt: "จังหวะไหนที่คำพูด หลักฐาน หรือเสียงโหวตทำให้คุณเปลี่ยนความเชื่อใจ"
+      }
+    ],
+    conceptBlocks: [
+      { title: "Hidden Roles", body: "ผู้เล่นบางคนรู้ข้อมูลที่คนอื่นไม่รู้ตั้งแต่เริ่ม เกมจึงไม่ได้เริ่มจากข้อมูลเท่ากัน" },
+      { title: "Credible Communication", body: "คำพูดน่าเชื่อขึ้นเมื่อผูกกับหลักฐานบนโต๊ะ เสียงโหวต หรือความเสี่ยงที่ผู้พูดยอมรับ" },
+      { title: "Strategic Ambiguity", body: "บางครั้งคนที่รู้ความจริงต้องพูดไม่หมด เพื่อช่วยทีมโดยไม่เปิดเผยตัวเอง" }
+    ],
+    activities: [
+      { id: "avalon-teach", title: "Avalon teach-to-play deck", purpose: "ให้ผู้เล่นใหม่เริ่มเล่นรอบแรกได้มั่นใจ", kind: "slides" },
+      { id: "vote-pattern", title: "Vote pattern prompt", purpose: "อ่านเสียงโหวตเป็นข้อมูลเปิดที่ใช้คุยต่อได้", kind: "checkpoint" },
+      { id: "claim-evidence", title: "Claim vs evidence board", purpose: "แยกคำอ้างออกจากหลักฐานที่ตรวจตามได้", kind: "prompt" }
+    ],
+    worksheet: "Game Observation Worksheet",
+    submissionTitle: "Avalon Trust and Evidence Reflection",
+    submissionPrompt: "เลือกจังหวะหนึ่งจาก Avalon แล้วอธิบายว่าคุณใช้ข้อมูลลับ คำอ้าง หลักฐาน หรือเสียงโหวตอย่างไรในการตัดสินใจ",
+    exitTicket: { title: "Avalon Trust and Evidence Reflection", prompt: "จังหวะใดทำให้คุณเปลี่ยนความเชื่อใจผู้เล่นคนหนึ่ง และเพราะอะไร" },
+    status: "complete"
+  },
+  {
+    week: 7,
     title: "การบริหารทรัพยากร",
     englishTitle: "Resource Management",
     chapterSource: "chapters/ch05.tex",
@@ -208,7 +244,7 @@ export const materialWeeks: MaterialWeek[] = [
     status: "placeholder"
   },
   {
-    week: 7,
+    week: 8,
     title: "กลยุทธ์การวาง Worker",
     englishTitle: "Worker Placement and Scheduling Strategy",
     chapterSource: "chapters/ch06.tex",
@@ -230,7 +266,7 @@ export const materialWeeks: MaterialWeek[] = [
     status: "placeholder"
   },
   {
-    week: 8,
+    week: 9,
     title: "กลยุทธ์เศรษฐกิจและการแข่งขัน",
     englishTitle: "Economic Strategy and Competition",
     chapterSource: "chapters/ch07.tex",
@@ -252,7 +288,7 @@ export const materialWeeks: MaterialWeek[] = [
     status: "placeholder"
   },
   {
-    week: 9,
+    week: 10,
     title: "แนวคิด Game Theory",
     englishTitle: "Game Theory Concepts",
     chapterSource: "chapters/ch08.tex",
@@ -274,7 +310,7 @@ export const materialWeeks: MaterialWeek[] = [
     status: "placeholder"
   },
   {
-    week: 10,
+    week: 11,
     title: "กลยุทธ์เชิงพื้นที่",
     englishTitle: "Spatial Strategy",
     chapterSource: "chapters/ch09.tex",
@@ -296,7 +332,7 @@ export const materialWeeks: MaterialWeek[] = [
     status: "placeholder"
   },
   {
-    week: 11,
+    week: 12,
     title: "กลยุทธ์เชิงปรับตัว",
     englishTitle: "Adaptive Strategy",
     chapterSource: "chapters/ch10.tex",
@@ -318,7 +354,7 @@ export const materialWeeks: MaterialWeek[] = [
     status: "placeholder"
   },
   {
-    week: 12,
+    week: 13,
     title: "ระบบกลยุทธ์ซับซ้อน",
     englishTitle: "Complex Adaptive Systems",
     chapterSource: "chapters/ch11.tex",
@@ -340,7 +376,7 @@ export const materialWeeks: MaterialWeek[] = [
     status: "placeholder"
   },
   {
-    week: 13,
+    week: 14,
     title: "การวิเคราะห์และประยุกต์ใช้กลยุทธ์",
     englishTitle: "Strategic Analysis and Application",
     chapterSource: "chapters/ch12.tex",
