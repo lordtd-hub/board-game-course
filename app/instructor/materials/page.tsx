@@ -22,7 +22,7 @@ export default async function InstructorMaterialsPage() {
         <div>
           <p className="badge">Instructor</p>
           <h1>Materials dashboard</h1>
-          <p className="muted">เปิด preview สื่อรายสัปดาห์และดู completion ของ exit ticket เบื้องต้น</p>
+          <p className="muted">ดูตัวอย่างสื่อรายสัปดาห์และสถานะการส่งงานสะท้อนผลท้ายคาบ</p>
         </div>
         <Link className="button" href="/materials/week/1">เปิด Week 1</Link>
       </section>
@@ -55,7 +55,7 @@ export default async function InstructorMaterialsPage() {
           </table>
         </TableWrap>
       ) : (
-        <EmptyState title="ยังไม่มี section" detail="ต้องผูกบัญชีอาจารย์กับ section ก่อนจึงจะเห็น dashboard ของสื่อ" />
+        <EmptyState title="ยังไม่มีกลุ่มเรียน" detail="ต้องผูกบัญชีอาจารย์กับกลุ่มเรียนก่อน จึงจะดูภาพรวมการใช้สื่อได้" />
       )}
 
       <TableWrap>

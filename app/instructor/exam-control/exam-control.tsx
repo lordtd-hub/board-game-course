@@ -115,7 +115,7 @@ export function ExamControl() {
         <section className="hero">
           <span className="badge">Instructor control</span>
           <h1>ควบคุมการสอบ SMA2106</h1>
-          <p>ไม่ต้อง Sign in — ใช้ PIN ผู้ควบคุมที่ตั้งไว้สำหรับอาจารย์</p>
+          <p>ใช้ PIN ผู้ควบคุมที่ตั้งไว้สำหรับอาจารย์</p>
         </section>
         <section className="card stack" style={{ maxWidth: 520 }}>
           <h2>ใส่ PIN ผู้ควบคุม</h2>
@@ -145,7 +145,7 @@ export function ExamControl() {
           <div>
             <span className="badge">1 · ตั้งค่าห้อง</span>
             <h2>เปิดรับนักศึกษาใหม่</h2>
-            <p className="muted">กำหนดช่วงเวลาที่นักศึกษาสามารถเริ่มสอบได้ ผู้ที่เริ่มทันเวลายังทำข้อสอบได้ครบ 60 นาที</p>
+            <p className="muted">กำหนดช่วงเวลาที่นักศึกษาเริ่มสอบได้ ผู้ที่เริ่มทันเวลายังทำข้อสอบได้ครบ 60 นาที</p>
           </div>
           <label className="field">รหัสห้อง 6 หลัก
             <input value={roomCode} onChange={(event) => setRoomCode(event.target.value.replace(/\D/g, "").slice(0, 6))} inputMode="numeric" placeholder="เช่น 482731" autoComplete="off" />

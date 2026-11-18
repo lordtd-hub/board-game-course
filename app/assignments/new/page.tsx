@@ -10,7 +10,7 @@ export default async function NewAssignmentPage() {
     <div className="stack">
       <section>
         <h1>สร้างงานใหม่</h1>
-        <p className="muted">ใช้สำหรับ worksheet, reflection, แบบฝึกหัด หรือรายงานกลุ่ม โดยยังไม่ผูกเนื้อหารายสัปดาห์จริง</p>
+        <p className="muted">ใช้สำหรับใบงาน งานสะท้อนผล แบบฝึกหัด หรือรายงานกลุ่ม โดยยังไม่ผูกกับเนื้อหารายสัปดาห์</p>
       </section>
 
       <form className="card form" action={createAssignmentAction}>
@@ -19,7 +19,7 @@ export default async function NewAssignmentPage() {
             {sections.map((section) => <option key={section.id} value={section.id}>{section.code} · {section.title}</option>)}
           </select>
         </label>
-        <label className="field">Module/week placeholder<input name="moduleNo" placeholder="1 หรือ blank" /></label>
+        <label className="field">หน่วยหรือสัปดาห์ (ยังไม่ผูกกับเนื้อหา)<input name="moduleNo" placeholder="1 หรือเว้นว่าง" /></label>
         <label className="field">ชื่องาน<input name="title" required /></label>
         <label className="field">คำชี้แจง<textarea name="instructions" required rows={6} /></label>
         <label className="field">กำหนดส่ง<input name="dueAt" type="datetime-local" /></label>

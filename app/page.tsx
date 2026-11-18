@@ -21,7 +21,7 @@ export default async function HomePage() {
         <p className="badge">SMA2106</p>
         <h1>ระบบรายวิชาบอร์ดเกม</h1>
         <p className="muted">
-          ห้องเรียนออนไลน์สำหรับสื่อ interactive, งานส่ง, การตรวจงาน และภาพรวม 3 section
+          ห้องเรียนออนไลน์สำหรับสื่อโต้ตอบ การส่งและตรวจงาน และภาพรวม 3 กลุ่มเรียน
           ของรายวิชากลยุทธ์และการคิดเชิงวิเคราะห์ผ่านบอร์ดเกม
         </p>
       </section>
@@ -30,14 +30,14 @@ export default async function HomePage() {
         <section className="card welcome-card stack">
           <div>
             <h2>เข้าสู่ระบบด้วยบัญชี SRU</h2>
-            <p className="muted">ระบบจริงจะใช้ Google account ในโดเมน SRU ตามค่าที่ตั้งไว้</p>
+            <p className="muted">เข้าสู่ระบบด้วยบัญชี Google ในโดเมน SRU ตามที่ระบบกำหนด</p>
           </div>
           <div className="nav">
-            {appConfig.googleOAuthClientId ? <Link className="button" href="/api/auth/google">Sign in with Google</Link> : null}
+            {appConfig.googleOAuthClientId ? <Link className="button" href="/api/auth/google">เข้าสู่ระบบด้วย Google</Link> : null}
             {process.env.NODE_ENV !== "production" ? (
               <>
-                <Link className="button" href="/api/auth/dev?role=student">Dev login: Student</Link>
-                <Link className="button secondary" href="/api/auth/dev?role=instructor">Dev login: Instructor</Link>
+                <Link className="button" href="/api/auth/dev?role=student">เข้าสู่ระบบทดสอบ: นักศึกษา</Link>
+                <Link className="button secondary" href="/api/auth/dev?role=instructor">เข้าสู่ระบบทดสอบ: ผู้สอน</Link>
               </>
             ) : null}
           </div>
@@ -47,10 +47,10 @@ export default async function HomePage() {
           <h2>สวัสดี {user.name}</h2>
           <p className="muted">{user.email} · {user.role}</p>
           <div className="nav">
-            {user.role === "super_admin" ? <Link href="/admin">ไปหน้า Admin</Link> : null}
-            {user.role === "instructor" || user.role === "super_admin" ? <Link href="/instructor">ไปหน้า Instructor</Link> : null}
-            <Link href="/materials">ไปหน้า Materials</Link>
-            <Link href="/student">ไปหน้า Student</Link>
+            {user.role === "super_admin" ? <Link href="/admin">ไปหน้าผู้ดูแล</Link> : null}
+            {user.role === "instructor" || user.role === "super_admin" ? <Link href="/instructor">ไปหน้าผู้สอน</Link> : null}
+            <Link href="/materials">ไปหน้าสื่อการสอน</Link>
+            <Link href="/student">ไปหน้านักศึกษา</Link>
           </div>
         </section>
       )}
@@ -66,7 +66,7 @@ export default async function HomePage() {
         <section className="card">
           <h2>ยังไม่ได้เชื่อม Google Sheet</h2>
           <p className="muted">
-            ตอนนี้ยังดูสื่อ interactive ได้ผ่าน Dev login ก่อน เมื่อต้องใช้ระบบจริงค่อยเติมค่า `.env`
+            ขณะนี้ดูสื่อโต้ตอบได้ผ่านปุ่มเข้าสู่ระบบสำหรับพัฒนา เมื่อต้องใช้ระบบจริง ให้ตั้งค่า `.env`
             และรัน `npm run sheets:init`
           </p>
         </section>

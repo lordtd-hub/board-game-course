@@ -217,11 +217,11 @@
     <section class="hero">
       <h1>ใบงาน Catan: ความน่าจะเป็นและความเสี่ยง</h1>
       <p class="lead">ทำได้ทั้งผู้ที่เล่น Catan แล้วและผู้ที่ยังไม่ได้เล่น โดยเลือกใช้เหตุการณ์จริงหรือกรณีจำลองในใบงาน</p>
-      <p class="hint">ใช้เวลาประมาณ 25-35 นาที ระบบบันทึก draft ไว้ในเครื่องนี้เท่านั้น ไม่มีฐานข้อมูล</p>
+      <p class="hint">ใช้เวลาประมาณ 25-35 นาที ระบบบันทึกแบบร่างไว้ในเครื่องนี้เท่านั้น ไม่มีฐานข้อมูลกลาง</p>
     </section>
 
     <section class="section">
-      <h2>เลือกเส้นทางของคุณ</h2>
+      <h2>เลือกแหล่งข้อมูลที่ใช้ทำใบงาน</h2>
       <p class="section-intro">ทุกคนตอบหัวข้อความรู้ชุดเดียวกัน ต่างกันเฉพาะแหล่งข้อมูลที่ใช้วิเคราะห์</p>
       <div class="grid">
         <label class="field"><span>ชื่อ-สกุล <span class="required-mark">*</span></span><input id="studentName" autocomplete="name" placeholder="กรอกชื่อและนามสกุล" /></label>
@@ -440,11 +440,11 @@
       </div>
       <div class="actions">
         <button type="button" class="primary" id="generate">สร้างข้อความสรุป</button>
-        <button type="button" class="secondary" id="copy">Copy สำหรับ Classroom</button>
+        <button type="button" class="secondary" id="copy">คัดลอกไปส่ง Classroom</button>
         <button type="button" class="secondary" id="selectText">เลือกข้อความทั้งหมด</button>
-        <button type="button" class="danger" id="reset">ล้าง draft</button>
+        <button type="button" class="danger" id="reset">ล้างแบบร่าง</button>
       </div>
-      <p class="status" id="status">ระบบบันทึก draft ไว้ในเครื่องนี้อัตโนมัติ</p>
+      <p class="status" id="status">ระบบบันทึกแบบร่างไว้ในเครื่องนี้อัตโนมัติ</p>
       <textarea class="output" id="output" readonly placeholder="กด “สร้างข้อความสรุป” แล้วตรวจชื่อ ตัวเลข และเหตุผลก่อนส่ง"></textarea>
     </section>
   </main>
@@ -562,10 +562,10 @@
         if (saved) Object.assign(state, saved);
         else if (legacy) {
           Object.assign(state, legacy, { analysisNote: legacy.moment || "" });
-          status.textContent = "นำ draft เดิมมาใช้แล้ว กรุณาเลือกเส้นทางและตอบหัวข้อใหม่เพิ่มเติม";
+          status.textContent = "นำแบบร่างเดิมมาใช้แล้ว เลือกแหล่งข้อมูลและตอบหัวข้อใหม่เพิ่มเติม";
         }
       } catch {
-        status.textContent = "อ่าน draft เดิมไม่ได้ แต่ยังเริ่มทำใบงานใหม่ได้";
+        status.textContent = "อ่านแบบร่างเดิมไม่ได้ แต่ยังเริ่มทำใบงานใหม่ได้";
       }
       textFields.forEach(id => document.getElementById(id).value = state[id] || "");
       document.querySelectorAll(".group[data-group]").forEach(group => {
@@ -647,7 +647,7 @@
         ? "<strong>ตอบครบแล้ว พร้อมสร้างข้อความส่ง</strong>"
         : `<strong>ยังเหลือ ${checks.length - done} หัวข้อ</strong>`;
       document.getElementById("progressHint").textContent = done === checks.length
-        ? "กดสร้างข้อความสรุป แล้วอ่านทวนก่อน Copy"
+        ? "กดสร้างข้อความสรุป แล้วอ่านทวนก่อนคัดลอก"
         : "ระบบนับคำตอบหลัก ข้อมูลโต๊ะและคะแนนเป็นข้อมูลเสริม ไม่บังคับ";
     }
 
@@ -732,7 +732,7 @@
 
     document.getElementById("generate").addEventListener("click", () => {
       output.value = makeOutput();
-      status.textContent = "สร้างข้อความแล้ว กรุณาตรวจชื่อ ตัวเลข และเหตุผลก่อนกด Copy";
+      status.textContent = "สร้างข้อความแล้ว กรุณาตรวจชื่อ ตัวเลข และเหตุผลก่อนคัดลอก";
     });
     document.getElementById("copy").addEventListener("click", async () => {
       if (!output.value) output.value = makeOutput();
@@ -742,7 +742,7 @@
       } catch {
         output.focus();
         output.select();
-        status.textContent = "Copy อัตโนมัติไม่ได้ ระบบเลือกข้อความไว้แล้ว ให้กด Copy จากเครื่อง";
+        status.textContent = "คัดลอกอัตโนมัติไม่ได้ ระบบเลือกข้อความไว้แล้ว ให้ใช้คำสั่งคัดลอกของเครื่อง";
       }
     });
     document.getElementById("selectText").addEventListener("click", () => {
@@ -752,7 +752,7 @@
       status.textContent = "เลือกข้อความทั้งหมดแล้ว";
     });
     document.getElementById("reset").addEventListener("click", () => {
-      if (!confirm("ล้าง draft ในเครื่องนี้และเริ่มใหม่?")) return;
+      if (!confirm("ล้างแบบร่างในเครื่องนี้แล้วเริ่มใหม่ไหม?")) return;
       localStorage.removeItem(STORAGE_KEY);
       Object.keys(state).forEach(key => state[key] = Array.isArray(state[key]) ? [] : "");
       textFields.forEach(id => document.getElementById(id).value = "");
@@ -761,7 +761,7 @@
         button.setAttribute("aria-pressed", "false");
       });
       output.value = "";
-      status.textContent = "ล้าง draft แล้ว";
+      status.textContent = "ล้างแบบร่าง แล้ว";
       updatePathway();
       updateCase();
       Object.keys(correctAnswers).forEach(updateFeedback);

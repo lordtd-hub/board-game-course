@@ -17,11 +17,11 @@ export default async function StudentPage() {
     <div className="stack">
       <section>
         <h1>Student</h1>
-        <p className="muted">ดูงาน ส่งไฟล์ และติดตามคะแนน/feedback ของตัวเอง</p>
+        <p className="muted">ดูงาน ส่งไฟล์ และติดตามคะแนนกับข้อเสนอแนะของตนเอง</p>
       </section>
 
       <form className="card form" action={joinSectionAction}>
-        <h2>เข้าร่วม Section</h2>
+        <h2>เข้าร่วมกลุ่มเรียน</h2>
         <label className="field">Enrollment code<input name="enrollmentCode" placeholder="BG-SEC1" /></label>
         <button type="submit">Join section</button>
       </form>
@@ -44,7 +44,7 @@ export default async function StudentPage() {
           </table>
         </TableWrap>
       ) : (
-        <EmptyState title="ยังไม่อยู่ใน section" detail="กรอก enrollment code หรือให้อาจารย์เพิ่มรายชื่อในหน้า admin" />
+        <EmptyState title="ยังไม่ได้เข้าร่วมกลุ่มเรียน" detail="กรอกรหัสเข้าร่วมกลุ่มเรียน หรือให้อาจารย์เพิ่มรายชื่อในหน้าผู้ดูแล" />
       )}
 
       <div className="stack">

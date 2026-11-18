@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>หมากฮอสไทย Teach-to-Play Interactive Slides</title>
+  <title>สไลด์สอนเล่นหมากฮอสไทยแบบโต้ตอบ</title>
   <style>
     :root {
       --bg: #101423;
@@ -431,6 +431,12 @@
         transform: none;
       }
       .controls span { display: none; }
+      .frame:has(.king-power) .slide { height: auto; padding-top: 90px; padding-bottom: 110px; }
+      .king-power { height: auto; }
+      .frame:has(.king-power) .meta { display: grid; grid-template-columns: 1fr auto; gap: 6px 12px; }
+      .frame:has(.king-power) .meta span { font-size: 12px; }
+      .king-power .prompt { margin: 16px 0 8px; }
+      .king-power .source { font-size: 14px; line-height: 1.5; }
     }
   </style>
 </head>
@@ -439,7 +445,7 @@
     <section class="frame">
       <div class="progress" id="progress"></div>
       <div class="meta">
-        <span>หมากฮอสไทย Teach-to-Play</span>
+        <span>สไลด์สอนเล่นหมากฮอสไทย</span>
         <span id="count">1/12</span>
         <span id="minutes">4 นาที</span>
         <span>รวม 52 นาที + เล่นจริง</span>
@@ -448,11 +454,11 @@
       <aside class="notes" id="notes" hidden></aside>
     </section>
     <nav class="controls">
-      <button class="secondary" id="back">Back</button>
-      <button class="secondary" id="noteToggle">Notes</button>
-      <button class="secondary" id="full">Full screen</button>
+      <button class="secondary" id="back">ก่อนหน้า</button>
+      <button class="secondary" id="noteToggle">บันทึกผู้สอน</button>
+      <button class="secondary" id="full">เต็มจอ</button>
       <span id="elapsed">0 นาที / 52 นาที</span>
-      <button id="next">Next</button>
+      <button id="next">ถัดไป</button>
     </nav>
   </main>
 
@@ -481,7 +487,7 @@
       chain: "เล่นช้า ๆ ให้เห็นว่าตัวเดิมต้องกินต่อจนหมดทาง",
       king: "ใช้คำว่า เข้าฮอส/หงาย ให้ตรงกับภาษาที่นักศึกษาคุ้น",
       kingPower: "เทียบหมากธรรมดากับฮอสเพื่อให้เห็นความสำคัญของแถวสุดท้าย",
-      quiz1: "ให้ตอบก่อนเฉลย เพื่อจับ misconception เรื่องถอยหลังและบังคับกิน",
+      quiz1: "ให้ตอบก่อนเฉลย เพื่อดูความเข้าใจคลาดเคลื่อน เรื่องถอยหลังและบังคับกิน",
       quiz2: "เช็กก่อนปล่อยเล่นจริง"
     };
 
@@ -617,7 +623,7 @@
     }
 
     function kingPowerSlide() {
-      return `<div class="layout split"><div><p class="eyebrow">King Power</p><h2>ฮอสเดินไกลตามทแยงได้ทั้ง 4 ทิศ</h2><div class="three-grid"><div class="rule-card"><strong>เดินไกล</strong><span>ไม่จำกัด 1 ช่องเหมือนหมากธรรมดา</span></div><div class="rule-card"><strong>ถอยได้</strong><span>เดินหน้าและถอยหลังตามทแยง</span></div><div class="rule-card"><strong>กินหลายทาง</strong><span>เลือกเส้นทางกินที่ดีที่สุดได้</span></div></div></div>${board({ pieces: { "4-3": {side:"light", king:true, mark:true}, "2-1": {side:"dark"}, "2-5": {side:"dark"}, "6-1": {side:"dark"}, "6-5": {side:"dark"} }, hints: ["0-7", "1-0", "1-6", "7-0", "7-6"], captures: ["2-1", "2-5", "6-1", "6-5"] })}</div>`;
+      return `<div class="layout split king-power"><div><p class="eyebrow">King Power</p><h2>ฮอสเดินไกลตามทแยงได้ทั้ง 4 ทิศ</h2><div class="three-grid"><div class="rule-card"><strong>เดินไกล</strong><span>ไม่จำกัด 1 ช่องเหมือนหมากธรรมดา</span></div><div class="rule-card"><strong>ถอยได้</strong><span>เดินหน้าและถอยหลังตามทแยง</span></div><div class="rule-card"><strong>กินหลายทาง</strong><span>เลือกเส้นทางกินที่ดีที่สุดได้</span></div></div><p class="prompt">เมื่อกิน ต้องลงช่องว่างที่ติดกับด้านหลังตัวที่ถูกกิน จุดบนกระดานแสดงช่องลงของการกินครั้งแรกในแต่ละทิศ</p><p class="source">อ้างอิง: <a href="https://thaisports.org/makrosh-rules/" target="_blank" rel="noopener noreferrer">กติกาหมากฮอสไทย สมาคมกีฬาไทยฯ พ.ศ. 2561 ข้อ ก3.2 หน้า 3</a></p></div>${board({ pieces: { "4-3": {side:"light", king:true, mark:true}, "2-1": {side:"dark"}, "2-5": {side:"dark"}, "6-1": {side:"dark"}, "6-5": {side:"dark"} }, hints: ["1-0", "1-6", "7-0", "7-6"], captures: ["2-1", "2-5", "6-1", "6-5"] })}</div>`;
     }
 
     function winSlide() {

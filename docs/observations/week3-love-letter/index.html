@@ -213,8 +213,8 @@
   <main class="shell">
     <section class="hero">
       <h1>ใบงานหลังเล่น Love Letter</h1>
-      <p class="lead">เลือกคำตอบที่ตรงกับประสบการณ์ของคุณ แล้วเว็บจะเรียบเรียงเป็นข้อความภาษาไทยให้กด Copy ไปส่ง Google Classroom</p>
-      <p class="hint">ข้อมูลเก็บเป็น draft ในเครื่องนี้เท่านั้น ไม่มีฐานข้อมูลและไม่ส่งออกจาก browser</p>
+      <p class="lead">เลือกคำตอบที่ตรงกับประสบการณ์ของคุณ แล้วเว็บจะเรียบเรียงเป็นข้อความภาษาไทยให้คัดลอกไปส่ง Google Classroom</p>
+      <p class="hint">เก็บแบบร่างไว้ในเบราว์เซอร์บนเครื่องนี้เท่านั้น ไม่มีฐานข้อมูลกลางและไม่ส่งข้อมูลออกจากเครื่อง</p>
     </section>
 
     <section class="section">
@@ -228,12 +228,14 @@
       <div class="group" data-group="cards">
         <h3>การ์ดที่คุณจำได้ว่าเคยถือหรือเห็นชัด</h3>
         <div class="option-grid">
+          <button class="option" data-value="Spy">Spy</button>
           <button class="option" data-value="Guard">Guard</button>
           <button class="option" data-value="Priest">Priest</button>
           <button class="option" data-value="Baron">Baron</button>
           <button class="option" data-value="Handmaid">Handmaid</button>
           <button class="option" data-value="Prince">Prince</button>
           <button class="option" data-value="Chancellor">Chancellor</button>
+          <button class="option" data-value="King">King</button>
           <button class="option" data-value="Countess">Countess</button>
           <button class="option" data-value="Princess">Princess</button>
         </div>
@@ -270,7 +272,7 @@
     </section>
 
     <section class="section">
-      <h2>คำพูด การ bluff และการอ่านคน</h2>
+      <h2>คำพูด การลวง และการอ่านผู้เล่น</h2>
       <div class="group" data-group="talkTrust" data-single="true">
         <h3>คำพูดของผู้เล่นในโต๊ะน่าเชื่อแค่ไหน</h3>
         <div class="option-grid">
@@ -298,7 +300,7 @@
           <button class="option" data-value="เปลี่ยนเป้าหมายของ Guard ไม่ทายคนเดิมซ้ำตลอด">เปลี่ยนเป้าหมาย Guard</button>
           <button class="option" data-value="ดูไพ่ที่ออกแล้วก่อนพูดหรือทาย">ดูไพ่ที่ออกแล้วก่อน</button>
           <button class="option" data-value="บางจังหวะจะพูดน้อยลง เพื่อไม่ให้ข้อมูลฟรี">พูดน้อยลงบางจังหวะ</button>
-          <button class="option" data-value="บางจังหวะจะ bluff เพื่อให้คนอื่นอ่านผิด">ลอง bluff ให้มีจังหวะ</button>
+          <button class="option" data-value="บางจังหวะจะ bluff เพื่อให้คนอื่นอ่านผิด">ลองลวงในจังหวะที่เหมาะสม</button>
           <button class="option" data-value="ใช้ Handmaid หรือ Prince เพื่อกันความเสี่ยงมากขึ้น">กันความเสี่ยงมากขึ้น</button>
         </div>
       </div>
@@ -310,9 +312,9 @@
       <h2>สร้างข้อความส่ง Classroom</h2>
       <div class="actions">
         <button class="primary" id="generate">Generate reflection</button>
-        <button class="secondary" id="copy">Copy for Google Classroom</button>
+        <button class="secondary" id="copy">คัดลอกไปส่ง Google Classroom</button>
         <button class="secondary" id="selectText">เลือกข้อความทั้งหมด</button>
-        <button class="danger" id="reset">Reset draft</button>
+        <button class="danger" id="reset">ล้างแบบร่าง</button>
       </div>
       <p class="status" id="status"></p>
       <textarea class="output" id="output" readonly placeholder="กด Generate reflection แล้วข้อความจะปรากฏที่นี่"></textarea>
@@ -447,14 +449,14 @@
 
     document.querySelector("#generate").addEventListener("click", () => {
       output.value = makeReflection();
-      status.textContent = "สร้างข้อความแล้ว ตรวจชื่อและรายละเอียดก่อนกด Copy";
+      status.textContent = "สร้างข้อความแล้ว ตรวจชื่อและรายละเอียดก่อนคัดลอก";
     });
 
     document.querySelector("#copy").addEventListener("click", async () => {
       if (!output.value) output.value = makeReflection();
       try {
         await navigator.clipboard.writeText(output.value);
-        status.textContent = "Copy แล้ว นำไปวางใน Google Classroom ได้เลย";
+        status.textContent = "คัดลอกแล้ว นำไปวางใน Google Classroom ได้";
       } catch (error) {
         output.focus();
         output.select();
@@ -466,7 +468,7 @@
       if (!output.value) output.value = makeReflection();
       output.focus();
       output.select();
-      status.textContent = "เลือกข้อความทั้งหมดแล้ว กด Copy จากเครื่องได้เลย";
+      status.textContent = "เลือกข้อความทั้งหมดแล้ว ใช้คำสั่งคัดลอกของเครื่องได้";
     });
 
     document.querySelector("#reset").addEventListener("click", () => {
@@ -477,7 +479,7 @@
       fields.forEach((id) => { document.querySelector(`#${id}`).value = ""; });
       document.querySelectorAll(".option").forEach((button) => button.classList.remove("active"));
       output.value = "";
-      status.textContent = "ล้าง draft ในเครื่องนี้แล้ว";
+      status.textContent = "ล้างแบบร่างในเครื่องนี้แล้ว";
     });
 
     loadDraft();

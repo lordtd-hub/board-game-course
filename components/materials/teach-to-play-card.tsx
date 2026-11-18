@@ -9,13 +9,13 @@ export function TeachToPlayCard({ card }: { card: TeachToPlayCard }) {
       </div>
       <div className="teach-grid">
         <div>
-          <h4>Turn loop</h4>
+          <h4>ลำดับการเล่นแต่ละตา</h4>
           <ol>
             {card.turnLoop.map((item) => <li key={item}>{item}</li>)}
           </ol>
         </div>
         <div>
-          <h4>First 3 decisions</h4>
+          <h4>การตัดสินใจ 3 เรื่องแรก</h4>
           <ul>
             {card.firstDecisions.map((item) => <li key={item}>{item}</li>)}
           </ul>
@@ -28,10 +28,10 @@ export function TeachToPlayCard({ card }: { card: TeachToPlayCard }) {
         </div>
       </div>
       <div className="prompt-strip">
-        <strong>Play now:</strong> {card.playNowPrompt}
+        <strong>เริ่มเล่น:</strong> {card.playNowPrompt}
       </div>
       <div className="prompt-strip secondary">
-        <strong>Debrief:</strong> {card.debriefPrompt}
+        <strong>อภิปรายหลังเล่น:</strong> {card.debriefPrompt}
       </div>
     </article>
   );

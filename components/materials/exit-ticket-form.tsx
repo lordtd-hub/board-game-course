@@ -14,7 +14,7 @@ export function ExitTicketForm({ week, sections, defaultValue = "", completed = 
     return (
       <section className="card">
         <h2>Exit ticket</h2>
-        <p className="muted">เข้าร่วม section ก่อน จึงจะส่ง exit ticket ได้</p>
+        <p className="muted">เข้าร่วมกลุ่มเรียนก่อน จึงจะส่งงานสะท้อนผลท้ายคาบได้</p>
       </section>
     );
   }
@@ -36,7 +36,7 @@ export function ExitTicketForm({ week, sections, defaultValue = "", completed = 
         Reflection
         <textarea name="exitTicket" rows={5} required minLength={20} defaultValue={defaultValue} />
       </label>
-      <button type="submit">{completed ? "อัปเดต exit ticket" : "ส่ง exit ticket"}</button>
+      <button type="submit">{completed ? "แก้ไขงานสะท้อนผลท้ายคาบ" : "ส่งงานสะท้อนผลท้ายคาบ"}</button>
     </form>
   );
 }

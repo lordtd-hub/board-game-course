@@ -10,7 +10,7 @@ export function LessonShell({ week, children }: { week: MaterialWeek; children: 
           <p className="muted">{week.englishTitle}</p>
         </div>
         <div className="lesson-status">
-          <span>{week.status === "complete" ? "Interactive lesson" : "Lesson outline"}</span>
+          <span>{week.status === "complete" ? "บทเรียนแบบโต้ตอบ" : "โครงบทเรียน"}</span>
         </div>
       </section>
 

@@ -252,7 +252,7 @@ export function MobileExam({ sections }: { sections: SectionOption[] }) {
       setPhase("submitted");
     } catch (error) {
       if (await reconcileStatus() && ["submitted", "disqualified"].includes(phaseRef.current)) return;
-      setMessage(error instanceof Error ? error.message : "ส่งข้อสอบไม่สำเร็จ โปรดลองอีกครั้ง");
+      setMessage(error instanceof Error ? error.message : "ส่งข้อสอบไม่สำเร็จ ลองส่งอีกครั้ง");
       phaseRef.current = "error";
       setPhase("error");
     }
@@ -317,11 +317,11 @@ export function MobileExam({ sections }: { sections: SectionOption[] }) {
         method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(entry)
       });
       const data = await responseData(response);
-      if (!response.ok) throw new Error(String(data.error || "ไม่สามารถเริ่มสอบได้"));
+      if (!response.ok) throw new Error(String(data.error || "เริ่มสอบไม่ได้"));
       hydrateSession(data as SessionInfo);
       answersRef.current = Array(TOTAL).fill(""); currentRef.current = 0; pendingEventsRef.current = [];
       setAnswers(answersRef.current); setCurrent(0); setMessage(""); phaseRef.current = "active"; setPhase("active");
-    } catch (error) { setMessage(error instanceof Error ? error.message : "ไม่สามารถเริ่มสอบได้"); }
+    } catch (error) { setMessage(error instanceof Error ? error.message : "เริ่มสอบไม่ได้"); }
     finally { startingRef.current = false; }
   }
 
@@ -341,7 +341,7 @@ export function MobileExam({ sections }: { sections: SectionOption[] }) {
         <form onSubmit={startExam} className={styles.form}>
           <label>รหัสนักศึกษา<input value={entry.studentId} onChange={(e) => setEntry({ ...entry, studentId: e.target.value })} inputMode="numeric" autoComplete="off" required /></label>
           <label>ชื่อ-นามสกุล<input value={entry.studentName} onChange={(e) => setEntry({ ...entry, studentName: e.target.value })} autoComplete="off" required /></label>
-          <label>Section<select value={entry.sectionId} onChange={(e) => setEntry({ ...entry, sectionId: e.target.value })} required><option value="">เลือก Section</option>{sections.map((section) => <option value={section.id} key={section.id}>{section.label}</option>)}</select></label>
+          <label>กลุ่มเรียน<select value={entry.sectionId} onChange={(e) => setEntry({ ...entry, sectionId: e.target.value })} required><option value="">เลือกกลุ่มเรียน</option>{sections.map((section) => <option value={section.id} key={section.id}>{section.label}</option>)}</select></label>
           <label>รหัสห้องสอบ 6 หลัก<input value={entry.roomCode} onChange={(e) => setEntry({ ...entry, roomCode: e.target.value.replace(/\D/g, "").slice(0, 6) })} inputMode="numeric" autoComplete="off" required /></label>
           <fieldset className={styles.checklist}><legend>ยืนยันก่อนเริ่มสอบ</legend>{[
             "เปิดโหมดห้ามรบกวนและปิดการแจ้งเตือนแล้ว", "ปิดการล็อกหน้าจออัตโนมัติและปิดแอปอื่นแล้ว",
@@ -349,15 +349,15 @@ export function MobileExam({ sections }: { sections: SectionOption[] }) {
           ].map((label, index) => <label key={label}><input type="checkbox" checked={checks[index]} onChange={(e) => setChecks(checks.map((value, item) => item === index ? e.target.checked : value))}/><span>{label}</span></label>)}</fieldset>
           {message ? <p className={styles.errorText} role="alert">{message}</p> : null}
           <button className={styles.primary} type="submit" disabled={!sections.length}>ยืนยันและเริ่มจับเวลา 60 นาที</button>
-          {!sections.length ? <p className={styles.errorText}>ยังไม่มี Section ที่เปิดใช้งาน กรุณาแจ้งผู้คุมสอบ</p> : null}
+          {!sections.length ? <p className={styles.errorText}>ยังไม่มีกลุ่มเรียนที่เปิดใช้งาน กรุณาแจ้งผู้คุมสอบ</p> : null}
         </form>
       </section>
     </div>
   );
 
-  if (phase === "warning") return <div className={styles.blockScreen}><div className={styles.warningIcon}>⚠</div><h1>คำเตือนครั้งที่ 1</h1><p>ระบบตรวจพบว่าคุณออกจากหน้าสอบหรือสลับไปยังแอปอื่นแล้ว</p><strong>หากเกิดขึ้นอีกครั้ง ระบบจะยุติการสอบและให้คะแนน 0 ทันที</strong><p>เวลาสอบยังคงเดินต่อ</p><button className={styles.warningButton} onClick={() => { phaseRef.current = "active"; setPhase("active"); }}>ข้าพเจ้ารับทราบและกลับเข้าสอบ</button></div>;
+  if (phase === "warning") return <div className={styles.blockScreen}><div className={styles.warningIcon}>⚠</div><h1>คำเตือนครั้งที่ 1</h1><p>ระบบตรวจพบการออกจากหน้าสอบหรือสลับไปยังแอปอื่นแล้ว</p><strong>หากเกิดขึ้นอีกครั้ง ระบบจะยุติการสอบและให้คะแนน 0 ทันที</strong><p>เวลาสอบยังคงเดินต่อ</p><button className={styles.warningButton} onClick={() => { phaseRef.current = "active"; setPhase("active"); }}>รับทราบและกลับเข้าสอบ</button></div>;
   if (phase === "submitting") return <div className={styles.blockScreen}><div className={styles.warningIcon}>…</div><h1>กำลังส่งคำตอบ</h1><strong>กรุณารอจนกว่าหน้าจอจะแจ้งว่า “ส่งข้อสอบเรียบร้อย” และแสดงเลขรับผล</strong><p>หากนักศึกษาหลายคนกดส่งพร้อมกัน ระบบอาจใช้เวลาประมาณ 1–2 นาที</p><p>ห้ามปิดหน้านี้ ห้ามรีเฟรช และห้ามสลับไปแอปอื่นระหว่างรอ</p></div>;
-  if (phase === "disqualified") return <div className={`${styles.blockScreen} ${styles.disqualified}`}><div className={styles.warningIcon}>×</div><h1>การสอบถูกยุติ</h1><p>ระบบตรวจพบการออกจากหน้าสอบเป็นครั้งที่ 2</p><strong>สถานะ: ทุจริต · คะแนน 0</strong><p>โปรดยกมือและติดต่อผู้คุมสอบโดยไม่ปิดหน้านี้</p></div>;
+  if (phase === "disqualified") return <div className={`${styles.blockScreen} ${styles.disqualified}`}><div className={styles.warningIcon}>×</div><h1>ระบบยุติการสอบแล้ว</h1><p>ระบบตรวจพบการออกจากหน้าสอบเป็นครั้งที่ 2</p><strong>สถานะ: ทุจริต · คะแนน 0</strong><p>โปรดยกมือและติดต่อผู้คุมสอบโดยไม่ปิดหน้านี้</p></div>;
   if (phase === "submitted") return <div className={styles.blockScreen}><div className={styles.successIcon}>✓</div><h1>ส่งข้อสอบเรียบร้อย</h1><p>ระบบบันทึกคำตอบแล้ว กรุณาแสดงหน้านี้ต่อผู้คุมสอบก่อนปิด</p><div className={styles.receipt}>{session?.receipt || "กำลังออกเลขรับผล"}</div><p>ระบบจะไม่แสดงคะแนนหรือเฉลยในขณะนี้</p></div>;
 
   return (

@@ -49,8 +49,8 @@ export default async function MaterialWeekPage({ params }: { params: Promise<{ w
       <ConceptQuickRead blocks={week.conceptBlocks} />
 
       <section className="activity-panel">
-        <p className="badge">Coming next</p>
-        <h2>Interactive activities for Week {week.week}</h2>
+        <p className="badge">กิจกรรมที่วางแผนไว้</p>
+        <h2>กิจกรรมโต้ตอบสัปดาห์ที่ {week.week}</h2>
         <div className="concept-grid">
           {week.activities.map((activity) => (
             <article className="concept-card" key={activity.id}>
@@ -63,7 +63,7 @@ export default async function MaterialWeekPage({ params }: { params: Promise<{ w
 
       <section className="lesson-band">
         <div>
-          <h2>Worksheet</h2>
+          <h2>ใบงาน</h2>
           <p>{week.worksheet}</p>
         </div>
         <div>
@@ -81,8 +81,8 @@ export default async function MaterialWeekPage({ params }: { params: Promise<{ w
         />
       ) : (
         <section className="card">
-          <h2>{user ? "Instructor preview" : "Public preview"}</h2>
-          <p className="muted">ดู outline ได้ทันที ถ้าต้องการส่ง exit ticket ให้ login เป็นนักศึกษา</p>
+          <h2>{user ? "ตัวอย่างสำหรับผู้สอน" : "ตัวอย่างสำหรับผู้เข้าชม"}</h2>
+          <p className="muted">ดูโครงบทเรียนได้ทันที หากต้องการส่งงานสะท้อนผลท้ายคาบ ให้เข้าสู่ระบบด้วยบัญชีนักศึกษา</p>
         </section>
       )}
     </LessonShell>

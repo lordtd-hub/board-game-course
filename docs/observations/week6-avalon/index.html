@@ -155,12 +155,12 @@
     <section class="hero">
       <h1>ใบงาน Week 6: Avalon</h1>
       <p class="lead">บันทึกหลังเล่น Avalon โดยเชื่อมประสบการณ์กับข้อมูลลับ ความน่าเชื่อถือ การโหวต และการตัดสินใจเป็นกลุ่ม</p>
-      <p class="hint">เลือกคำตอบเป็นหลัก เขียนสั้น ๆ แล้วกดสร้างข้อความเพื่อ copy ไปส่งใน Google Classroom</p>
+      <p class="hint">เลือกคำตอบเป็นหลัก เขียนสั้น ๆ แล้วกดสร้างข้อความเพื่อคัดลอกไปส่ง Google Classroom</p>
     </section>
 
     <section class="section">
       <h2>ข้อมูลพื้นฐาน</h2>
-      <p class="section-intro">ข้อมูลนี้ใช้สร้างข้อความส่งงานเท่านั้น draft จะถูกเก็บไว้ในเครื่องนี้ ไม่มีการส่งข้อมูลออกไปที่ server</p>
+      <p class="section-intro">ข้อมูลนี้ใช้สร้างข้อความส่งงานเท่านั้น เก็บแบบร่างไว้ในเครื่องนี้และไม่ส่งไปยังเซิร์ฟเวอร์</p>
       <div class="grid">
         <label class="field"><span>ชื่อ <span class="required-mark">*</span></span><input id="studentName" autocomplete="name" placeholder="กรอกชื่อ-สกุล" /></label>
         <label class="field"><span>โต๊ะ</span><select id="tableNo"><option>Table 1</option><option>Table 2</option><option>Table 3</option><option>Table 4</option><option>Table 5</option><option>Table 6</option></select></label>
@@ -171,7 +171,7 @@
 
     <section class="section">
       <h2>รอบที่จำได้ที่สุด</h2>
-      <p class="section-intro">เลือกคำตอบหลักในแต่ละหมวด แล้วเลือกเหตุผลประกอบ ระบบจะเรียบเรียงเป็น reflection ให้เป็นภาษาคนอ่านง่าย</p>
+      <p class="section-intro">เลือกคำตอบหลักในแต่ละหมวด แล้วเลือกเหตุผลประกอบ ระบบจะเรียบเรียงคำตอบเป็นข้อความสะท้อนผลที่อ่านเข้าใจง่าย</p>
 
       <div class="group" data-name="trueInfo">
         <h3>ในรอบนั้น ฉันรู้อะไรจริงบ้าง?</h3>
@@ -215,7 +215,7 @@
           <button class="option" data-value="ช่วยจับจังหวะที่คนโหวตสวนเหตุผลของตัวเอง">เห็นคนโหวตสวนเหตุผล</button>
           <button class="option" data-value="ยังอ่านยาก เพราะคนดีและคนร้ายอาจโหวตเหมือนกันได้">ยังอ่านยาก</button>
         </div>
-        <label class="field"><span>เหตุผลประกอบ</span><select id="voteReason"><option>เพราะ vote pattern เป็นข้อมูลเปิดที่ทุกคนเห็นและย้อนคุยได้</option><option>เพราะการโหวตทีมที่มีปัญหาอาจบอกแรงจูงใจบางอย่าง</option><option>เพราะคนดีอาจโหวตผิดจากข้อมูลไม่พอ จึงสรุปเร็วเกินไปไม่ได้</option><option>เพราะฝ่ายร้ายสามารถโหวตให้ดูเหมือนคนดีได้</option></select></label>
+        <label class="field"><span>เหตุผลประกอบ</span><select id="voteReason"><option>เพราะรูปแบบการโหวตเป็นข้อมูลเปิดที่ทุกคนเห็นและย้อนคุยได้</option><option>เพราะการโหวตทีมที่มีปัญหาอาจบอกแรงจูงใจบางอย่าง</option><option>เพราะคนดีอาจโหวตผิดจากข้อมูลไม่พอ จึงสรุปเร็วเกินไปไม่ได้</option><option>เพราะฝ่ายร้ายสามารถโหวตให้ดูเหมือนคนดีได้</option></select></label>
       </div>
 
       <div class="group" data-name="coursePoint">
@@ -238,9 +238,9 @@
       </div>
       <div class="actions">
         <button class="primary" id="generateBtn" type="button">สร้างข้อความส่ง Classroom</button>
-        <button class="secondary" id="copyBtn" type="button">Copy for Google Classroom</button>
+        <button class="secondary" id="copyBtn" type="button">คัดลอกไปส่ง Google Classroom</button>
         <button class="secondary" id="selectBtn" type="button">เลือกข้อความทั้งหมด</button>
-        <button class="danger" id="resetBtn" type="button">Reset draft</button>
+        <button class="danger" id="resetBtn" type="button">ล้างแบบร่าง</button>
       </div>
       <p class="status" id="status"></p>
       <textarea class="output" id="output" readonly placeholder="ข้อความที่สร้างจะอยู่ตรงนี้"></textarea>
@@ -352,7 +352,7 @@
     document.getElementById("generateBtn").addEventListener("click", () => {
       try {
         outputEl.value = buildText();
-        statusEl.textContent = "สร้างข้อความแล้ว ตรวจชื่อและรายละเอียดก่อน copy ส่ง";
+        statusEl.textContent = "สร้างข้อความแล้ว ตรวจชื่อและรายละเอียดก่อนคัดลอกไปส่ง";
         save();
       } catch (error) {
         statusEl.textContent = error.message;
@@ -361,16 +361,16 @@
 
     document.getElementById("copyBtn").addEventListener("click", async () => {
       if (!outputEl.value.trim()) {
-        statusEl.textContent = "กดสร้างข้อความก่อน copy";
+        statusEl.textContent = "กดสร้างข้อความก่อนคัดลอก";
         return;
       }
       try {
         await navigator.clipboard.writeText(outputEl.value);
-        statusEl.textContent = "Copy แล้ว นำไปวางใน Google Classroom ได้เลย";
+        statusEl.textContent = "คัดลอกแล้ว นำไปวางใน Google Classroom ได้";
       } catch (error) {
         outputEl.focus();
         outputEl.select();
-        statusEl.textContent = "Browser ไม่อนุญาตให้ copy อัตโนมัติ เลือกข้อความให้แล้ว กด copy เองได้เลย";
+        statusEl.textContent = "เบราว์เซอร์ไม่อนุญาตให้คัดลอกอัตโนมัติ ระบบเลือกข้อความไว้แล้ว ให้ใช้คำสั่งคัดลอกของเครื่อง";
       }
     });
 
@@ -386,7 +386,7 @@
       document.getElementById("rounds").value = "2 รอบ";
       document.querySelectorAll(".option").forEach((button) => button.classList.remove("active"));
       outputEl.value = "";
-      statusEl.textContent = "ล้าง draft แล้ว";
+      statusEl.textContent = "ล้างแบบร่าง แล้ว";
     });
 
     load();

@@ -38,7 +38,7 @@ export default async function MaterialsPage() {
             <div className="chip-row">
               {week.games.map((game) => <span className="game-chip" key={game}>{game}</span>)}
             </div>
-            <p className="muted">{week.activities.length} activities ยท {week.worksheet}</p>
+            <p className="muted">{week.activities.length} กิจกรรม · {week.worksheet}</p>
             <span className={completedWeeks.has(String(week.week)) ? "status-dot done" : "status-dot"}>
               {completedWeeks.has(String(week.week)) ? "completed" : week.status}
             </span>

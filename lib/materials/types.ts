@@ -17,7 +17,7 @@ export type InteractiveActivity = {
   id: string;
   title: string;
   purpose: string;
-  kind: "sorter" | "canvas" | "timeline" | "prompt" | "placeholder";
+  kind: "sorter" | "canvas" | "timeline" | "prompt" | "slides" | "checkpoint" | "placeholder";
 };
 
 export type ExitTicket = {

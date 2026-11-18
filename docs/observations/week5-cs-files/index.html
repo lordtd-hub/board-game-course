@@ -154,12 +154,12 @@
     <section class="hero">
       <h1>ใบงาน Week 5: C.S. Files</h1>
       <p class="lead">บันทึกหลังเล่นเกมสืบสวน โดยเชื่อมประสบการณ์กับเรื่องข้อมูล หลักฐาน ความน่าเชื่อถือ และทรัพยากรที่ใช้ได้จำกัด</p>
-      <p class="hint">เลือกคำตอบเป็นหลัก เขียนสั้น ๆ แล้วกดสร้างข้อความเพื่อ copy ไปส่งใน Google Classroom</p>
+      <p class="hint">เลือกคำตอบเป็นหลัก เขียนสั้น ๆ แล้วกดสร้างข้อความเพื่อคัดลอกไปส่ง Google Classroom</p>
     </section>
 
     <section class="section">
       <h2>ข้อมูลพื้นฐาน</h2>
-      <p class="section-intro">ข้อมูลนี้ใช้ในข้อความส่งงานเท่านั้น เก็บ draft ไว้ในเครื่องนี้ ไม่มีการส่งข้อมูลออกไปที่ server</p>
+      <p class="section-intro">ข้อมูลนี้ใช้สร้างข้อความส่งงานเท่านั้น เก็บแบบร่างไว้ในเครื่องนี้และไม่ส่งไปยังเซิร์ฟเวอร์</p>
       <div class="grid">
         <label class="field"><span>ชื่อ <span class="required-mark">*</span></span><input id="studentName" autocomplete="name" placeholder="กรอกชื่อ-สกุล" /></label>
         <label class="field"><span>โต๊ะ</span><select id="tableNo"><option>Table 1</option><option>Table 2</option><option>Table 3</option><option>Table 4</option><option>Table 5</option><option>Table 6</option></select></label>
@@ -170,13 +170,13 @@
 
     <section class="section">
       <h2>รอบที่จำได้ที่สุด</h2>
-      <p class="section-intro">เลือกคำตอบหลักในแต่ละหมวด แล้วเลือกเหตุผลประกอบ ระบบจะเรียบเรียงเป็น reflection ให้</p>
+      <p class="section-intro">เลือกคำตอบหลักในแต่ละหมวด แล้วเลือกเหตุผลประกอบ ระบบจะเรียบเรียงคำตอบเป็นข้อความสะท้อนผล</p>
 
       <div class="group" data-name="scarceResource">
         <h3>ทรัพยากรที่ขาดที่สุดในรอบนั้นคืออะไร?</h3>
         <p class="question-note">เลือกสิ่งที่ทำให้การตัดสินใจยากที่สุด</p>
         <div class="option-grid">
-          <button class="option" data-value="เวลาในรอบ discussion">เวลาในรอบ discussion</button>
+          <button class="option" data-value="เวลาในรอบ discussion">เวลาในช่วงอภิปราย</button>
           <button class="option" data-value="เบาะแสจาก Scene tile ที่ยังไม่พอ">เบาะแสจาก Scene tile ที่ยังไม่พอ</button>
           <button class="option" data-value="Badge หรือสิทธิ์เดา 1 ครั้ง">Badge / สิทธิ์เดา 1 ครั้ง</button>
           <button class="option" data-value="ความน่าเชื่อถือของคำพูดในโต๊ะ">ความน่าเชื่อถือของคำพูดในโต๊ะ</button>
@@ -187,19 +187,19 @@
       <div class="group" data-name="decision">
         <h3>จังหวะตัดสินใจสำคัญคืออะไร?</h3>
         <div class="option-grid">
-          <button class="option" data-value="ตัดสินใจใช้ Badge เพื่อ solve">ใช้ Badge เพื่อ solve</button>
-          <button class="option" data-value="ตัดสินใจรอ clue เพิ่มก่อน">รอ clue เพิ่มก่อน</button>
+          <button class="option" data-value="ตัดสินใจใช้ Badge เพื่อ solve">ใช้ Badge เพื่อแจ้งคำตอบปิดคดี</button>
+          <button class="option" data-value="ตัดสินใจรอ clue เพิ่มก่อน">รอเบาะแสเพิ่มก่อน</button>
           <button class="option" data-value="ตัดสินใจเชื่อคำอธิบายของผู้เล่นคนหนึ่ง">เชื่อคำอธิบายของผู้เล่นคนหนึ่ง</button>
           <button class="option" data-value="ตัดสินใจไม่เชื่อคำชี้นำที่ดูไม่มีหลักฐาน">ไม่เชื่อคำชี้นำที่ไม่มีหลักฐาน</button>
         </div>
-        <div class="reason-box"><p>ให้มองว่า decision นี้แลกกับทางเลือกอื่นเสมอ เช่น เดาเร็วขึ้นแต่เสียโอกาสรอข้อมูล หรือรอข้อมูลแต่ปล่อยให้คนร้ายปั่นโต๊ะต่อ</p></div>
+        <div class="reason-box"><p>การตัดสินใจนี้ทำให้เสียโอกาสเลือกทางอื่น เช่น เดาเร็วขึ้นแต่เสียโอกาสรอข้อมูล หรือรอข้อมูลแต่ปล่อยให้คนร้ายปั่นโต๊ะต่อ</p></div>
       </div>
 
       <div class="group" data-name="opportunityCost">
         <h3>ต้นทุนค่าเสียโอกาสของการตัดสินใจนั้นคืออะไร?</h3>
         <div class="option-grid">
           <button class="option" data-value="เสียโอกาสรอ Scene tile รอบถัดไป">เสียโอกาสรอ Scene tile รอบถัดไป</button>
-          <button class="option" data-value="เสียโอกาสฟัง presentation ของคนอื่นให้ครบ">เสียโอกาสฟัง presentation ให้ครบ</button>
+          <button class="option" data-value="เสียโอกาสฟัง presentation ของคนอื่นให้ครบ">เสียโอกาสฟังข้อสันนิษฐานของทุกคนให้ครบ</button>
           <button class="option" data-value="เสีย Badge และไม่สามารถเดาได้อีกถ้าผิด">เสีย Badge ถ้าเดาผิด</button>
           <button class="option" data-value="เสียเวลาและความสนใจไปกับสมมติฐานที่อาจผิด">เสียเวลาไปกับสมมติฐานที่อาจผิด</button>
         </div>
@@ -246,9 +246,9 @@
       <p class="section-intro">ตรวจชื่อและคำตอบให้ครบ แล้วกดสร้างข้อความ</p>
       <div class="actions">
         <button class="primary" id="generate">สร้างข้อความ</button>
-        <button class="secondary" id="copy">Copy for Google Classroom</button>
+        <button class="secondary" id="copy">คัดลอกไปส่ง Google Classroom</button>
         <button class="secondary" id="selectAll">เลือกข้อความทั้งหมด</button>
-        <button class="danger" id="reset">Reset draft</button>
+        <button class="danger" id="reset">ล้างแบบร่าง</button>
       </div>
       <p class="status" id="status"></p>
       <textarea class="output" id="output" readonly placeholder="ข้อความสำหรับส่ง Google Classroom จะแสดงตรงนี้"></textarea>
@@ -347,7 +347,7 @@
         return;
       }
       $("#output").value = buildText(state);
-      $("#status").textContent = "สร้างข้อความแล้ว ตรวจอีกครั้งก่อน copy";
+      $("#status").textContent = "สร้างข้อความแล้ว อ่านทวนก่อนคัดลอก";
       saveDraft();
     });
 
@@ -359,7 +359,7 @@
       } catch {
         $("#output").focus();
         $("#output").select();
-        $("#status").textContent = "เบราว์เซอร์ไม่อนุญาตให้ copy อัตโนมัติ เลือกข้อความให้แล้ว กด copy เองได้เลย";
+        $("#status").textContent = "เบราว์เซอร์ไม่อนุญาตให้คัดลอกอัตโนมัติ ระบบเลือกข้อความไว้แล้ว ให้ใช้คำสั่งคัดลอกของเครื่อง";
       }
     });
 
@@ -371,7 +371,7 @@
     });
 
     $("#reset").addEventListener("click", () => {
-      if (!confirm("ล้าง draft ในเครื่องนี้?")) return;
+      if (!confirm("ล้างแบบร่าง ในเครื่องนี้?")) return;
       localStorage.removeItem(STORAGE_KEY);
       fields.forEach((id) => $(`#${id}`).value = "");
       $("#tableNo").value = "Table 1";
@@ -379,7 +379,7 @@
       $("#role").value = "Investigator";
       document.querySelectorAll(".option").forEach((button) => button.classList.remove("active"));
       $("#output").value = "";
-      $("#status").textContent = "ล้าง draft แล้ว";
+      $("#status").textContent = "ล้างแบบร่าง แล้ว";
     });
 
     loadDraft();

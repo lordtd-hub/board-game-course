@@ -375,8 +375,8 @@
           <h2>หลังจบชุดนี้ นักศึกษาต้องเริ่มเล่นกับเพื่อนได้ทันที</h2>
           <div class="rule-grid">
             <div class="rule-card"><strong>1. ตั้งกระดานได้</strong><p>รู้ตำแหน่งหมาก 4 ตัวแรก และรู้ว่าฝ่ายดำเริ่มก่อน</p></div>
-            <div class="rule-card"><strong>2. หา legal move ได้</strong><p>วางหมากเฉพาะช่องที่หนีบหมากคู่แข่งได้อย่างน้อย 1 แนว</p></div>
-            <div class="rule-card"><strong>3. พลิกหมากถูก</strong><p>พลิกทุกแนวที่ถูกหนีบพร้อมกัน แต่ไม่มี chain reaction</p></div>
+            <div class="rule-card"><strong>2. หา ช่องที่วางหมากได้ ได้</strong><p>วางหมากเฉพาะช่องที่หนีบหมากคู่แข่งได้อย่างน้อย 1 แนว</p></div>
+            <div class="rule-card"><strong>3. พลิกหมากถูก</strong><p>พลิกทุกแนวที่ถูกหนีบพร้อมกัน แต่ไม่พลิกต่อเป็นลูกโซ่</p></div>
             <div class="rule-card"><strong>4. เล่นอย่างมีแผน</strong><p>รู้ว่ามุมสำคัญ ช่องติดมุมอันตราย และหมากเยอะตอนต้นไม่ใช่คำตอบเสมอไป</p></div>
           </div>
         </div>
@@ -439,7 +439,7 @@
           <div class="panel">
             <div class="board-wrap">
               <div class="board" id="startLab"></div>
-              <div class="status" id="labStatus">เลือก legal move ของฝ่ายดำ</div>
+              <div class="status" id="labStatus">เลือกช่องที่ฝ่ายดำวางหมากได้</div>
             </div>
           </div>
         </div>
@@ -448,11 +448,11 @@
       <section class="slide">
         <div class="layout">
           <p class="eyebrow">Misconception Check</p>
-          <h2>อะไรที่ “ไม่ใช่” legal move?</h2>
+          <h2>ช่องใดที่วางหมากไม่ได้?</h2>
           <div class="rule-grid">
             <div class="rule-card danger"><strong>วางติดหมากตัวเองเฉย ๆ</strong><p>ถ้าไม่มีหมากคู่แข่งถูกคั่นอยู่ตรงกลาง จะไม่เกิดการหนีบ</p></div>
             <div class="rule-card danger"><strong>ข้ามช่องว่างไปหนีบ</strong><p>แนวที่หนีบต้องต่อเนื่อง ไม่มีช่องว่างแทรก</p></div>
-            <div class="rule-card danger"><strong>วางช่องที่ไม่พลิกหมาก</strong><p>Othello บังคับให้ทุก move ต้องพลิกหมากอย่างน้อย 1 ตัว</p></div>
+            <div class="rule-card danger"><strong>วางช่องที่ไม่พลิกหมาก</strong><p>Othello บังคับให้ทุกตาที่วางต้องพลิกหมากอย่างน้อย 1 ตัว</p></div>
             <div class="rule-card danger"><strong>พลิกต่อเป็นลูกโซ่</strong><p>พลิกเฉพาะแนวที่ถูกหนีบจากหมากใหม่เท่านั้น ไม่พลิกเพราะหมากที่เพิ่งเปลี่ยนสีไปหนีบต่อ</p></div>
           </div>
         </div>
@@ -467,7 +467,7 @@
               <div class="tile"><strong>1</strong><p>มองหาช่องที่วางแล้วหนีบได้</p></div>
               <div class="tile"><strong>2</strong><p>วางหมากสีของเราในช่องนั้น</p></div>
               <div class="tile"><strong>3</strong><p>พลิกหมากคู่แข่งทุกแนวที่ถูกหนีบ</p></div>
-              <div class="tile"><strong>ผ่านตา</strong><p>ถ้าไม่มี legal move ต้อง pass ให้คู่แข่งเดินต่อ</p></div>
+              <div class="tile"><strong>ผ่านตา</strong><p>ถ้าไม่มีช่องที่วางได้ ต้องข้ามตาให้คู่แข่งเดินต่อ</p></div>
             </div>
           </div>
           <div class="panel">
@@ -483,9 +483,9 @@
           <p class="eyebrow">Scoring</p>
           <h2>เกมจบเมื่อทั้งสองฝ่ายเดินไม่ได้</h2>
           <div class="rule-grid">
-            <div class="rule-card"><strong>จบปกติ</strong><p>กระดานเต็ม หรือไม่มีฝ่ายใดมี legal move เหลือ</p></div>
+            <div class="rule-card"><strong>จบปกติ</strong><p>กระดานเต็ม หรือไม่มีฝ่ายใดวางหมากได้อีก</p></div>
             <div class="rule-card"><strong>นับคะแนน</strong><p>นับจำนวนหมากสีดำและสีขาวบนกระดาน สีที่มากกว่าชนะ</p></div>
-            <div class="rule-card"><strong>ถ้าเดินไม่ได้</strong><p>ไม่ได้แพ้ทันที แต่ต้อง pass จนกว่าจะมี legal move หรือเกมจบ</p></div>
+            <div class="rule-card"><strong>ถ้าเดินไม่ได้</strong><p>ไม่ได้แพ้ทันที แต่ต้องข้ามตาจนกว่าจะมีช่องที่วางได้ หรือเกมจบ</p></div>
             <div class="rule-card"><strong>บทเรียนสำคัญ</strong><p>ชนะตอนจบ ไม่ใช่ชนะตอนกลางเกม ดังนั้นอย่าเพิ่งดีใจเพราะหมากเยอะเร็ว</p></div>
           </div>
         </div>
@@ -496,10 +496,10 @@
           <div>
             <p class="eyebrow">Beginner Strategy</p>
             <h2>มุมคือพื้นที่ทองคำ</h2>
-            <p class="lead">หมากที่มุมไม่ถูกหนีบจากด้านนอกได้ จึงเป็นฐานให้สร้างขอบที่มั่นคง</p>
+            <p class="lead">คู่แข่งหนีบหมากที่มุมจากด้านนอกไม่ได้ จึงเป็นฐานให้สร้างขอบที่มั่นคง</p>
             <ul>
               <li>ถ้ามีโอกาสได้มุม มักเป็นโอกาสใหญ่</li>
-              <li>หลังได้มุม ให้ต่อยอดตามขอบเพื่อสร้าง stable discs</li>
+              <li>หลังได้มุม ให้ต่อยอดตามขอบเพื่อสร้างแนวหมากที่คู่แข่งพลิกกลับไม่ได้</li>
               <li>อย่าเปิดมุมให้คู่แข่งง่าย ๆ</li>
             </ul>
           </div>
@@ -533,9 +533,9 @@
           <p class="eyebrow">Three Rules of Thumb</p>
           <h2>สูตรจำง่ายสำหรับเกมแรก</h2>
           <div class="rule-grid">
-            <div class="rule-card"><strong>อย่าโลภหมากเยอะต้นเกม</strong><p>บาง move พลิกเยอะตอนนี้ แต่เปิดช่องดีให้คู่แข่งในตาถัดไป</p></div>
-            <div class="rule-card"><strong>รักษาทางเลือก</strong><p>พยายามให้เรามี legal move หลายทาง และบีบให้คู่แข่งมีทางเลือกน้อย</p></div>
-            <div class="rule-card"><strong>ดูมุมก่อนเสมอ</strong><p>ถามตัวเองว่า move นี้เปิดมุมให้ใครหรือไม่</p></div>
+            <div class="rule-card"><strong>อย่าโลภหมากเยอะต้นเกม</strong><p>บางตาพลิกหมากได้มากในตอนนี้ แต่เปิดช่องดีให้คู่แข่งในตาถัดไป</p></div>
+            <div class="rule-card"><strong>รักษาทางเลือก</strong><p>พยายามให้มีช่องที่วางหมากได้หลายทาง และบีบให้คู่แข่งมีทางเลือกน้อย</p></div>
+            <div class="rule-card"><strong>ดูมุมก่อนเสมอ</strong><p>ถามตัวเองว่าตานี้เปิดมุมให้ใครหรือไม่</p></div>
             <div class="rule-card"><strong>คิดหนึ่งตาล่วงหน้า</strong><p>หลังเราวาง คู่แข่งมีช่องไหนที่ดีมากขึ้นทันทีหรือเปล่า</p></div>
           </div>
         </div>
@@ -549,26 +549,26 @@
             <ul>
               <li>จับคู่ เล่นจากกระดานเริ่มต้น</li>
               <li>ทุกครั้งก่อนวาง ให้พูดว่า “ฉันหนีบแนวไหน”</li>
-              <li>หลังเดินครบ 12 ตา หยุดและวง 2 ช่องที่น่ากลัวที่สุดบนกระดาน</li>
+              <li>หลังเดินครบ 12 ตาหยุดและวง 2 ช่องที่น่ากลัวที่สุดบนกระดาน</li>
               <li>สลับคู่ อธิบายว่าใครเปิดมุมให้ใครหรือไม่</li>
             </ul>
           </div>
           <div class="panel">
             <p class="big-number">12</p>
             <p class="lead">ตาแรกคือห้องทดลอง</p>
-            <p>เป้าหมายไม่ใช่ชนะทันที แต่คืออ่าน legal move และเห็นผลของการเปิดมุม</p>
+            <p>รอบแรกให้ฝึกดูช่องที่วางหมากได้และผลของการเปิดมุม โดยยังไม่ต้องเน้นเอาชนะ</p>
           </div>
         </div>
       </section>
 
       <section class="slide">
         <div class="layout">
-          <p class="eyebrow">Quick Check</p>
+          <p class="eyebrow">ตรวจความเข้าใจ</p>
           <h2>เช็กก่อนเริ่มเล่นจริง</h2>
           <div class="panel">
             <p class="lead" id="quizQuestion">ข้อ 1: Othello วางหมากได้เมื่อใด?</p>
             <div class="quiz-grid" id="quizChoices"></div>
-            <div class="status" id="quizFeedback">เลือกคำตอบเพื่อดู feedback</div>
+            <div class="status" id="quizFeedback">เลือกคำตอบเพื่อดูคำอธิบาย</div>
             <div class="controls">
               <button id="nextQuiz" class="secondary">ข้อถัดไป</button>
             </div>
@@ -804,7 +804,7 @@
 
       document.getElementById("resetLab").addEventListener("click", () => {
         board = makeStartBoard();
-        status.textContent = "เลือก legal move ของฝ่ายดำ";
+        status.textContent = "เลือกช่องที่ฝ่ายดำวางหมากได้";
         render();
       });
       render();
@@ -819,16 +819,16 @@
           feedback: "ถูกต้อง ต้องวางในช่องที่ทำให้พลิกหมากคู่แข่งได้อย่างน้อย 1 ตัว"
         },
         {
-          prompt: "ข้อ 2: ถ้าผู้เล่นไม่มี legal move ต้องทำอย่างไร?",
+          prompt: "ข้อ 2: ถ้าผู้เล่นไม่มีช่องที่วางหมากได้ ต้องทำอย่างไร?",
           choices: ["แพ้ทันที", "ข้ามตาและให้อีกฝ่ายเดิน", "หยิบหมากออกหนึ่งตัว", "เลือกวางช่องใดก็ได้"],
           answer: 1,
-          feedback: "ถูกต้อง ถ้าไม่มี legal move ต้อง pass"
+          feedback: "ถูกต้อง ถ้าไม่มีช่องที่วางได้ ต้องข้ามตา"
         },
         {
           prompt: "ข้อ 3: ทำไมมุมจึงสำคัญมาก?",
           choices: ["เพราะได้คะแนนสองเท่า", "เพราะหมากมุมมักพลิกกลับไม่ได้", "เพราะลงมุมแล้วชนะทันที", "เพราะมุมใช้ pass ได้"],
           answer: 1,
-          feedback: "ถูกต้อง มุมเป็นฐานของ stable discs และยึดคืนยากมาก"
+          feedback: "ถูกต้อง มุมเป็นฐานสำหรับสร้างแนวหมากที่คู่แข่งพลิกกลับไม่ได้ และยึดคืนได้ยากมาก"
         }
       ];
       let index = 0;
@@ -839,7 +839,7 @@
       function renderQuiz() {
         const item = questions[index];
         questionEl.textContent = item.prompt;
-        feedbackEl.textContent = "เลือกคำตอบเพื่อดู feedback";
+        feedbackEl.textContent = "เลือกคำตอบเพื่อดูคำอธิบาย";
         choicesEl.innerHTML = "";
         item.choices.forEach((choice, i) => {
           const button = document.createElement("button");

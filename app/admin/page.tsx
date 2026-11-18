@@ -13,7 +13,7 @@ export default async function AdminPage() {
     <div className="stack">
       <section>
         <h1>Admin</h1>
-        <p className="muted">จัดการผู้ใช้, section, instructor และ enrollment</p>
+        <p className="muted">จัดการผู้ใช้ กลุ่มเรียน ผู้สอน และการลงทะเบียน</p>
       </section>
 
       <section className="grid">
@@ -25,24 +25,24 @@ export default async function AdminPage() {
 
       <section className="grid">
         <form className="card form" action={createSectionAction}>
-          <h2>เพิ่ม Section</h2>
-          <label className="field">รหัส section<input name="code" required placeholder="SEC-01" /></label>
+          <h2>เพิ่มกลุ่มเรียน</h2>
+          <label className="field">รหัสกลุ่มเรียน<input name="code" required placeholder="SEC-01" /></label>
           <label className="field">ชื่อ<input name="title" required placeholder="Board Game Section 1" /></label>
           <label className="field">เทอม<input name="term" required placeholder="2569/1" /></label>
           <label className="field">อีเมลอาจารย์<input name="instructorEmail" required type="email" /></label>
           <label className="field">Enrollment code<input name="enrollmentCode" required placeholder="BG-SEC1" /></label>
-          <button type="submit">บันทึก section</button>
+          <button type="submit">บันทึกกลุ่มเรียน</button>
         </form>
 
         <form className="card form" action={enrollStudentAction}>
-          <h2>เพิ่มนักศึกษาเข้า Section</h2>
+          <h2>เพิ่มนักศึกษาเข้ากลุ่มเรียน</h2>
           <label className="field">Section
             <select name="sectionId" required>
               {sections.map((section) => <option key={section.id} value={section.id}>{section.code}</option>)}
             </select>
           </label>
           <label className="field">อีเมลนักศึกษา<input name="studentEmail" required type="email" /></label>
-          <button type="submit">เพิ่ม enrollment</button>
+          <button type="submit">เพิ่มการลงทะเบียน</button>
         </form>
       </section>
 

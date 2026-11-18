@@ -23,7 +23,7 @@ export function AppShell({ user, children }: { user: SessionUser | null; childre
             ) : null}
             {user ? <Link className="secondary" href="/materials">Materials</Link> : null}
             {user ? <Link className="secondary" href="/student">Student</Link> : null}
-            {user ? <Link href="/api/auth/logout">ออกจากระบบ</Link> : <Link href="/api/auth/google">Sign in with Google</Link>}
+            {user ? <Link href="/api/auth/logout">ออกจากระบบ</Link> : <Link href="/api/auth/google">เข้าสู่ระบบด้วย Google</Link>}
           </nav>
         </div>
       </header>

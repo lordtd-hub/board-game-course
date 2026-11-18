@@ -35,9 +35,9 @@ const slides: Slide[] = [
   { id: "splendor", title: "Splendor แบบเร็ว", minutes: 12 },
   { id: "roles", title: "ก่อนเริ่มเล่น", minutes: 7 },
   { id: "checkpoint", title: "Guided play checkpoint", minutes: 14 },
-  { id: "strategy", title: "กลยุทธ์ vs ยุทธวิธี", minutes: 10 },
+  { id: "strategy", title: "กลยุทธ์กับยุทธวิธี", minutes: 10 },
   { id: "sorter", title: "Interactive sorter", minutes: 14 },
-  { id: "decision", title: "โครงสร้าง Decision", minutes: 8 },
+  { id: "decision", title: "โครงสร้างการตัดสินใจ", minutes: 8 },
   { id: "canvas", title: "Decision canvas", minutes: 14 },
   { id: "play", title: "Play Lab", minutes: 80 },
   { id: "compound", title: "Compound Advantage", minutes: 12 },
@@ -48,14 +48,14 @@ const slides: Slide[] = [
 
 const sorterCards = [
   { id: "engine", text: "ซื้อการ์ดถูกหลายสีเพื่อให้ตาถัดไปซื้อได้ง่ายขึ้น", answer: "strategy" },
-  { id: "token", text: "เก็บ token สีเขียว เพราะขาดอีกหนึ่งเม็ด", answer: "tactics" },
+  { id: "token", text: "เก็บโทเคนสีเขียว เพราะยังขาดอีกหนึ่งเม็ด", answer: "tactics" },
   { id: "reserve", text: "จองการ์ดที่คู่แข่งกำลังเล็ง", answer: "tactics" },
-  { id: "noble", text: "วางแผนไล่สีเพื่อดึง noble ในอีกหลายตา", answer: "strategy" }
+  { id: "noble", text: "วางแผนสะสมสีเพื่อรับขุนนางในอีกหลายตา", answer: "strategy" }
 ] as const;
 
 const engineSteps = [
   { id: "cheap", label: "ซื้อการ์ดถูก", detail: "ได้ส่วนลดถาวร", gain: 1 },
-  { id: "chain", label: "ซื้อได้เร็วขึ้น", detail: "ใช้ token น้อยลง", gain: 2 },
+  { id: "chain", label: "ซื้อได้เร็วขึ้น", detail: "ใช้โทเคนน้อยลง", gain: 2 },
   { id: "choice", label: "มีตัวเลือกมากขึ้น", detail: "ไม่ติดทรัพยากรเดิม", gain: 2 },
   { id: "points", label: "เร่งคะแนนปลายเกม", detail: "แต้มมาทีหลัง แต่หนักกว่า", gain: 3 }
 ] as const;
@@ -68,16 +68,16 @@ const splendorThaiVideo = {
 
 const stanceFeedback: Record<string, { label: string; text: string }> = {
   "เอาแต้มตอนนี้": {
-    label: "มุมคิดแบบ Tactical",
+    label: "มุมมองเชิงยุทธวิธี",
     text: "เหมาะเมื่อแต้มตรงหน้าทำให้เข้าใกล้จบเกม หรือกันคู่แข่งไม่ให้แซง แต่ต้องถามต่อว่าตาถัดไปเรายังมีทางไปไหม"
   },
   "สร้างทางให้ตาถัดไป": {
-    label: "มุมคิดแบบ Strategic",
+    label: "มุมมองเชิงกลยุทธ์",
     text: "นี่คือการมองหลายตาต่อเนื่อง ยอมช้าบางจังหวะเพื่อให้อนาคตมีต้นทุนต่ำลงและมีตัวเลือกมากขึ้น"
   },
   "ขึ้นกับสถานการณ์": {
-    label: "มุมคิดแบบ Adaptive",
-    text: "เป็นคำตอบที่ดีถ้าบอกเงื่อนไขได้ เช่น แต้มของคู่แข่ง token ที่เหลือ หรือการ์ดที่กำลังจะถูกแย่ง"
+    label: "มุมมองที่ปรับตามสถานการณ์",
+    text: "เป็นคำตอบที่ดีถ้าบอกเงื่อนไขได้ เช่น แต้มของคู่แข่ง โทเคนที่เหลือ หรือการ์ดที่กำลังจะถูกแย่ง"
   }
 };
 
@@ -241,13 +241,13 @@ export function WeekOneInteractive() {
       </div>
 
       <div className="deck-controls">
-        <button type="button" className="secondary" onClick={back} disabled={index === 0}>Back</button>
-        <button type="button" className="secondary" onClick={() => setShowNotes((value) => !value)}>Notes</button>
+        <button type="button" className="secondary" onClick={back} disabled={index === 0}>ก่อนหน้า</button>
+        <button type="button" className="secondary" onClick={() => setShowNotes((value) => !value)}>บันทึกผู้สอน</button>
         <button type="button" className="secondary" onClick={toggleFullscreen}>
           {isFullscreen ? "Exit full screen" : "Full screen"}
         </button>
         <span>{minutesLabel(elapsedMinutes)} / {minutesLabel(totalMinutes)}</span>
-        <button type="button" onClick={next} disabled={index === slides.length - 1}>Next</button>
+        <button type="button" onClick={next} disabled={index === slides.length - 1}>ถัดไป</button>
       </div>
     </section>
   );
@@ -272,7 +272,7 @@ function WhySlide({ showNotes }: { showNotes: boolean }) {
       </div>
       <div className="big-idea">
         <p>ทุกตาที่ผู้เล่นเลือก คือหลักฐานของการวางแผน การคาดการณ์ และการปรับตัว</p>
-        {showNotes ? <small>ให้อาจารย์พูดสั้นๆ ว่า วันนี้ไม่ได้วัดว่าใครเล่นเก่ง แต่วัดว่าใครอธิบายการตัดสินใจได้</small> : null}
+        {showNotes ? <small>ให้อาจารย์พูดสั้น ๆ ว่า วันนี้ไม่ได้วัดว่าใครเล่นเก่ง แต่วัดว่าใครอธิบายการตัดสินใจได้</small> : null}
       </div>
     </div>
   );
@@ -310,7 +310,7 @@ function OutcomesSlide() {
       <p className="slide-eyebrow">Learning outcomes</p>
       <h2>จบคาบนี้ นักศึกษาต้องทำได้ 3 อย่าง</h2>
       <div className="three-columns">
-        <div><strong>แยก</strong><span>กลยุทธ์ vs ยุทธวิธี</span></div>
+        <div><strong>แยก</strong><span>กลยุทธ์กับยุทธวิธี</span></div>
         <div><strong>มอง</strong><span>ผู้เล่น ตัวเลือก สิ่งแวดล้อม เป้าหมาย</span></div>
         <div><strong>อธิบาย</strong><span>ความได้เปรียบสะสมใน Splendor</span></div>
       </div>
@@ -323,7 +323,7 @@ function SplendorSlide() {
     <div className="slide-layout video-slide-grid">
       <div>
         <p className="slide-eyebrow">Learn to play</p>
-        <h2>สอนเล่น Splendor แบบพร้อมเริ่มโต๊ะจริง</h2>
+        <h2>สอนเล่น Splendor ให้พร้อมลงโต๊ะ</h2>
         <div className="flow-row compact-flow">
           <div>เก็บ token</div>
           <div>ซื้อ/จองการ์ด</div>
@@ -357,7 +357,7 @@ function RolesSlide() {
       <h2>หนึ่งโต๊ะต้องมี 3 บทบาท</h2>
       <div className="three-columns">
         <div><strong>Player</strong><span>ตัดสินใจและพูดเหตุผล</span></div>
-        <div><strong>Observer</strong><span>จด key decision</span></div>
+        <div><strong>Observer</strong><span>จดการตัดสินใจสำคัญ</span></div>
         <div><strong>Captain</strong><span>คุมเวลาและชวนทุกคนพูด</span></div>
       </div>
     </div>
@@ -371,7 +371,7 @@ function CheckpointSlide() {
       <h2>ก่อนเดิน ให้หยุดถาม 3 ข้อ</h2>
       <ol className="large-list">
         <li>ตานี้ฉันแก้ปัญหาอะไร</li>
-        <li>ถ้าไม่เลือก action นี้ ฉันเสียโอกาสอะไร</li>
+        <li>ถ้าไม่เลือกทำสิ่งนี้ ฉันเสียโอกาสอะไร</li>
         <li>ตาถัดไปจะง่ายขึ้นหรือยากขึ้น</li>
       </ol>
     </div>
@@ -447,7 +447,7 @@ function CanvasSlide({
   return (
     <div className="slide-layout canvas-slide">
       <p className="slide-eyebrow">Interactive</p>
-      <h2>กรอก decision จากโต๊ะของคุณ</h2>
+      <h2>บันทึกการตัดสินใจจากโต๊ะที่เล่น</h2>
       <div className="input-grid">
         <input value={canvas.actor} onChange={(event) => setCanvas({ ...canvas, actor: event.target.value })} placeholder="ใครตัดสินใจ" />
         <input value={canvas.options} onChange={(event) => setCanvas({ ...canvas, options: event.target.value })} placeholder="เลือกอะไรได้บ้าง" />
@@ -476,7 +476,7 @@ function PlaySlide({
       <strong>{clock(seconds)}</strong>
       <div className="choice-row">
         <button type="button" onClick={() => setRunning(!running)}>{running ? "Pause" : "Start"}</button>
-        <button type="button" className="secondary" onClick={reset}>Reset</button>
+        <button type="button" className="secondary" onClick={reset}>เริ่มใหม่</button>
       </div>
       <p className="slide-prompt">นาทีที่ 30 และ 60 หยุดถาม: “แผนเดิมยังดีอยู่ไหม”</p>
     </div>
@@ -487,7 +487,7 @@ function CompoundSlide() {
   return (
     <div className="slide-layout">
       <p className="slide-eyebrow">Compound advantage</p>
-      <h2>ข้อได้เปรียบเล็กๆ ที่ทบกัน คือหัวใจของ Splendor</h2>
+      <h2>ข้อได้เปรียบเล็ก ๆ ที่สะสมต่อกัน คือหัวใจของ Splendor</h2>
       <div className="flow-row">
         <div>ลดต้นทุน</div>
         <div>มีทางเลือก</div>
@@ -502,7 +502,7 @@ function TimelineSlide({ selected, toggle, score }: { selected: string[]; toggle
   return (
     <div className="slide-layout">
       <p className="slide-eyebrow">Interactive</p>
-      <h2>สร้าง engine timeline</h2>
+      <h2>เรียงลำดับการสร้างส่วนลดสะสม</h2>
       <div className="timeline-strip">
         {engineSteps.map((step) => (
           <button key={step.id} type="button" className={selected.includes(step.id) ? "active" : "secondary"} onClick={() => toggle(step.id)}>
@@ -520,7 +520,7 @@ function DebriefSlide() {
   return (
     <div className="slide-layout">
       <p className="slide-eyebrow">Debrief</p>
-      <h2>เลือก decision หนึ่งครั้งจากเกมจริง</h2>
+      <h2>เลือกการตัดสินใจหนึ่งครั้งจากเกมที่เล่น</h2>
       <ol className="large-list">
         <li>ตอนนั้นคุณเห็นตัวเลือกอะไร</li>
         <li>คุณเลือกเพราะผลทันทีหรือผลสะสม</li>
@@ -534,7 +534,7 @@ function ExitSlide() {
   return (
     <div className="slide-layout title-slide">
       <p className="slide-eyebrow">Exit ticket</p>
-      <h1>หนึ่ง decision ที่บอกวิธีคิดของคุณ</h1>
+      <h1>การตัดสินใจหนึ่งครั้งที่สะท้อนวิธีคิด</h1>
       <p>อธิบาย 3-5 ประโยคว่าเป็นกลยุทธ์หรือยุทธวิธี เพราะอะไร</p>
     </div>
   );
@@ -545,7 +545,7 @@ function InstructorNotes({ slide }: { slide: SlideId }) {
     title: "เปิดด้วยน้ำเสียงว่าเกมคือเครื่องมือเรียน ไม่ใช่กิจกรรมพักเบรก",
     why: "เชื่อมกับบทที่ 1: บอร์ดเกมทำให้แนวคิดนามธรรมกลายเป็นรูปธรรมและสังเกตได้",
     question: "อย่าเฉลยเร็ว ให้เก็บคำตอบไว้เทียบหลังเล่น",
-    play: "ถ้าเวลาบาน ให้จบเกมแบบไม่ต้องครบ 15 คะแนน แล้วใช้สถานะล่าสุด debrief"
+    play: "ถ้าใช้เวลาเกินแผน ให้จบเกมแบบไม่ต้องครบ 15 คะแนน แล้วใช้สถานะล่าสุดอภิปรายหลังเล่น"
   };
 
   return <aside className="speaker-notes">{notes[slide] || "ใช้สไลด์นี้เป็นคำสั่งกิจกรรม ไม่ต้องอ่านทุกข้อความให้ผู้เรียนฟัง"}</aside>;

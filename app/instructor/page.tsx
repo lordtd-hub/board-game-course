@@ -30,7 +30,7 @@ export default async function InstructorPage() {
     <div className="stack">
       <section>
         <h1>Instructor</h1>
-        <p className="muted">สร้างงาน ดูงานส่ง และให้คะแนนสำหรับ section ที่รับผิดชอบ</p>
+        <p className="muted">สร้างงาน ดูงานส่ง และให้คะแนนสำหรับ กลุ่มเรียนที่รับผิดชอบ</p>
         <div className="nav">
           <Link className="button" href="/assignments/new">สร้างงานใหม่</Link>
           <Link className="button secondary" href="/instructor/materials">Materials dashboard</Link>
@@ -67,7 +67,7 @@ export default async function InstructorPage() {
           </table>
         </TableWrap>
       ) : (
-        <EmptyState title="ยังไม่มี section" detail="ให้ super admin ผูกบัญชีผู้สอนกับ section ก่อน" />
+        <EmptyState title="ยังไม่มีกลุ่มเรียน" detail="ให้ผู้ดูแลระบบผูกบัญชีผู้สอนกับกลุ่มเรียนก่อน" />
       )}
 
       <TableWrap>

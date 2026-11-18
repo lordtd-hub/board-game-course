@@ -519,7 +519,7 @@
         <div class="stack">
           <p class="kicker">worker placement • dice • resource planning</p>
           <h1>สอนเล่น Stone Age</h1>
-          <p>เป้าหมายคือพานักศึกษาจาก “ไม่เคยเล่น” ไปสู่ “เริ่มเล่นรอบแรกได้เอง” โดยเข้าใจการวางคน ทอยเต๋า ใช้เครื่องมือ และเลี้ยงเผ่า</p>
+          <p>เป้าหมายคือพานักศึกษาจาก “ไม่เคยเล่น” ไปสู่ “เริ่มเล่นรอบแรกได้เอง” โดยเข้าใจการวางคน ทอยเต๋า ใช้เครื่องมือและเลี้ยงเผ่า</p>
           <div class="note">
             <p><strong>ประโยคจำทั้งเกม:</strong> วางคนก่อน ทำงานทีหลัง แล้วอย่าลืมเลี้ยงเผ่า</p>
           </div>
@@ -543,7 +543,7 @@
         <p class="kicker">core loop</p>
         <h2>หนึ่งรอบมี 3 ขั้น</h2>
         <div class="flow">
-          <div class="flow-step"><b>1</b><h3>วางคน</h3><p>ผลัดกันส่งคนงานไปจอง action บนบอร์ด</p></div>
+          <div class="flow-step"><b>1</b><h3>วางคน</h3><p>ผลัดกันส่งคนงานไปจองการกระทำบนบอร์ด</p></div>
           <div class="flow-step"><b>2</b><h3>ทำงาน</h3><p>เก็บคนกลับ แล้วรับผลของแต่ละตำแหน่ง</p></div>
           <div class="flow-step"><b>3</b><h3>เลี้ยงคน</h3><p>ท้ายรอบ คนงานทุกคนต้องกินอาหาร 1 หน่วย</p></div>
         </div>
@@ -570,7 +570,7 @@
             <button class="choice" data-q="same" data-a="wrong">ทำได้ ถ้ายังมีช่องว่าง</button>
             <button class="choice" data-q="same" data-a="correct">ทำไม่ได้ เพราะวางจุดเดิมซ้ำไม่ได้</button>
           </div>
-          <div class="feedback" id="same-feedback">เลือกคำตอบเพื่อดู feedback</div>
+          <div class="feedback" id="same-feedback">เลือกคำตอบเพื่อดูคำอธิบาย</div>
         </div>
       </div>
     </section>
@@ -580,11 +580,11 @@
         <p class="kicker">village actions</p>
         <h2>3 จุดในหมู่บ้านที่ไม่ต้องทอยเต๋า</h2>
         <div class="action-grid">
-          <div class="tile"><span class="icon i-tool">T</span><strong>Tool Maker</strong><p>ได้เครื่องมือ ใช้เพิ่มผลรวมหลังทอยลูกเต๋า</p></div>
-          <div class="tile"><span class="icon i-food">F</span><strong>Field</strong><p>เพิ่ม agriculture ทำให้ได้อาหารฟรีท้ายรอบ</p></div>
+          <div class="tile"><span class="icon i-tool">T</span><strong>Tool Maker</strong><p>ได้เครื่องมือใช้เพิ่มผลรวมหลังทอยลูกเต๋า</p></div>
+          <div class="tile"><span class="icon i-food">F</span><strong>Field</strong><p>เพิ่มเกษตรกรรมทำให้ได้อาหารฟรีท้ายรอบ</p></div>
           <div class="tile"><span class="icon i-food">H</span><strong>Hut</strong><p>ใช้คนงาน 2 คน เพื่อเพิ่มคนงานถาวร 1 คน</p></div>
         </div>
-        <div class="note warn"><p>คนงานเพิ่มทำให้มี action มากขึ้น แต่ท้ายรอบก็ต้องเลี้ยงเพิ่มด้วย</p></div>
+        <div class="note warn"><p>คนงานเพิ่มทำให้มีการกระทำมากขึ้น แต่ท้ายรอบก็ต้องเลี้ยงเพิ่มด้วย</p></div>
       </div>
     </section>
 
@@ -592,7 +592,7 @@
       <div class="stack">
         <p class="kicker">resource rule</p>
         <h2>หาอาหารและทรัพยากรด้วยสูตรเดียว</h2>
-        <div class="formula">จำนวนที่ได้ = floor(ผลรวมลูกเต๋า ÷ ค่าพื้นที่)</div>
+        <div class="formula">จำนวนที่ได้ = ผลรวมลูกเต๋า ÷ ค่าพื้นที่ แล้วปัดเศษลง</div>
         <div class="resource-grid">
           <div class="tile"><span class="icon i-food">2</span><strong>Hunt</strong><p>หาร 2 เพื่อได้อาหาร</p></div>
           <div class="tile"><span class="icon i-wood">3</span><strong>Forest</strong><p>หาร 3 เพื่อได้ไม้</p></div>
@@ -617,7 +617,7 @@
           <div class="formula">4 + 3 + 5 = 12<br>12 ÷ 3 = 4 ไม้</div>
         </div>
         <div class="panel quiz">
-          <h3>Quick check</h3>
+          <h3>ตรวจความเข้าใจ</h3>
           <p>ถ้าวาง 2 คนที่ River แล้วทอยรวมได้ 11 จะได้ทองกี่อัน?</p>
           <div class="choices">
             <button class="choice" data-q="gold" data-a="wrong">0</button>
@@ -625,7 +625,7 @@
             <button class="choice" data-q="gold" data-a="wrong">2</button>
             <button class="choice" data-q="gold" data-a="wrong">11</button>
           </div>
-          <div class="feedback" id="gold-feedback">เลือกคำตอบเพื่อดู feedback</div>
+          <div class="feedback" id="gold-feedback">เลือกคำตอบเพื่อดูคำอธิบาย</div>
         </div>
       </div>
     </section>
@@ -634,8 +634,8 @@
       <div class="sim-grid">
         <div class="stack">
           <p class="kicker">interactive simulator</p>
-          <h2>ลองทอยและใช้ Tool</h2>
-          <p>เลือกพื้นที่ จำนวนคนงาน และค่าเครื่องมือ แล้วดูว่าได้ของกี่ชิ้น</p>
+          <h2>ลองทอยและใช้เครื่องมือ</h2>
+          <p>เลือกพื้นที่ จำนวนคนงาน และค่าเครื่องมือแล้วดูว่าได้ของกี่ชิ้น</p>
           <div class="panel">
             <div class="control-row">
               <label>พื้นที่
@@ -650,7 +650,7 @@
               <label>คนงาน
                 <input id="workers" type="number" min="1" max="7" value="3" />
               </label>
-              <label>Tool เพิ่มแต้ม
+              <label>เครื่องมือเพิ่มแต้ม
                 <input id="tool" type="number" min="0" max="12" value="0" />
               </label>
             </div>
@@ -661,7 +661,7 @@
           <h3>ผลลัพธ์</h3>
           <div class="dice-row" id="dice"></div>
           <div class="result" id="sim-result">กดทอยเพื่อดูผล</div>
-          <p class="small">Tool ใช้หลังทอย จึงควรใช้ตอนที่เพิ่มแล้วทำให้ข้ามเกณฑ์หารพอดี</p>
+          <p class="small">เครื่องมือใช้หลังทอย จึงควรใช้เมื่อเพิ่มผลรวมแล้วได้ทรัพยากรมากขึ้น</p>
         </div>
       </div>
     </section>
@@ -670,20 +670,20 @@
       <div class="two-col">
         <div class="stack">
           <p class="kicker">why tools matter</p>
-          <h2>Tool เปลี่ยนเศษให้เป็นของเพิ่ม</h2>
+          <h2>เครื่องมือช่วยเพิ่มผลรวมให้ได้ทรัพยากรมากขึ้น</h2>
           <p>หาไม้ ทอยได้ 11 ปกติได้ 3 ไม้ เพราะ 11 ÷ 3 ปัดลง</p>
-          <div class="formula">11 ÷ 3 = 3<br>ใช้ Tool +1 → 12 ÷ 3 = 4</div>
+          <div class="formula">11 ÷ 3 = 3<br>ใช้เครื่องมือ +1 → 12 ÷ 3 = 4</div>
         </div>
         <div class="panel quiz">
-          <h3>Quick check</h3>
-          <p>หาทอง ทอยได้ 11 ถ้าใช้ Tool +1 จะได้ทองกี่อัน?</p>
+          <h3>ตรวจความเข้าใจ</h3>
+          <p>หาทอง ทอยได้ 11 ถ้าใช้เครื่องมือ +1 จะได้ทองกี่อัน?</p>
           <div class="choices">
             <button class="choice" data-q="tool" data-a="wrong">1 ทอง</button>
             <button class="choice" data-q="tool" data-a="correct">2 ทอง</button>
             <button class="choice" data-q="tool" data-a="wrong">3 ทอง</button>
-            <button class="choice" data-q="tool" data-a="wrong">ใช้ Tool กับทองไม่ได้</button>
+            <button class="choice" data-q="tool" data-a="wrong">ใช้เครื่องมือกับทองไม่ได้</button>
           </div>
-          <div class="feedback" id="tool-feedback">เลือกคำตอบเพื่อดู feedback</div>
+          <div class="feedback" id="tool-feedback">เลือกคำตอบเพื่อดูคำอธิบาย</div>
         </div>
       </div>
     </section>
@@ -700,8 +700,8 @@
           </div>
           <div class="route-card">
             <strong>Civilization Card</strong>
-            <p>จ่ายทรัพยากรเพื่อรับ bonus หรือคะแนนท้ายเกม บางใบไม่แรงทันทีแต่ชนะท้ายเกมได้</p>
-            <div class="note"><p>ให้ดูว่า card เข้ากับสิ่งที่เราสะสมอยู่ไหม</p></div>
+            <p>จ่ายทรัพยากรเพื่อรับโบนัสหรือคะแนนท้ายเกม บางใบไม่แรงทันทีแต่ชนะท้ายเกมได้</p>
+            <div class="note"><p>ให้ดูว่าการ์ดเข้ากับสิ่งที่เราสะสมอยู่ไหม</p></div>
           </div>
         </div>
       </div>
@@ -713,7 +713,7 @@
           <p class="kicker">feeding phase</p>
           <h2>ท้ายรอบต้องเลี้ยงเผ่า</h2>
           <ul>
-            <li>รับอาหารจาก agriculture ก่อน</li>
+            <li>รับอาหารจากเกษตรกรรมก่อน</li>
             <li>จ่ายอาหาร 1 หน่วยต่อคนงาน 1 คน</li>
             <li>อาหารไม่พอ ใช้ทรัพยากรแทนได้</li>
             <li>ถ้าไม่จ่ายหรือจ่ายไม่ครบ เสีย 10 คะแนน</li>
@@ -722,14 +722,14 @@
         </div>
         <div class="panel quiz">
           <h3>Food check</h3>
-          <p>มีคนงาน 7 คน และ agriculture 3 ต้องหาอาหารเพิ่มอย่างน้อยเท่าไร?</p>
+          <p>มีคนงาน 7 คน และเกษตรกรรม 3 ต้องหาอาหารเพิ่มอย่างน้อยเท่าไร?</p>
           <div class="choices">
             <button class="choice" data-q="food" data-a="wrong">3</button>
             <button class="choice" data-q="food" data-a="correct">4</button>
             <button class="choice" data-q="food" data-a="wrong">7</button>
             <button class="choice" data-q="food" data-a="wrong">10</button>
           </div>
-          <div class="feedback" id="food-feedback">เลือกคำตอบเพื่อดู feedback</div>
+          <div class="feedback" id="food-feedback">เลือกคำตอบเพื่อดูคำอธิบาย</div>
         </div>
       </div>
     </section>
@@ -740,8 +740,8 @@
         <h2>รอบแรกควรคิดอะไร</h2>
         <div class="flow">
           <div class="flow-step"><b>A</b><h3>ไม่อด</h3><p>ดูว่าอาหารท้ายรอบพอไหม หรือมีแผนหาอาหารไหม</p></div>
-          <div class="flow-step"><b>B</b><h3>มีของ</h3><p>หาไม้หรือดินไว้ซื้อ card หรือสร้าง building ง่าย ๆ</p></div>
-          <div class="flow-step"><b>C</b><h3>ลงทุน</h3><p>ถ้า Tool หรือ Field ว่าง เป็นจุดเริ่มที่ปลอดภัย</p></div>
+          <div class="flow-step"><b>B</b><h3>มีของ</h3><p>หาไม้หรือดินไว้ซื้อการ์ดหรือสร้างสิ่งปลูกสร้างง่าย ๆ</p></div>
+          <div class="flow-step"><b>C</b><h3>ลงทุน</h3><p>ถ้าเครื่องมือหรือ Field ว่าง เป็นจุดเริ่มที่ปลอดภัย</p></div>
         </div>
         <div class="note"><p>รอบแรกเล่นให้รอด รอบต่อไปค่อยเล่นให้คุ้ม</p></div>
       </div>
@@ -756,15 +756,15 @@
           <div class="route">
             <div class="tile"><span class="icon i-food">2</span><strong>Hunt</strong><p>วาง 2 คน ทอย 2 ลูกเพื่อหาอาหาร</p></div>
             <div class="tile"><span class="icon i-wood">2</span><strong>Forest</strong><p>วาง 2 คน ทอย 2 ลูกเพื่อหาไม้</p></div>
-            <div class="tile"><span class="icon i-tool">1</span><strong>Tool Maker</strong><p>วาง 1 คน ได้ Tool 1</p></div>
+            <div class="tile"><span class="icon i-tool">1</span><strong>Tool Maker</strong><p>วาง 1 คน ได้เครื่องมือ 1</p></div>
           </div>
         </div>
         <div class="panel">
           <h3>สิ่งที่ต้องระวัง</h3>
           <ul>
             <li>ท้ายรอบต้องจ่ายอาหาร 5</li>
-            <li>ถ้าหาอาหารได้ไม่พอ ต้องใช้ resource แทนหรือเสีย 10 คะแนน</li>
-            <li>Tool ที่ได้จะช่วยรอบต่อ ๆ ไปให้ทอยคุ้มขึ้น</li>
+            <li>ถ้าหาอาหารได้ไม่พอ ต้องใช้ทรัพยากรแทนหรือเสีย 10 คะแนน</li>
+            <li>เครื่องมือที่ได้จะช่วยรอบต่อ ๆ ไปให้ทอยคุ้มขึ้น</li>
           </ul>
         </div>
       </div>
@@ -774,14 +774,14 @@
       <div class="quiz panel">
         <p class="kicker">pre-play quiz</p>
         <h2>ถ้าตอบได้ เริ่มเล่นได้</h2>
-        <p>หา Stone ที่ Quarry ทอยรวมได้ 14 ได้หินกี่อัน?</p>
+        <p>หาหินที่ Quarry ทอยรวมได้ 14 ได้หินกี่อัน?</p>
         <div class="choices">
           <button class="choice" data-q="stone" data-a="wrong">1</button>
           <button class="choice" data-q="stone" data-a="correct">2</button>
           <button class="choice" data-q="stone" data-a="wrong">3</button>
           <button class="choice" data-q="stone" data-a="wrong">14</button>
         </div>
-        <div class="feedback" id="stone-feedback">เลือกคำตอบเพื่อดู feedback</div>
+        <div class="feedback" id="stone-feedback">เลือกคำตอบเพื่อดูคำอธิบาย</div>
       </div>
     </section>
 
@@ -795,7 +795,7 @@
           <button class="choice" data-q="hut" data-a="wrong">3 คน</button>
           <button class="choice" data-q="hut" data-a="wrong">กี่คนก็ได้</button>
         </div>
-        <div class="feedback" id="hut-feedback">เลือกคำตอบเพื่อดู feedback</div>
+        <div class="feedback" id="hut-feedback">เลือกคำตอบเพื่อดูคำอธิบาย</div>
       </div>
     </section>
 
@@ -805,10 +805,10 @@
           <p class="kicker">ready to play</p>
           <h2>Stone Age ใน 5 ประโยค</h2>
           <ul>
-            <li>วางคนเพื่อจอง action</li>
+            <li>วางคนเพื่อจองการกระทำ</li>
             <li>ทอยเต๋าตามจำนวนคนงาน</li>
-            <li>หารตามชนิด resource แล้วปัดลง</li>
-            <li>ใช้ Tool หลังทอยเพื่อเพิ่มผลรวม</li>
+            <li>หารตามชนิดทรัพยากรแล้วปัดเศษลง</li>
+            <li>ใช้เครื่องมือหลังทอยเพื่อเพิ่มผลรวม</li>
             <li>ท้ายรอบต้องเลี้ยงคนทุกคน</li>
           </ul>
         </div>
@@ -864,24 +864,24 @@
         wrong: 'ยังไม่ใช่: ถึงช่องจะว่าง แต่เรากลับไปเติมคนในตำแหน่งเดิมของตัวเองในรอบเดียวกันไม่ได้'
       },
       gold: {
-        correct: 'ถูกต้อง: River หาร 6 ดังนั้น 11 ÷ 6 ปัดลง ได้ 1 ทอง',
+        correct: 'ถูกต้อง: River ใช้ตัวหาร 6 เมื่อคำนวณ 11 ÷ 6 แล้วปัดเศษลง จะได้ทอง 1 ชิ้น',
         wrong: 'ยังไม่ใช่: ทองใช้ River ซึ่งหาร 6 และต้องปัดเศษลง'
       },
       tool: {
         correct: 'ถูกต้อง: 11 + 1 = 12 และทองหาร 6 จึงได้ 2 ทอง',
-        wrong: 'ยังไม่ใช่: Tool ใช้หลังทอยเพื่อเพิ่มผลรวม ถ้าข้ามเกณฑ์หารได้จะได้ของเพิ่ม'
+        wrong: 'ยังไม่ใช่: เครื่องมือใช้หลังทอยเพื่อเพิ่มผลรวม ถ้าข้ามเกณฑ์หารได้จะได้ของเพิ่ม'
       },
       food: {
-        correct: 'ถูกต้อง: ต้องเลี้ยง 7 คน ได้อาหารจาก agriculture 3 จึงยังขาด 4',
-        wrong: 'ยังไม่ใช่: นับคนงานทั้งหมดก่อน แล้วหักอาหารที่ผลิตจาก agriculture'
+        correct: 'ถูกต้อง: ต้องเลี้ยง 7 คน ได้อาหารจากเกษตรกรรม 3 จึงยังขาด 4',
+        wrong: 'ยังไม่ใช่: นับคนงานทั้งหมดก่อน แล้วหักอาหารที่ผลิตจากเกษตรกรรม'
       },
       stone: {
-        correct: 'ถูกต้อง: Quarry หาร 5 ดังนั้น 14 ÷ 5 ปัดลง ได้ 2 หิน',
+        correct: 'ถูกต้อง: Quarry ใช้ตัวหาร 5 เมื่อคำนวณ 14 ÷ 5 แล้วปัดเศษลง จะได้ 2 หิน',
         wrong: 'ยังไม่ใช่: Stone ใช้ Quarry ซึ่งหาร 5 และปัดเศษลง'
       },
       hut: {
         correct: 'ถูกต้อง: Hut ต้องวาง 2 คนพร้อมกันเพื่อเพิ่มคนงานถาวร 1 คน',
-        wrong: 'ยังไม่ใช่: Hut เป็น action พิเศษที่ต้องใช้คนงาน 2 คนพร้อมกัน'
+        wrong: 'ยังไม่ใช่: Hut เป็นการกระทำพิเศษที่ต้องใช้คนงาน 2 คนพร้อมกัน'
       }
     };
 

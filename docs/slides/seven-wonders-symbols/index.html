@@ -394,8 +394,8 @@
           <h2>ซื้อทรัพยากรจากเพื่อนข้าง ๆ</h2>
           <ul>
             <li>ซื้อได้จากผู้เล่นซ้ายและขวาเท่านั้น</li>
-            <li>ปกติจ่าย 2 coins ต่อ 1 resource symbol</li>
-            <li>ซื้อได้เฉพาะ starting resource, brown, grey</li>
+            <li>ปกติจ่าย 2 เหรียญต่อ 1 สัญลักษณ์ทรัพยากร</li>
+            <li>ซื้อได้เฉพาะ starting ทรัพยากร, brown, grey</li>
             <li>ซื้อจาก yellow card หรือ Wonder stage ของเพื่อนไม่ได้</li>
           </ul>
         </div>
@@ -442,7 +442,7 @@
           <div class="icon-row" id="quizIcon"></div>
           <p class="lead" id="quizPrompt">เลือกคำอธิบายที่ตรงกับสัญลักษณ์</p>
           <div class="choice-grid" id="choices"></div>
-          <div class="feedback" id="feedback">เลือกคำตอบเพื่อดู feedback</div>
+          <div class="feedback" id="feedback">เลือกคำตอบเพื่อดูคำอธิบาย</div>
           <button class="choice" id="nextQuiz">ข้อต่อไป</button>
         </div>
       </div>
@@ -454,13 +454,13 @@
         <h2>ตอนสอนจริง ใช้ไอคอนชุดนี้คู่กับการ์ดจริง</h2>
         <div class="card-grid">
           <div class="symbol-card"><strong>1. เปิดสี</strong><p>ถามก่อนว่า “สีนี้ทำหน้าที่อะไร”</p></div>
-          <div class="symbol-card"><strong>2. อ่าน cost</strong><p>ดูว่าต้องจ่าย resource/coin อะไร</p></div>
-          <div class="symbol-card"><strong>3. อ่าน effect</strong><p>ดูสัญลักษณ์กลางการ์ดว่าให้ผลทันทีหรือปลายเกม</p></div>
+          <div class="symbol-card"><strong>2. อ่าน cost</strong><p>ดูว่าต้องจ่ายทรัพยากร/เหรียญอะไร</p></div>
+          <div class="symbol-card"><strong>3. อ่านผลของการ์ด</strong><p>ดูสัญลักษณ์กลางการ์ดว่าให้ผลทันทีหรือปลายเกม</p></div>
           <div class="symbol-card"><strong>4. ตัดสินใจ</strong><p>สร้างอาคาร สร้าง Wonder หรือขาย</p></div>
-          <div class="symbol-card"><strong>5. ไม่ต้องจำหมด</strong><p>สัญลักษณ์พิเศษให้เปิด official effect sheet เทียบ</p></div>
+          <div class="symbol-card"><strong>5. ไม่ต้องจำหมด</strong><p>สัญลักษณ์พิเศษให้เปิด เอกสารอธิบายสัญลักษณ์อย่างเป็นทางการ เทียบ</p></div>
           <div class="symbol-card"><strong>อ้างอิง</strong><p><a href="https://cdn.svc.asmodee.net/production-rprod/storage/downloads/games/7wonders/en/sev-en02-rules-1716388903zBEZx.pdf">Official rules</a> | <a href="https://aadl.org/files/catalog_guides/sev-en02-effects-description-159888854029keu.pdf">Effects sheet</a> | <a href="https://www.rprod.com/en/7-wonders/faq">FAQ</a></p></div>
         </div>
-        <p class="note">หมายเหตุ: ไอคอนในสไลด์นี้เป็นภาพประกอบการสอนที่วาดใหม่ ไม่ใช่ไฟล์ artwork official ของ 7 Wonders</p>
+        <p class="note">หมายเหตุ: ไอคอนในสไลด์นี้เป็นภาพประกอบการสอนที่วาดใหม่ ไม่ใช่ไฟล์ ภาพต้นฉบับอย่างเป็นทางการ ของ 7 Wonders</p>
       </div>
     </section>
 
@@ -512,8 +512,8 @@
 
     const quizItems = [
       { icon: "shield", answer: "ทหาร เทียบซ้ายขวาท้าย Age", choices: ["ทหาร เทียบซ้ายขวาท้าย Age", "ซื้อทรัพยากรถูกลง", "คะแนนตรงทันที", "ใช้แทนไม้ได้"] },
-      { icon: "gear", answer: "วิทยาศาสตร์ เก็บชุดเพื่อคะแนนปลายเกม", choices: ["ขายไพ่ได้ 3 coins", "วิทยาศาสตร์ เก็บชุดเพื่อคะแนนปลายเกม", "สร้าง Wonder ฟรี", "แพ้ทหาร 1 แต้ม"] },
-      { icon: "coin", answer: "ได้เงินหรือเกี่ยวกับการจ่าย coin", choices: ["ได้หินเพิ่ม", "ได้เงินหรือเกี่ยวกับการจ่าย coin", "พลิกไพ่คนข้าง ๆ", "จบเกมทันที"] },
+      { icon: "gear", answer: "วิทยาศาสตร์ เก็บชุดเพื่อคะแนนปลายเกม", choices: ["ขายไพ่ได้ 3 เหรียญ", "วิทยาศาสตร์ เก็บชุดเพื่อคะแนนปลายเกม", "สร้าง Wonder ฟรี", "แพ้ทหาร 1 แต้ม"] },
+      { icon: "coin", answer: "ได้เงินหรือเกี่ยวกับการจ่ายเหรียญ", choices: ["ได้หินเพิ่ม", "ได้เงินหรือเกี่ยวกับการจ่ายเหรียญ", "พลิกไพ่คนข้าง ๆ", "จบเกมทันที"] },
       { icon: "vp", answer: "คะแนนชัยชนะ", choices: ["คะแนนชัยชนะ", "ทรัพยากรเทา", "โล่ทหาร", "ส่งไพ่ย้อนกลับ"] }
     ];
     let quizIndex = 0;
@@ -525,7 +525,7 @@
       const feedbackEl = document.getElementById("feedback");
       iconEl.innerHTML = `<span class="icon green" data-icon="${item.icon}">${iconTemplates[item.icon]}</span>`;
       choicesEl.innerHTML = "";
-      feedbackEl.textContent = "เลือกคำตอบเพื่อดู feedback";
+      feedbackEl.textContent = "เลือกคำตอบเพื่อดูคำอธิบาย";
       item.choices.forEach((choice) => {
         const button = document.createElement("button");
         button.className = "choice";

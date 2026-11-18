@@ -1,11 +1,11 @@
 import type { MaterialWeek } from "@/lib/materials/types";
 
 const defaultClassFlow = [
-  "Opening challenge 10-15 นาที",
-  "Mini lecture 25-35 นาที",
-  "Board game play/session 90-120 นาที",
-  "Debrief 30-40 นาที",
-  "Exit ticket 5-10 นาที"
+  "โจทย์เปิดคาบ 10-15 นาที",
+  "อธิบายแนวคิด 25-35 นาที",
+  "เล่นบอร์ดเกม 90-120 นาที",
+  "อภิปรายหลังเล่น 30-40 นาที",
+  "สะท้อนผลท้ายคาบ 5-10 นาที"
 ];
 
 export const materialWeeks: MaterialWeek[] = [
@@ -18,7 +18,7 @@ export const materialWeeks: MaterialWeek[] = [
     learningOutcomes: [
       "แยกกลยุทธ์ออกจากยุทธวิธีได้",
       "ระบุผู้ตัดสินใจ ชุดการกระทำ สภาพแวดล้อม และวัตถุประสงค์ได้",
-      "อธิบาย information, uncertainty และ interaction ในสถานการณ์เชิงกลยุทธ์ได้",
+      "อธิบายข้อมูล ความไม่แน่นอน และปฏิสัมพันธ์ในสถานการณ์เชิงกลยุทธ์ได้",
       "วิเคราะห์ Chess และ Splendor ด้วยกรอบกลยุทธ์พื้นฐานได้"
     ],
     concepts: ["strategy", "tactics", "decision maker", "action set", "environment", "objectives", "compound advantage", "engine building"],
@@ -26,17 +26,17 @@ export const materialWeeks: MaterialWeek[] = [
     teachToPlay: [
       {
         game: "Splendor",
-        goal: "สะสมแต้มให้ถึง 15 คะแนนด้วยการซื้อการ์ดและสร้าง engine อัญมณี",
-        turnLoop: ["เลือกเก็บ token", "หรือจองการ์ด", "หรือซื้อการ์ด", "ตรวจ bonus noble และคะแนนรวม"],
-        firstDecisions: ["เก็บ token เพื่อซื้อการ์ดใบไหน", "จะเน้นการ์ดราคาถูกเพื่อปู engine หรือรีบเก็บแต้ม", "ควรจองการ์ดเพื่อกันคู่แข่งหรือไม่"],
+        goal: "สะสมแต้มให้ถึง 15 คะแนนด้วยการซื้อการ์ดและสร้างระบบส่วนลดอัญมณีสะสม",
+        turnLoop: ["เลือกเก็บโทเคน", "หรือจองการ์ด", "หรือซื้อการ์ด", "ตรวจเงื่อนไขรับขุนนาง และคะแนนรวม"],
+        firstDecisions: ["เก็บโทเคนเพื่อซื้อการ์ดใบไหน", "จะเน้นการ์ดราคาถูกเพื่อสร้างส่วนลดสะสม หรือรีบเก็บแต้ม", "ควรจองการ์ดเพื่อกันคู่แข่งหรือไม่"],
         doNotWorryYet: ["สูตรเปิดเกมตายตัว", "การนับทุกคะแนนล่วงหน้าหลายตา", "การจำการ์ดทุกใบในกอง"],
-        playNowPrompt: "เริ่ม 4-6 รอบแรกโดยให้ทุกคนพูดเหตุผลของ action หนึ่งครั้ง",
-        debriefPrompt: "action ใดดูเล็กตอนทำ แต่เริ่มสร้างความได้เปรียบสะสมในรอบถัดไป"
+        playNowPrompt: "เริ่ม 4-6 รอบแรกโดยให้ทุกคนพูดเหตุผลของการกระทำ หนึ่งครั้ง",
+        debriefPrompt: "การกระทำใดดูเล็กน้อยตอนทำ แต่เริ่มสร้างความได้เปรียบสะสมในรอบถัดไป"
       },
       {
         game: "Chess puzzle",
         goal: "หาจังหวะเดินที่แก้ปัญหาเฉพาะหน้าและดูว่าแผนระยะยาวคืออะไร",
-        turnLoop: ["ดูตำแหน่งชิ้นสำคัญ", "หา threat ทันที", "เลือก candidate move", "อธิบายแผนต่อจาก move นั้น"],
+        turnLoop: ["ดูตำแหน่งชิ้นสำคัญ", "หา threat ทันที", "เลือก candidate move", "อธิบายแผนหลังเดินตานั้น"],
         firstDecisions: ["กำลังป้องกันหรือโจมตี", "move นี้เป็น tactic หรือเป็นส่วนหนึ่งของ strategy", "ถ้าคู่แข่งตอบโต้ดีที่สุด แผนยังอยู่ไหม"],
         doNotWorryYet: ["opening theory", "ชื่อ tactical pattern ทั้งหมด", "การเล่นทั้งกระดานจนจบเกม"],
         playNowPrompt: "ดู puzzle เดียวและให้แต่ละกลุ่มเสนอ move พร้อมเหตุผล 30 วินาที",
@@ -46,7 +46,7 @@ export const materialWeeks: MaterialWeek[] = [
     conceptBlocks: [
       {
         title: "Strategy vs Tactics",
-        body: "Strategy คือทิศทางและเหตุผลระยะยาว ส่วน tactics คือ action เฉพาะหน้าที่ทำให้แผนนั้นเดินต่อได้"
+        body: "Strategy คือทิศทางและเหตุผลระยะยาว ส่วน tactics คือ การกระทำเฉพาะหน้าที่ทำให้แผนนั้นเดินต่อได้"
       },
       {
         title: "Decision Structure",
@@ -54,21 +54,21 @@ export const materialWeeks: MaterialWeek[] = [
       },
       {
         title: "Compound Advantage",
-        body: "บาง action ไม่ให้คะแนนทันที แต่ทำให้ตาถัดไปมีตัวเลือกมากขึ้น ถูกลง หรือเร็วขึ้น นี่คือหัวใจของ engine building"
+        body: "การกระทำบางอย่างไม่ให้คะแนนทันที แต่ทำให้ตาถัดไปมีตัวเลือกมากขึ้น ถูกลง หรือเร็วขึ้น นี่คือหัวใจของ engine building"
       }
     ],
     activities: [
-      { id: "strategy-tactics-sorter", title: "Strategy vs Tactics card sorter", purpose: "ฝึกแยก action เฉพาะหน้ากับแผนระยะยาว", kind: "sorter" },
-      { id: "decision-canvas", title: "Decision structure canvas", purpose: "จับสถานการณ์เกมให้เห็นผู้เล่น ตัวเลือก สิ่งแวดล้อม และเป้าหมาย", kind: "canvas" },
-      { id: "splendor-timeline", title: "Splendor engine-building timeline", purpose: "เห็นความได้เปรียบสะสมจาก action หลายรอบ", kind: "timeline" },
+      { id: "strategy-tactics-sorter", title: "จัดกลุ่มกลยุทธ์กับยุทธวิธี", purpose: "ฝึกแยก การกระทำเฉพาะหน้ากับแผนระยะยาว", kind: "sorter" },
+      { id: "decision-canvas", title: "แผนผังโครงสร้างการตัดสินใจ", purpose: "จับสถานการณ์เกมให้เห็นผู้เล่น ตัวเลือก สิ่งแวดล้อม และเป้าหมาย", kind: "canvas" },
+      { id: "splendor-timeline", title: "ลำดับการสร้างส่วนลดสะสมใน Splendor", purpose: "เห็นความได้เปรียบสะสมจากการกระทำหลายรอบ", kind: "timeline" },
       { id: "chess-prompt", title: "Chess puzzle prompt", purpose: "เทียบ tactical move กับ strategic plan โดยไม่ต้องสอนหมากรุกทั้งเกม", kind: "prompt" }
     ],
-    worksheet: "Game Observation Worksheet",
+    worksheet: "ใบงานสังเกตการเล่นเกม",
     submissionTitle: "Strategic Move Reflection",
-    submissionPrompt: "เลือก decision สำคัญจากเกมวันนี้ แล้วอธิบายว่าเป็นกลยุทธ์หรือยุทธวิธี พร้อมเหตุผล",
+    submissionPrompt: "เลือกการตัดสินใจสำคัญจากเกมวันนี้ แล้วอธิบายว่าเป็นกลยุทธ์หรือยุทธวิธี พร้อมเหตุผล",
     exitTicket: {
       title: "Strategic Move Reflection",
-      prompt: "เลือก decision สำคัญจากเกมวันนี้ แล้วอธิบายว่าเป็นกลยุทธ์หรือยุทธวิธี เพราะอะไร",
+      prompt: "เลือกการตัดสินใจสำคัญจากเกมวันนี้ แล้วอธิบายว่าเป็นกลยุทธ์หรือยุทธวิธี เพราะอะไร",
       minWords: 50
     },
     status: "complete"
@@ -85,13 +85,13 @@ export const materialWeeks: MaterialWeek[] = [
     teachToPlay: [],
     conceptBlocks: [],
     activities: [
-      { id: "werewolf-wake-order", title: "One Night Werewolf wake-order strip", purpose: "เห็นว่าแต่ละ role ได้ข้อมูลหรือเปลี่ยนข้อมูลตอนไหน", kind: "placeholder" },
+      { id: "werewolf-wake-order", title: "One Night Werewolf wake-order strip", purpose: "เห็นว่าแต่ละบทบาทได้ข้อมูลหรือเปลี่ยนข้อมูลตอนไหน", kind: "placeholder" },
       { id: "night-action-simulator", title: "Night action simulator", purpose: "จำลองการสลับการ์ดและผลต่อข้อมูลของผู้เล่น", kind: "placeholder" },
-      { id: "information-map", title: "Information map", purpose: "แสดงว่าใครรู้อะไร ใครต้องเดา และ claim ไหนมีหลักฐาน", kind: "placeholder" }
+      { id: "information-map", title: "Information map", purpose: "แสดงว่าใครรู้อะไร ใครต้องเดา และ คำอ้างใดมีหลักฐาน", kind: "placeholder" }
     ],
-    worksheet: "Game Observation Worksheet",
+    worksheet: "ใบงานสังเกตการเล่นเกม",
     submissionTitle: "Information Structure Log",
-    submissionPrompt: "บันทึก key decision 2 ครั้ง และระบุว่าข้อมูลใดเปิดเผย ซ่อนอยู่ หรือไม่สมมาตร",
+    submissionPrompt: "บันทึกการตัดสินใจสำคัญ 2 ครั้ง และระบุว่าข้อมูลใดเปิดเผย ซ่อนอยู่ หรือไม่สมมาตร",
     exitTicket: { title: "Information Structure Log", prompt: "วันนี้มีข้อมูลอะไรที่เปลี่ยนการตัดสินใจของคุณมากที่สุด" },
     status: "complete"
   },
@@ -110,7 +110,7 @@ export const materialWeeks: MaterialWeek[] = [
         goal: "ชนะรอบด้วยการเหลือรอด หรือถือไพ่เลขสูงสุดเมื่อกองจั่วหมด",
         turnLoop: ["จั่ว 1 ใบ", "เลือกเล่น 1 ใบจาก 2 ใบในมือ", "ทำความสามารถของไพ่", "วางไพ่ที่เล่นแล้วหงายไว้เป็นข้อมูลบนโต๊ะ"],
         firstDecisions: ["จะใช้ข้อมูลจากไพ่ที่ออกแล้วอย่างไร", "คำพูดไหนน่าเชื่อหรือเป็นแค่การหลอก", "ควรป้องกันตัวเองหรือกดดันคนอื่น", "ควรเปลี่ยนรูปแบบการเล่นไม่ให้คนอื่นจับทางได้อย่างไร"],
-        doNotWorryYet: ["การจำการ์ดทั้งหมดตั้งแต่รอบแรก", "การ bluff ซับซ้อน", "การคำนวณโอกาสแบบละเอียด"],
+        doNotWorryYet: ["การจำการ์ดทั้งหมดตั้งแต่รอบแรก", "การลวงที่ซับซ้อน", "การคำนวณโอกาสแบบละเอียด"],
         playNowPrompt: "เล่นรอบแรกแบบเปิดเหตุผล แล้วเล่นจริงอีก 2-4 รอบตามเวลา",
         debriefPrompt: "เลือกจังหวะหนึ่งที่ต้องตัดสินใจทั้งที่ข้อมูลไม่ครบ แล้วแยกว่ามีหลักฐานอะไรและมีคำพูดอะไรเข้ามาเกี่ยว"
       }
@@ -121,7 +121,7 @@ export const materialWeeks: MaterialWeek[] = [
       { id: "love-letter-card-checkpoint", title: "Love Letter card checkpoint", purpose: "เช็กความสามารถการ์ดสำคัญก่อนเล่นจริง", kind: "placeholder" },
       { id: "bluff-mixer", title: "Bluff pattern mixer", purpose: "ทดลองเปลี่ยนรูปแบบการเล่นไม่ให้ถูกจับทางง่าย", kind: "placeholder" }
     ],
-    worksheet: "Game Observation Worksheet",
+    worksheet: "ใบงานสังเกตการเล่นเกม",
     submissionTitle: "Credible or Cheap Talk",
     submissionPrompt: "เลือกจังหวะหนึ่งจาก Love Letter แล้ววิเคราะห์ว่าตัดสินใจจากหลักฐาน คำพูด หรือการเดาเพราะข้อมูลไม่ครบ",
     exitTicket: { title: "Credible or Cheap Talk", prompt: "หลักฐานแบบไหนทำให้คุณเชื่อหรือไม่เชื่อผู้เล่นคนหนึ่ง" },
@@ -133,19 +133,19 @@ export const materialWeeks: MaterialWeek[] = [
     englishTitle: "Probability and Risk",
     chapterSource: "chapters/ch04.tex",
     games: ["Catan", "Stone Age"],
-    learningOutcomes: ["คำนวณ expected value เบื้องต้นได้", "อธิบาย risk attitude, variance และ diversification ได้"],
+    learningOutcomes: ["คำนวณค่าคาดหวัง (expected value) เบื้องต้นได้", "อธิบาย risk attitude, variance และ diversification ได้"],
     concepts: ["risk", "probability distribution", "expected value", "expected utility", "variance", "diversification"],
     classFlow: defaultClassFlow,
     teachToPlay: [],
     conceptBlocks: [],
     activities: [
-      { id: "2d6-visualizer", title: "2d6 probability visualizer", purpose: "เห็น distribution ของลูกเต๋า 2 ลูก", kind: "placeholder" },
+      { id: "2d6-visualizer", title: "2d6 probability visualizer", purpose: "เห็นการแจกแจงของลูกเต๋า 2 ลูก", kind: "placeholder" },
       { id: "catan-ev", title: "Catan settlement EV calculator", purpose: "เทียบตำแหน่งตั้งบ้านจาก EV และ variance", kind: "placeholder" },
-      { id: "stone-age-variance", title: "Stone Age worker variance simulator", purpose: "ทดลองกระจาย worker กับความผันผวน", kind: "placeholder" }
+      { id: "stone-age-variance", title: "Stone Age worker variance simulator", purpose: "ทดลองความผันผวนจากการกระจายคนงาน", kind: "placeholder" }
     ],
-    worksheet: "Strategy Analysis Worksheet",
+    worksheet: "ใบงานวิเคราะห์กลยุทธ์",
     submissionTitle: "Risk Decision Note",
-    submissionPrompt: "เลือกตำแหน่งหรือการกระจาย worker แล้วอธิบายด้วย EV, variance และ risk attitude",
+    submissionPrompt: "เลือกตำแหน่งหรือการกระจายคนงาน แล้วอธิบายด้วย EV, variance และ risk attitude",
     exitTicket: { title: "Risk Decision Note", prompt: "EV สูงสุดใช่คำตอบที่ดีที่สุดเสมอไหม เพราะอะไร" },
     status: "placeholder"
   },
@@ -171,7 +171,7 @@ export const materialWeeks: MaterialWeek[] = [
     ],
     conceptBlocks: [
       { title: "Evidence vs Claim", body: "หลักฐานคือสิ่งที่คนอื่นตรวจตามได้ ส่วนคำอ้างคือสิ่งที่ผู้เล่นอยากให้โต๊ะเชื่อ" },
-      { title: "Information Resource", body: "เวลา clue ความสนใจ ความน่าเชื่อถือ และ Badge เป็นทรัพยากรจำกัดที่ต้องใช้ให้คุ้ม" },
+      { title: "Information Resource", body: "เวลา เบาะแส ความสนใจ ความน่าเชื่อถือ และ Badge เป็นทรัพยากรจำกัดที่ต้องใช้ให้คุ้ม" },
       { title: "Opportunity Cost of Guessing", body: "การเดาตอนนี้แลกกับโอกาสรอข้อมูลเพิ่ม และถ้าเดาผิดจะเสีย Badge ไปถาวร" }
     ],
     activities: [
@@ -179,7 +179,7 @@ export const materialWeeks: MaterialWeek[] = [
       { id: "evidence-claim-map", title: "Evidence vs claim map", purpose: "แยกหลักฐานออกจากคำพูดและการตีความ", kind: "prompt" },
       { id: "badge-cost", title: "Badge opportunity-cost checkpoint", purpose: "เห็นต้นทุนของการใช้สิทธิ์เดา 1 ครั้ง", kind: "checkpoint" }
     ],
-    worksheet: "Game Observation Worksheet",
+    worksheet: "ใบงานสังเกตการเล่นเกม",
     submissionTitle: "Evidence and Information Resource Reflection",
     submissionPrompt: "เลือกจังหวะหนึ่งจาก C.S. Files แล้วอธิบายว่าคุณใช้หลักฐาน คำอ้าง หรือทรัพยากรข้อมูลใดในการตัดสินใจ",
     exitTicket: { title: "Evidence and Information Resource Reflection", prompt: "ข้อมูลชิ้นไหนทำให้คุณเปลี่ยนใจ และคุณเสียโอกาสอะไรจากการตัดสินใจนั้น" },
@@ -215,7 +215,7 @@ export const materialWeeks: MaterialWeek[] = [
       { id: "vote-pattern", title: "Vote pattern prompt", purpose: "อ่านเสียงโหวตเป็นข้อมูลเปิดที่ใช้คุยต่อได้", kind: "checkpoint" },
       { id: "claim-evidence", title: "Claim vs evidence board", purpose: "แยกคำอ้างออกจากหลักฐานที่ตรวจตามได้", kind: "prompt" }
     ],
-    worksheet: "Game Observation Worksheet",
+    worksheet: "ใบงานสังเกตการเล่นเกม",
     submissionTitle: "Avalon Trust and Evidence Reflection",
     submissionPrompt: "เลือกจังหวะหนึ่งจาก Avalon แล้วอธิบายว่าคุณใช้ข้อมูลลับ คำอ้าง หลักฐาน หรือเสียงโหวตอย่างไรในการตัดสินใจ",
     exitTicket: { title: "Avalon Trust and Evidence Reflection", prompt: "จังหวะใดทำให้คุณเปลี่ยนความเชื่อใจผู้เล่นคนหนึ่ง และเพราะอะไร" },
@@ -227,42 +227,42 @@ export const materialWeeks: MaterialWeek[] = [
     englishTitle: "Resource Management",
     chapterSource: "chapters/ch05.tex",
     games: ["Splendor", "7 Wonders"],
-    learningOutcomes: ["อธิบาย scarcity และ opportunity cost ได้", "วิเคราะห์ chain dependency และ comparative advantage ได้"],
+    learningOutcomes: ["อธิบายความขาดแคลน (scarcity) และต้นทุนค่าเสียโอกาส (opportunity cost) ได้", "วิเคราะห์การพึ่งพากันเป็นทอด ๆ (chain dependency) และความได้เปรียบโดยเปรียบเทียบ (comparative advantage) ได้"],
     concepts: ["scarcity", "opportunity cost", "diminishing marginal utility", "allocative efficiency", "externality", "chain dependency"],
     classFlow: defaultClassFlow,
     teachToPlay: [],
     conceptBlocks: [],
     activities: [
-      { id: "opportunity-cost", title: "Opportunity cost chooser", purpose: "เห็นต้นทุนของ action ที่ไม่ได้เลือก", kind: "placeholder" },
-      { id: "resource-flow", title: "Resource flow map", purpose: "วาดเส้นทางทรัพยากรจากต้นเกมถึงคะแนน", kind: "placeholder" },
-      { id: "7w-chain", title: "7 Wonders chain planner", purpose: "ทดลอง dependency ของการ์ด", kind: "placeholder" }
+      { id: "opportunity-cost", title: "เปรียบเทียบต้นทุนค่าเสียโอกาส", purpose: "เห็นต้นทุนของการกระทำที่ไม่ได้เลือก", kind: "placeholder" },
+      { id: "resource-flow", title: "แผนผังการไหลของทรัพยากร", purpose: "วาดเส้นทางทรัพยากรจากต้นเกมถึงคะแนน", kind: "placeholder" },
+      { id: "7w-chain", title: "วางแผนการสร้างต่อเนื่องใน 7 Wonders", purpose: "ทดลองการพึ่งพากันของการ์ด", kind: "placeholder" }
     ],
-    worksheet: "Strategy Analysis Worksheet",
+    worksheet: "ใบงานวิเคราะห์กลยุทธ์",
     submissionTitle: "Resource Choice Memo",
-    submissionPrompt: "อธิบาย resource decision หนึ่งครั้งด้วย opportunity cost และผลต่อแผนระยะยาว",
+    submissionPrompt: "อธิบายการตัดสินใจใช้ทรัพยากรหนึ่งครั้งด้วยต้นทุนค่าเสียโอกาส และผลต่อแผนระยะยาว",
     exitTicket: { title: "Resource Choice Memo", prompt: "ทรัพยากรใดที่ดูสำคัญน้อยตอนแรก แต่ส่งผลต่อเกมภายหลัง" },
     status: "placeholder"
   },
   {
     week: 8,
-    title: "กลยุทธ์การวาง Worker",
+    title: "กลยุทธ์การวางคนงาน",
     englishTitle: "Worker Placement and Scheduling Strategy",
     chapterSource: "chapters/ch06.tex",
     games: ["Stone Age", "Agricola", "Architects of the West Kingdom"],
-    learningOutcomes: ["วิเคราะห์ action space และ timing ได้", "อธิบาย blocking, scarcity และ deterrence ใน worker placement ได้"],
+    learningOutcomes: ["วิเคราะห์พื้นที่สำหรับทำแอ็กชัน (action space) และจังหวะเวลา (timing) ได้", "อธิบาย blocking, scarcity และ deterrence ใน worker placement ได้"],
     concepts: ["worker placement", "action space", "blocking", "timing", "scheduling", "deterrence"],
     classFlow: defaultClassFlow,
     teachToPlay: [],
     conceptBlocks: [],
     activities: [
-      { id: "worker-priority", title: "Worker priority board", purpose: "เรียงลำดับ action space ตามความเร่งด่วน", kind: "placeholder" },
-      { id: "blocking-map", title: "Blocking map", purpose: "เห็นผลของการแย่งพื้นที่", kind: "placeholder" },
-      { id: "schedule-planner", title: "Round schedule planner", purpose: "วางแผนหลายรอบล่วงหน้า", kind: "placeholder" }
+      { id: "worker-priority", title: "จัดลำดับความสำคัญของคนงาน", purpose: "เรียงลำดับพื้นที่ทำแอ็กชันตามความเร่งด่วน", kind: "placeholder" },
+      { id: "blocking-map", title: "แผนผังการแย่งพื้นที่", purpose: "เห็นผลของการแย่งพื้นที่", kind: "placeholder" },
+      { id: "schedule-planner", title: "วางแผนลำดับการเล่นแต่ละรอบ", purpose: "วางแผนหลายรอบล่วงหน้า", kind: "placeholder" }
     ],
-    worksheet: "Strategy Analysis Worksheet",
+    worksheet: "ใบงานวิเคราะห์กลยุทธ์",
     submissionTitle: "Worker Placement Plan",
-    submissionPrompt: "วิเคราะห์ action space สำคัญและเหตุผลของ timing ที่เลือก",
-    exitTicket: { title: "Worker Placement Plan", prompt: "วันนี้คุณเลือก action เพราะมันดีที่สุด หรือเพราะกลัวถูก block" },
+    submissionPrompt: "วิเคราะห์พื้นที่ทำแอ็กชันที่สำคัญและอธิบายเหตุผลที่เลือกจังหวะเวลานั้น",
+    exitTicket: { title: "Worker Placement Plan", prompt: "วันนี้คุณเลือกแอ็กชันเพราะคุ้มที่สุด หรือเพราะกลัวคู่แข่งแย่งพื้นที่" },
     status: "placeholder"
   },
   {
@@ -277,19 +277,19 @@ export const materialWeeks: MaterialWeek[] = [
     teachToPlay: [],
     conceptBlocks: [],
     activities: [
-      { id: "batna-canvas", title: "BATNA negotiation canvas", purpose: "เห็นทางเลือกสำรองของแต่ละฝ่าย", kind: "placeholder" },
-      { id: "price-signal", title: "Stockpile price signal board", purpose: "มองราคาว่าเป็นข้อมูล", kind: "placeholder" },
-      { id: "trade-network", title: "Catan trade network graph", purpose: "เห็นเครือข่าย trade และ coalition", kind: "placeholder" }
+      { id: "batna-canvas", title: "แผนผังการเจรจาและ BATNA", purpose: "เห็นทางเลือกสำรองของแต่ละฝ่าย", kind: "placeholder" },
+      { id: "price-signal", title: "อ่านสัญญาณราคาจาก Stockpile", purpose: "มองราคาว่าเป็นข้อมูล", kind: "placeholder" },
+      { id: "trade-network", title: "กราฟเครือข่ายการแลกเปลี่ยนใน Catan", purpose: "เห็นเครือข่ายการแลกเปลี่ยนและการรวมกลุ่ม", kind: "placeholder" }
     ],
-    worksheet: "Strategy Analysis Worksheet",
+    worksheet: "ใบงานวิเคราะห์กลยุทธ์",
     submissionTitle: "Bargaining and BATNA Memo",
     submissionPrompt: "เลือกดีลหนึ่งครั้ง วิเคราะห์ BATNA อำนาจต่อรอง และผลต่อผู้นำเกม",
-    exitTicket: { title: "Bargaining and BATNA Memo", prompt: "ดีลไหนดูยุติธรรมแต่จริงๆ เปลี่ยนอำนาจในเกม" },
+    exitTicket: { title: "Bargaining and BATNA Memo", prompt: "ดีลไหนดูยุติธรรมแต่จริง ๆ เปลี่ยนอำนาจในเกม" },
     status: "placeholder"
   },
   {
     week: 10,
-    title: "แนวคิด Game Theory",
+    title: "แนวคิดทฤษฎีเกม",
     englishTitle: "Game Theory Concepts",
     chapterSource: "chapters/ch08.tex",
     games: ["7 Wonders Duel", "Catan"],
@@ -299,11 +299,11 @@ export const materialWeeks: MaterialWeek[] = [
     teachToPlay: [],
     conceptBlocks: [],
     activities: [
-      { id: "payoff-builder", title: "Payoff matrix builder", purpose: "สร้าง matrix จากสถานการณ์ในเกม", kind: "placeholder" },
-      { id: "dominant-highlighter", title: "Dominant strategy highlighter", purpose: "หา strategy ที่ดีกว่าเสมอ", kind: "placeholder" },
-      { id: "nash-checker", title: "Nash equilibrium checker", purpose: "ตรวจดุลยภาพแบบง่าย", kind: "placeholder" }
+      { id: "payoff-builder", title: "สร้างเมทริกซ์ผลตอบแทน", purpose: "สร้างเมทริกซ์จากสถานการณ์ในเกม", kind: "placeholder" },
+      { id: "dominant-highlighter", title: "ค้นหากลยุทธ์เด่น", purpose: "หากลยุทธ์ที่ให้ผลดีกว่าเสมอ", kind: "placeholder" },
+      { id: "nash-checker", title: "ตรวจดุลยภาพแนช", purpose: "ตรวจดุลยภาพแบบง่าย", kind: "placeholder" }
     ],
-    worksheet: "Strategy Analysis Worksheet",
+    worksheet: "ใบงานวิเคราะห์กลยุทธ์",
     submissionTitle: "Payoff Matrix from Play",
     submissionPrompt: "สร้าง payoff matrix จากสถานการณ์ในเกม แล้วระบุ dominant strategy หรือ Nash equilibrium ถ้ามี",
     exitTicket: { title: "Payoff Matrix from Play", prompt: "สถานการณ์ใดในเกมวันนี้เปลี่ยนเป็น payoff matrix ได้ชัดที่สุด" },
@@ -321,13 +321,13 @@ export const materialWeeks: MaterialWeek[] = [
     teachToPlay: [],
     conceptBlocks: [],
     activities: [
-      { id: "connectivity-tool", title: "Taluva connectivity graph tool", purpose: "แปลงพื้นที่เป็น node/edge", kind: "placeholder" },
-      { id: "cut-vertex", title: "Cut vertex detector", purpose: "หาจุดเปราะของ network", kind: "placeholder" },
-      { id: "heatmap", title: "Territory influence heatmap", purpose: "เห็นพื้นที่คุมเกม", kind: "placeholder" }
+      { id: "connectivity-tool", title: "กราฟการเชื่อมต่อพื้นที่ใน Taluva", purpose: "แทนพื้นที่ด้วยจุดยอดและเส้นเชื่อม", kind: "placeholder" },
+      { id: "cut-vertex", title: "ค้นหาจุดยอดตัด (Cut vertex)", purpose: "หาจุดเปราะบางของเครือข่าย", kind: "placeholder" },
+      { id: "heatmap", title: "แผนที่แสดงอิทธิพลเหนือพื้นที่", purpose: "เห็นพื้นที่คุมเกม", kind: "placeholder" }
     ],
-    worksheet: "Game Observation Worksheet",
+    worksheet: "ใบงานสังเกตการเล่นเกม",
     submissionTitle: "Spatial Map and Weak Point",
-    submissionPrompt: "วาด map หรือ graph ของสถานการณ์ในเกม ระบุจุดแข็ง จุดอ่อน และตำแหน่งที่ควร block",
+    submissionPrompt: "วาดแผนที่หรือกราฟของสถานการณ์ในเกม ระบุจุดแข็ง จุดอ่อน และตำแหน่งที่ควรขัดขวางคู่แข่ง",
     exitTicket: { title: "Spatial Map and Weak Point", prompt: "จุดใดบนกระดานสำคัญที่สุด และสำคัญเพราะอะไร" },
     status: "placeholder"
   },
@@ -343,13 +343,13 @@ export const materialWeeks: MaterialWeek[] = [
     teachToPlay: [],
     conceptBlocks: [],
     activities: [
-      { id: "fitness-landscape", title: "Fitness landscape explorer", purpose: "เห็นทางเลือกที่ดีในสภาพแวดล้อมต่างกัน", kind: "placeholder" },
-      { id: "adaptation-tracker", title: "Species adaptation tracker", purpose: "ติดตามการปรับตัวใน Evolution", kind: "placeholder" },
-      { id: "red-queen", title: "Red Queen arms race timeline", purpose: "เห็นการไล่ตามกันของกลยุทธ์", kind: "placeholder" }
+      { id: "fitness-landscape", title: "สำรวจภูมิทัศน์ความเหมาะสม", purpose: "เห็นทางเลือกที่ดีในสภาพแวดล้อมต่างกัน", kind: "placeholder" },
+      { id: "adaptation-tracker", title: "ติดตามการปรับตัวของสปีชีส์", purpose: "ติดตามการปรับตัวใน Evolution", kind: "placeholder" },
+      { id: "red-queen", title: "ลำดับการแข่งขันปรับตัวตามแนวคิด Red Queen", purpose: "เห็นการไล่ตามกันของกลยุทธ์", kind: "placeholder" }
     ],
-    worksheet: "Game Observation Worksheet",
+    worksheet: "ใบงานสังเกตการเล่นเกม",
     submissionTitle: "When Good Strategy Expired",
-    submissionPrompt: "อธิบาย strategy ที่เคยดีแต่ต้องเปลี่ยน เพราะ environment หรือคู่แข่งเปลี่ยนไป",
+    submissionPrompt: "อธิบายกลยุทธ์ที่เคยได้ผลแต่ต้องเปลี่ยน เพราะสภาพแวดล้อมหรือคู่แข่งเปลี่ยนไป",
     exitTicket: { title: "When Good Strategy Expired", prompt: "กลยุทธ์ใดที่หมดอายุระหว่างเกมวันนี้" },
     status: "placeholder"
   },
@@ -365,13 +365,13 @@ export const materialWeeks: MaterialWeek[] = [
     teachToPlay: [],
     conceptBlocks: [],
     activities: [
-      { id: "terraforming-dashboard", title: "Terraforming parameter dashboard", purpose: "ติดตาม global parameters", kind: "placeholder" },
-      { id: "feedback-loop", title: "Feedback loop mapper", purpose: "วาดวงจร feedback", kind: "placeholder" },
-      { id: "tipping-signal", title: "Tipping point signal tracker", purpose: "มองสัญญาณก่อนระบบเปลี่ยน", kind: "placeholder" }
+      { id: "terraforming-dashboard", title: "ติดตามตัวแปรของ Terraforming Mars", purpose: "ติดตามค่าตัวแปรระดับระบบ", kind: "placeholder" },
+      { id: "feedback-loop", title: "วาดวงจรป้อนกลับ", purpose: "วาดวงจรป้อนกลับ", kind: "placeholder" },
+      { id: "tipping-signal", title: "ติดตามสัญญาณก่อนถึงจุดเปลี่ยน", purpose: "มองสัญญาณก่อนระบบเปลี่ยน", kind: "placeholder" }
     ],
-    worksheet: "Strategy Analysis Worksheet",
+    worksheet: "ใบงานวิเคราะห์กลยุทธ์",
     submissionTitle: "Emergence and Feedback Map",
-    submissionPrompt: "สร้าง systems map แสดงว่า action หลายฝ่ายทำให้เกิดผลระดับระบบอย่างไร",
+    submissionPrompt: "สร้างแผนภาพระบบ แสดงว่าการกระทำของหลายฝ่ายทำให้เกิดผลระดับระบบอย่างไร",
     exitTicket: { title: "Emergence and Feedback Map", prompt: "ผลลัพธ์ใดเกิดจากระบบรวม ไม่ใช่จากผู้เล่นคนเดียว" },
     status: "placeholder"
   },
@@ -381,20 +381,20 @@ export const materialWeeks: MaterialWeek[] = [
     englishTitle: "Strategic Analysis and Application",
     chapterSource: "chapters/ch12.tex",
     games: ["Catan", "student-selected game"],
-    learningOutcomes: ["ใช้ 4 layers of strategic thinking เพื่อ diagnose สถานการณ์ได้", "สังเคราะห์ recommendation จากหลาย framework ได้"],
+    learningOutcomes: ["ใช้กรอบการคิดเชิงกลยุทธ์ 4 ชั้นเพื่อวิเคราะห์สถานการณ์ได้", "สังเคราะห์ข้อเสนอแนะจากหลายกรอบคิดได้"],
     concepts: ["4 layers", "decision diagnostic", "multi-framework analysis", "framework tension", "cognitive bias", "strategic toolkit"],
     classFlow: defaultClassFlow,
     teachToPlay: [],
     conceptBlocks: [],
     activities: [
-      { id: "diagnostic-wizard", title: "Decision diagnostic wizard", purpose: "เลือกกรอบคิดให้เหมาะกับสถานการณ์", kind: "placeholder" },
-      { id: "framework-selector", title: "Framework selector", purpose: "เลือก framework อย่างน้อย 3 ชุด", kind: "placeholder" },
-      { id: "presentation-builder", title: "Final project presentation builder", purpose: "จัดโครงนำเสนอ final mini project", kind: "placeholder" }
+      { id: "diagnostic-wizard", title: "วิเคราะห์สถานการณ์การตัดสินใจ", purpose: "เลือกกรอบคิดให้เหมาะกับสถานการณ์", kind: "placeholder" },
+      { id: "framework-selector", title: "เลือกกรอบคิด", purpose: "เลือกกรอบคิดอย่างน้อย 3 ชุด", kind: "placeholder" },
+      { id: "presentation-builder", title: "วางโครงนำเสนอโครงงานท้ายรายวิชา", purpose: "จัดโครงนำเสนอโครงงานย่อยท้ายรายวิชา", kind: "placeholder" }
     ],
-    worksheet: "Strategy Analysis Worksheet",
+    worksheet: "ใบงานวิเคราะห์กลยุทธ์",
     submissionTitle: "Multi-Framework Strategy Analysis",
-    submissionPrompt: "เลือกเกมหรือสถานการณ์หนึ่ง วิเคราะห์ด้วยอย่างน้อย 3 frameworks และเสนอ strategic recommendation",
-    exitTicket: { title: "Multi-Framework Strategy Analysis", prompt: "framework ใดช่วยให้คุณเห็นเกมต่างจากเดิมมากที่สุด" },
+    submissionPrompt: "เลือกเกมหรือสถานการณ์หนึ่ง วิเคราะห์ด้วยกรอบคิดอย่างน้อย 3 กรอบ และเสนอคำแนะนำเชิงกลยุทธ์",
+    exitTicket: { title: "Multi-Framework Strategy Analysis", prompt: "กรอบคิดใดช่วยให้มองเกมต่างจากเดิมมากที่สุด" },
     status: "placeholder"
   }
 ];

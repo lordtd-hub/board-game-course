@@ -552,23 +552,23 @@
   <main class="page">
     <header class="topbar">
       <div class="brand"><span class="mark">ON</span><span>SMA2106 Board Game Course</span></div>
-      <a class="hub-link" href="../../">กลับหน้า Hub</a>
+      <a class="hub-link" href="../../">กลับหน้ารวมสื่อ</a>
     </header>
 
     <section class="hero">
       <div class="hero-copy">
         <p class="kicker">One Night Werewolf Reflection</p>
         <h1>บันทึกหลังเล่น One Night Werewolf</h1>
-        <p class="lead">เลือกสิ่งที่เกิดขึ้นจริงในเกม แล้วระบบจะช่วยเรียบเรียงเป็นข้อความส่ง Google Classroom ให้ อ่านทวนได้ก่อน copy</p>
+        <p class="lead">เลือกสิ่งที่เกิดขึ้นจริงในเกม แล้วระบบจะช่วยเรียบเรียงเป็นข้อความส่ง Google Classroom ให้ อ่านทวนก่อนคัดลอกได้</p>
       </div>
       <aside class="village-card" aria-label="แนวคิดของใบงาน">
         <div class="moon-note">
-          <strong>เป้าหมายไม่ใช่เขียนยาว แต่คือจับให้ได้ว่า “ฉันรู้อะไร และเชื่ออะไรตอนโหวต”</strong>
+          <strong>เขียนสั้น ๆ ให้ชัดว่า “ฉันรู้อะไร และเชื่ออะไรตอนโหวต”</strong>
           <p>หลังเล่นหลายรอบ ให้เลือกหนึ่งรอบที่จำได้ที่สุด แล้วทบทวนข้อมูล คำอ้าง หลักฐาน และความไม่แน่ใจของตัวเอง</p>
         </div>
         <div class="status-card">
           <span id="statusPill">เริ่มกรอกได้เลย</span>
-          <p id="statusText">ระบบจะบันทึก draft ไว้ในเครื่องนี้เท่านั้น</p>
+          <p id="statusText">ระบบจะบันทึกแบบร่างไว้ในเครื่องนี้เท่านั้น</p>
         </div>
       </aside>
     </section>
@@ -607,11 +607,11 @@
       </div>
 
       <div class="field">
-        <div class="field-title">รอบที่อยากใช้เขียน reflection</div>
+        <div class="field-title">รอบที่ต้องการนำมาทบทวน</div>
         <div class="choice-grid" id="focusRoundChoices"></div>
       </div>
 
-      <button class="secondary danger" id="resetButton">Reset draft</button>
+      <button class="secondary danger" id="resetButton">ล้างแบบร่าง</button>
     </section>
 
     <section class="panel">
@@ -648,11 +648,11 @@
           <p class="kicker">Google Classroom Text</p>
           <h2>ข้อความสำหรับส่ง</h2>
         </div>
-        <span>ตรวจแล้วค่อย copy</span>
+        <span>ตรวจข้อความก่อนคัดลอก</span>
       </div>
       <textarea id="outputText" readonly></textarea>
       <div class="output-actions">
-        <button class="primary" id="copyButton">Copy for Google Classroom</button>
+        <button class="primary" id="copyButton">คัดลอกไปส่ง Google Classroom</button>
         <button class="secondary" id="selectButton">เลือกข้อความทั้งหมด</button>
         <div class="copy-status" id="copyStatus" aria-live="polite"></div>
       </div>
@@ -944,7 +944,7 @@
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
       } catch (error) {
-        copyStatus.textContent = "เครื่องนี้บันทึก draft ไม่สำเร็จ ให้ copy ข้อความก่อนปิดหน้า";
+        copyStatus.textContent = "บันทึกแบบร่างในเครื่องนี้ไม่สำเร็จ คัดลอกข้อความไว้ก่อนปิดหน้า";
       }
     }
 
@@ -1147,7 +1147,7 @@
       document.getElementById("progressLabel").textContent = `กรอกแล้ว ${completed}/${total} รายการ`;
       document.getElementById("statusText").textContent = completed === total
         ? "กรอกครบแล้ว ตรวจข้อความด้านล่างแล้วกด Copy ได้เลย"
-        : "ระบบจะบันทึก draft ไว้ในเครื่องนี้เท่านั้น";
+        : "ระบบจะบันทึกแบบร่างไว้ในเครื่องนี้เท่านั้น";
       document.getElementById("statusPill").textContent = completed === total ? "พร้อมส่ง" : "กำลังเขียน";
 
       const missingReasons = Object.keys(categories).some((key) => {
@@ -1170,7 +1170,7 @@
     }
 
     function resetDraft() {
-      const ok = window.confirm("ล้าง draft ในเครื่องนี้และเริ่มใหม่?");
+      const ok = window.confirm("ล้างแบบร่างในเครื่องนี้แล้วเริ่มใหม่ไหม?");
       if (!ok) return;
       localStorage.removeItem(STORAGE_KEY);
       state = emptyState();

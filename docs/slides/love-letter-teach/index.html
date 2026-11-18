@@ -515,8 +515,8 @@
         <h2>ชนะรอบอย่างไร</h2>
         <div class="mini-grid">
           <div class="rule"><strong>เหลือคนเดียว</strong><p>ถ้าคนอื่นตกรอบหมด คุณชนะรอบทันที</p></div>
-          <div class="rule"><strong>ไพ่หมดกอง</strong><p>คนที่ยังไม่ตกรอบเปิดไพ่ในมือ ใครเลขสูงสุดชนะรอบ</p></div>
-          <div class="rule"><strong>เสมอได้</strong><p>ถ้าเลขสูงสุดเสมอกัน ผู้เล่นที่เสมอกันได้ favor token คนละ 1</p></div>
+          <div class="rule"><strong>ไพ่หมดกอง</strong><p>เมื่อจบตาแล้วกองจั่วหมด คนที่ยังไม่ตกรอบเปิดไพ่ในมือ ใครเลขสูงสุดชนะรอบ</p></div>
+          <div class="rule"><strong>เสมอได้</strong><p>ถ้าเลขสูงสุดเสมอกัน ผู้เล่นที่เสมอกันได้ โทเคนคนละ 1</p></div>
         </div>
       </article>
 
@@ -526,12 +526,12 @@
           <ul>
             <li>การ์ดตัวละคร 21 ใบ</li>
             <li>ผู้เล่น 2-6 คน</li>
-            <li>แต่ละรอบใช้มือคนละ 1 ใบ แล้วจั่วขึ้นมาเป็น 2 ใบตอนถึงตา</li>
-            <li>ใครเก็บ favor token ถึงเป้าตามจำนวนผู้เล่นจะชนะเกม</li>
+            <li>แต่ละรอบถือไพ่คนละ 1 ใบ แล้วจั่วขึ้นมาเป็น 2 ใบตอนถึงตา</li>
+            <li>ใครเก็บโทเคนถึงเป้าตามจำนวนผู้เล่นจะชนะเกม ผู้เล่นอาจชนะพร้อมกันได้</li>
           </ul>
         </div>
         <div class="panel">
-          <h3>จำนวน token ที่ต้องได้</h3>
+          <h3>จำนวนโทเคนที่ต้องได้</h3>
           <div class="token-row">
             <span class="token">2 คน: 6</span>
             <span class="token">3 คน: 5</span>
@@ -545,10 +545,10 @@
       <article class="slide center two-col" data-title="หน้าตาการ์ดจริง">
         <div>
           <h2>หน้าตาการ์ดที่ใช้จริง</h2>
-          <p class="lead">ตอนสอนให้ชี้เลขมุมซ้ายบนก่อน แล้วค่อยอ่านชื่อการ์ดกับความสามารถด้านล่าง เด็กจะจับคู่ “เลข + ภาพ + effect” ได้เร็วขึ้น</p>
+          <p class="lead">ตอนสอนให้ชี้เลขมุมซ้ายบนก่อน แล้วค่อยอ่านชื่อการ์ดกับความสามารถด้านล่าง เด็กจะจับคู่ “เลข + ภาพ + ความสามารถ” ได้เร็วขึ้น</p>
           <div class="token-row">
             <span class="token">เลขคือค่าตอนจบรอบ</span>
-            <span class="token">ชื่อช่วยจำ effect</span>
+            <span class="token">ชื่อช่วยจำความสามารถ</span>
             <span class="token">ไพ่ที่ออกแล้วคือข้อมูลบนโต๊ะ</span>
           </div>
         </div>
@@ -559,7 +559,7 @@
 
       <article class="slide center two-col" data-title="Setup">
         <div>
-          <h2>Setup รอบหนึ่ง</h2>
+          <h2>เตรียมแต่ละรอบ</h2>
           <ul>
             <li>สับการ์ด 21 ใบ</li>
             <li>เอาใบบนสุดออก 1 ใบ คว่ำไว้ ห้ามดู</li>
@@ -575,7 +575,7 @@
 
       <article class="slide center two-col" data-title="Turn">
         <div>
-          <h2>เทิร์นของคุณมีแค่ 3 ขั้น</h2>
+          <h2>แต่ละตาเล่น 3 ขั้น</h2>
           <ul>
             <li>จั่ว 1 ใบ</li>
             <li>เลือกเล่น 1 ใบจาก 2 ใบในมือ</li>
@@ -591,8 +591,8 @@
       <article class="slide center" data-title="การ์ด 0-2">
         <h2>การ์ดเลข 0-2</h2>
         <div class="card-table focus-three">
-          <div class="role-card large"><span class="value">0</span><img class="card-photo" src="assets/card-0-spy.png" alt="การ์ด Spy หมายเลข 0" /><strong>Spy</strong><span class="count">มี 2 ใบ</span><p>ไม่มี effect ตอนเล่น แต่ถ้าเป็นคนเดียวที่เคยเล่นหรือทิ้ง Spy ตอนจบรอบ ได้ token เพิ่ม 1</p></div>
-          <div class="role-card large"><span class="value">1</span><img class="card-photo" src="assets/card-1-guard.png" alt="การ์ด Guard หมายเลข 1" /><strong>Guard</strong><span class="count">มี 6 ใบ</span><p>เลือกคนอื่นแล้วทายการ์ด ห้ามทาย Guard</p><div class="memory">จำง่าย: ทหารยามถามว่า “ถือใบอะไร”</div></div>
+          <div class="role-card large"><span class="value">0</span><img class="card-photo" src="assets/card-0-spy.png" alt="การ์ด Spy หมายเลข 0" /><strong>Spy</strong><span class="count">มี 2 ใบ</span><p>จบรอบแล้ว ถ้ายังไม่ตกรอบและเป็นผู้เล่นที่เหลือเพียงคนเดียวที่เคยเล่นหรือทิ้ง Spy ได้โทเคนเพิ่ม 1 แยกจากรางวัลชนะรอบ แม้ใช้ Spy ทั้งคู่ก็ได้โบนัสเท่าเดิม</p></div>
+          <div class="role-card large"><span class="value">1</span><img class="card-photo" src="assets/card-1-guard.png" alt="การ์ด Guard หมายเลข 1" /><strong>Guard</strong><span class="count">มี 6 ใบ</span><p>เลือกคนอื่นแล้วทายการ์ด ห้ามทาย Guard ถ้าทายถูก คนนั้นตกรอบ</p><div class="memory">จำง่าย: ทหารยามถามว่า “ถือใบอะไร”</div></div>
           <div class="role-card large"><span class="value">2</span><img class="card-photo" src="assets/card-2-priest.png" alt="การ์ด Priest หมายเลข 2" /><strong>Priest</strong><span class="count">มี 2 ใบ</span><p>ดูไพ่ในมือของผู้เล่นคนอื่นแบบลับ ๆ</p></div>
         </div>
       </article>
@@ -600,16 +600,16 @@
       <article class="slide center" data-title="การ์ด 3-5">
         <h2>การ์ดเลข 3-5</h2>
         <div class="card-table focus-three">
-          <div class="role-card large"><span class="value">3</span><img class="card-photo" src="assets/card-3-baron.png" alt="การ์ด Baron หมายเลข 3" /><strong>Baron</strong><span class="count">มี 2 ใบ</span><p>เทียบไพ่กับอีกคนแบบลับ ๆ เลขต่ำกว่าตกรอบ</p></div>
+          <div class="role-card large"><span class="value">3</span><img class="card-photo" src="assets/card-3-baron.png" alt="การ์ด Baron หมายเลข 3" /><strong>Baron</strong><span class="count">มี 2 ใบ</span><p>เทียบไพ่กับอีกคนแบบลับ ๆ เลขต่ำกว่าตกรอบ ถ้าเลขเท่ากัน ไม่มีใครตกรอบ</p></div>
           <div class="role-card large"><span class="value">4</span><img class="card-photo" src="assets/card-4-handmaid.png" alt="การ์ด Handmaid หมายเลข 4" /><strong>Handmaid</strong><span class="count">มี 2 ใบ</span><p>ป้องกันตัวเองจนถึงต้นเทิร์นถัดไป คนอื่นเลือกคุณเป็นเป้าหมายไม่ได้</p><div class="memory">จำง่าย: สาวใช้ช่วยกันตัว</div></div>
-          <div class="role-card large"><span class="value">5</span><img class="card-photo" src="assets/card-5-prince.png" alt="การ์ด Prince หมายเลข 5" /><strong>Prince</strong><span class="count">มี 2 ใบ</span><p>เลือกใครก็ได้ รวมตัวเอง ให้ทิ้งไพ่ในมือแล้วจั่วใหม่</p></div>
+          <div class="role-card large"><span class="value">5</span><img class="card-photo" src="assets/card-5-prince.png" alt="การ์ด Prince หมายเลข 5" /><strong>Prince</strong><span class="count">มี 2 ใบ</span><p>เลือกใครก็ได้ รวมตัวเอง ให้ทิ้งไพ่หงายแล้วจั่วใหม่ ถ้ากองจั่วหมดให้ใช้ไพ่ที่กันไว้คว่ำ ถ้าทิ้ง Princess จะตกรอบและไม่จั่วใหม่</p></div>
         </div>
       </article>
 
       <article class="slide center" data-title="การ์ด 6-9">
         <h2>การ์ดเลข 6-9</h2>
         <div class="card-table focus-four">
-          <div class="role-card large"><span class="value">6</span><img class="card-photo" src="assets/card-6-chancellor.png" alt="การ์ด Chancellor หมายเลข 6" /><strong>Chancellor</strong><span class="count">มี 2 ใบ</span><p>จั่วเพิ่ม 2 ใบ เลือกเก็บ 1 ใบ ที่เหลือวางใต้กองจั่วตามลำดับที่เลือก</p></div>
+          <div class="role-card large"><span class="value">6</span><img class="card-photo" src="assets/card-6-chancellor.png" alt="การ์ด Chancellor หมายเลข 6" /><strong>Chancellor</strong><span class="count">มี 2 ใบ</span><p>จั่วเพิ่ม 2 ใบ เลือกเก็บ 1 ใบ ที่เหลือคว่ำใต้กองตามลำดับที่เลือก ถ้าจั่วไม่พอให้จั่วเท่าที่เหลือ ถ้ากองหมดจะไม่มีผล</p></div>
           <div class="role-card large"><span class="value">7</span><img class="card-photo" src="assets/card-7-king.png" alt="การ์ด King หมายเลข 7" /><strong>King</strong><span class="count">มี 1 ใบ</span><p>สลับไพ่ในมือกับผู้เล่นอีกคน</p></div>
           <div class="role-card large"><span class="value">8</span><img class="card-photo" src="assets/card-8-countess.png" alt="การ์ด Countess หมายเลข 8" /><strong>Countess</strong><span class="count">มี 1 ใบ</span><p>ต้องเล่นถ้าอีกใบในมือคือ King หรือ Prince</p><div class="memory">จำง่าย: ใบที่มีกฎบังคับ</div></div>
           <div class="role-card large"><span class="value">9</span><img class="card-photo" src="assets/card-9-princess.png" alt="การ์ด Princess หมายเลข 9" /><strong>Princess</strong><span class="count">มี 1 ใบ</span><p>ถ้าเล่นหรือทิ้งไม่ว่าด้วยเหตุใด คุณตกรอบ</p><div class="memory">จำง่าย: สูงสุด แต่อันตรายสุด</div></div>
@@ -623,7 +623,7 @@
             <li>Guard, Priest, Baron และ King ต้องเลือกผู้เล่นคนอื่น</li>
             <li>Prince เลือกตัวเองได้ หรือเลือกคนอื่นก็ได้</li>
             <li>คนที่มี Handmaid ป้องกันอยู่ เลือกเป็นเป้าหมายไม่ได้</li>
-            <li>ถ้าทุกคนที่เลือกได้ถูกป้องกัน effect นั้นอาจไม่เกิดผล</li>
+            <li>ถ้าผู้เล่นคนอื่นที่ยังอยู่ในรอบมี Handmaid ป้องกันทั้งหมด Guard, Priest, Baron และ King จะไม่มีผล แต่ Prince ต้องเลือกตัวเอง</li>
           </ul>
         </div>
         <div class="rule">
@@ -634,12 +634,12 @@
 
       <article class="slide center two-col" data-title="กฎอันตราย">
         <div>
-          <h2>สามใบที่ต้องจำให้แม่น</h2>
+          <h2>การ์ดสำคัญที่ต้องจำ</h2>
           <div class="card-grid">
-            <div class="rule"><strong>Countess</strong><p>ถ้าอยู่คู่ King หรือ Prince ต้องเล่น Countess</p></div>
+            <div class="rule"><strong>Countess</strong><p>ถ้าอยู่คู่ King หรือ Prince ตอนเลือกไพ่เล่น ต้องเล่น Countess แต่เงื่อนไขนี้ไม่ใช้ระหว่างจั่วด้วย Chancellor</p></div>
             <div class="rule"><strong>Princess</strong><p>เล่นเองหรือถูกบังคับทิ้งก็ตกรอบ</p></div>
             <div class="rule"><strong>Handmaid</strong><p>กันไม่ให้คนอื่นเลือกเราเป็นเป้าหมาย</p></div>
-            <div class="rule"><strong>Chancellor</strong><p>ช่วยเปลี่ยนมือ แต่ไม่ได้ทำให้ทิ้งไพ่แบบเปิด effect</p></div>
+            <div class="rule"><strong>Chancellor</strong><p>ช่วยเปลี่ยนมือ แต่ไม่ได้ทำให้ทิ้งไพ่แล้วใช้ความสามารถ</p></div>
           </div>
         </div>
         <div class="panel">
@@ -746,13 +746,13 @@
       <article class="slide center two-col" data-title="อ้างอิง">
         <div>
           <h2>พร้อมเล่นแล้ว</h2>
-          <p class="lead">ถ้าผู้เล่นจำ turn flow, Guard, Handmaid, Countess และ Princess ได้ เกมจะเริ่มได้เลย รายละเอียดที่เหลือเรียนรู้ระหว่างเล่นรอบแรก</p>
+          <p class="lead">ถ้าผู้เล่นจำลำดับการเล่นในแต่ละตารวมถึง Guard, Handmaid, Countess และ Princess ได้ เกมจะเริ่มได้เลย รายละเอียดที่เหลือเรียนรู้ระหว่างเล่นรอบแรก</p>
         </div>
         <div class="panel">
           <h3>อ้างอิงกติกา</h3>
           <ul>
-            <li>Love Letter 2019 Rulebook</li>
-            <li>RulesPal Love Letter Rulebook</li>
+            <li><a href="https://cdn.svc.asmodee.net/production-zman/uploads/2026/04/LL_Rulebook_with_Bag.pdf">Love Letter 2019 Rulebook: กติกาชุดการ์ดที่ใช้ในบทเรียน</a></li>
+            <li>ตรวจเทียบคู่มือทางการของ Z-Man Games ก่อนสอน</li>
           </ul>
         </div>
       </article>
@@ -776,12 +776,12 @@
         wrong: "ยังไม่ใช่: Priest ใช้ดูมือ, Baron ใช้เทียบเลข, King ใช้สลับมือ ส่วน Guard คือใบที่ใช้ทาย"
       },
       countess: {
-        correct: "ถูกต้อง: Countess ต้องถูกเล่นถ้าอีกใบคือ King หรือ Prince แม้เราจะอยากใช้ใบนั้นก็ตาม",
+        correct: "ถูกต้อง: ต้องเล่น Countess ถ้าอีกใบคือ King หรือ Prince แม้เราจะอยากใช้ใบนั้นก็ตาม",
         wrong: "ยังไม่ใช่: จุดสำคัญคือ Countess มีเงื่อนไขบังคับเมื่ออยู่คู่ King หรือ Prince"
       },
       target: {
         correct: "ถูกต้อง: Prince เลือกตัวเองได้ และเลือกคนอื่นได้ถ้าคนนั้นไม่ได้ถูก Handmaid ป้องกัน",
-        wrong: "ยังไม่ใช่: Handmaid กันการถูกเลือกเป็นเป้าหมาย แต่ Prince ยังเลือกตัวเองหรือคนอื่นที่ไม่ถูกป้องกันได้"
+        wrong: "ยังไม่ใช่: Handmaid ป้องกันไม่ให้คนอื่นเลือกเป็นเป้าหมาย แต่ Prince ยังเลือกตัวเองหรือคนอื่นที่ไม่ถูกป้องกันได้"
       },
       bestplay: {
         correct: "ถูกต้อง: Handmaid ช่วยกันตัวเอง ขณะที่ Princess เป็นเลขสูงแต่ห้ามทิ้งหรือเล่น",

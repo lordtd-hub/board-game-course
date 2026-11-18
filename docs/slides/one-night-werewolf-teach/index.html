@@ -655,6 +655,7 @@
       body { overflow: auto; }
       .deck { height: auto; min-height: 100vh; overflow: visible; }
       .slide {
+        height: auto;
         min-height: 100vh;
         overflow: visible;
         padding: 72px 18px 96px;
@@ -676,18 +677,22 @@
       .tabletop {
         grid-template-columns: repeat(2, 1fr);
       }
-      .info-row {
+      .info-row,
+      .center-cards {
         grid-template-columns: 1fr;
       }
+      .slide > *, .player { min-width: 0; }
+      .player b { overflow-wrap: anywhere; }
       .role-card { min-height: 142px; }
       .moon { height: 70px; width: 70px; }
       .house { transform: scale(.82); }
       .h2 { transform: scale(.88); }
       .meta { left: 18px; right: 18px; }
       .controls {
+        bottom: auto;
         left: auto;
         margin: 18px auto 16px;
-        position: static;
+        position: relative;
         transform: none;
         width: max-content;
       }
@@ -968,8 +973,8 @@
           <h2>สคริปต์สั้นสำหรับรอบสอน</h2>
           <ul>
             <li>“ทุกคนดูบทบาทของตัวเอง แล้วคว่ำไว้ที่เดิม”</li>
-            <li>“ทำ action ตอนกลางคืนเงียบ ๆ ตามลำดับ ห้ามส่งสัญญาณ”</li>
-            <li>“ตอนเช้า ทุกคนพูดได้ทุกอย่าง แต่ให้ฟังว่าอะไรเป็นหลักฐาน อะไรเป็นแค่คำอ้าง”</li>
+            <li>“ลงมือทำตามที่เลือก ตอนกลางคืนเงียบ ๆตามลำดับ ห้ามส่งสัญญาณ”</li>
+            <li>“ตอนเช้า ทุกคนพูดได้ทุกอย่าง แต่ให้ฟังว่าอะไรเป็นหลักฐาน อะไรเป็นเพียงคำอ้าง”</li>
             <li>“โหวตพร้อมกัน อย่าเปลี่ยนมือหลังเห็นคนอื่น”</li>
           </ul>
         </div>
@@ -986,7 +991,7 @@
         <h2>กติกาสั้นที่อยากให้นักศึกษาพูดซ้ำได้</h2>
         <div class="callout-grid">
           <div class="rule"><strong>1. ดูบทบาทเริ่มต้น</strong><p>แต่บทบาทตอนจบอาจเปลี่ยนแล้ว</p></div>
-          <div class="rule"><strong>2. Night action เปลี่ยนเกม</strong><p>บางคนเห็นการ์ด บางคนสลับการ์ด บางคนไม่รู้ว่าตัวเองเป็นอะไร</p></div>
+          <div class="rule"><strong>2. Night action เปลี่ยนเกม</strong><p>บางคนเห็นการ์ดบางคนสลับการ์ดบางคนไม่รู้ว่าตัวเองเป็นอะไร</p></div>
           <div class="rule"><strong>3. ตอนคุยต้องถามให้ชัด</strong><p>ฟังคำอ้าง แล้วถามว่ารู้จากบทบาทไหน</p></div>
           <div class="rule"><strong>4. โหวตคือคำตอบสุดท้าย</strong><p>ถ้าโหวตโดน Werewolf ฝั่ง Village ชนะ</p></div>
         </div>
@@ -998,7 +1003,7 @@
         <div class="stack">
           <p class="kicker">อ้างอิง</p>
           <h2>อ้างอิงกติกาและหมายเหตุสื่อ</h2>
-          <p>สไลด์นี้ใช้ภาพการ์ดจำลองเพื่อการสอน ไม่ใช้ artwork จากเกมจริง และออกแบบให้เริ่มเล่น base game ได้ในห้องเรียน</p>
+          <p>สไลด์นี้ใช้ภาพการ์ดจำลองเพื่อการสอน ไม่ใช้ภาพจากเกมจริง และออกแบบให้เริ่มเล่น base game ได้ในห้องเรียน</p>
         </div>
         <div class="panel sources">
           <h3>Sources</h3>
@@ -1094,7 +1099,7 @@
         team: 'ทีมตามการ์ดตอนท้าย',
         action: 'ตื่นท้ายคืนเพื่อดูการ์ดตัวเอง',
         info: 'รู้บทบาทปัจจุบันของตัวเองหลังการสลับหลัก ๆ',
-        lesson: 'Insomniac เห็นการ์ดตัวเองช่วงท้ายคืน จึงเช็กได้ว่าถูกเปลี่ยนหรือไม่'
+        lesson: 'Insomniac เห็นการ์ดตัวเองช่วงท้ายคืน จึงตรวจได้ว่าการ์ดเปลี่ยนไปหรือไม่'
       },
       villager: {
         title: 'Villager',
@@ -1174,7 +1179,7 @@
       {
         title: 'Troublemaker สลับ P1/P5',
         text: 'ถ้ามี Troublemaker ในตัวอย่าง เขาสลับ P1 กับ P5 โดยไม่ดูการ์ด',
-        lesson: 'P1 และ P5 ไม่รู้ตัวเองถูกเปลี่ยน แต่คนสลับรู้ว่าตำแหน่งเปลี่ยน',
+        lesson: 'P1 และ P5 ไม่รู้ว่าการ์ดของตนเปลี่ยนไป แต่คนสลับรู้ว่าตำแหน่งเปลี่ยน',
         players: [
           ['P1', 'Drunk', 'changed'],
           ['P2', 'Seer', ''],
@@ -1221,7 +1226,7 @@
         <div class="player ${cls}">
           <small>${name}</small>
           <b>${role}</b>
-          <span>${cls.includes('known') ? 'รู้ตอนนี้' : cls.includes('changed') ? 'ถูกเปลี่ยน' : 'รู้ไม่ครบ'}</span>
+          <span>${cls.includes('known') ? 'รู้ตอนนี้' : cls.includes('changed') ? 'การ์ดเปลี่ยนไป' : 'รู้ไม่ครบ'}</span>
         </div>
       `).join('');
       document.querySelector('#centerCards').innerHTML = state.centers.map((role, i) => `

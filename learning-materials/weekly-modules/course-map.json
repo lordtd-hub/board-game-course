@@ -4,28 +4,28 @@
     "title": "กลยุทธ์และการคิดเชิงวิเคราะห์ผ่านบอร์ดเกม",
     "mode": "play-first elective course",
     "defaultClassFlow": [
-      "Opening challenge 10-15 นาที",
-      "Mini lecture 25-35 นาที",
-      "Board game play/session 90-120 นาที",
-      "Debrief 30-40 นาที",
-      "Exit ticket 5-10 นาที"
+      "โจทย์เปิดคาบ 10-15 นาที",
+      "อธิบายแนวคิด 25-35 นาที",
+      "เล่นบอร์ดเกม 90-120 นาที",
+      "อภิปรายหลังเล่น 30-40 นาที",
+      "สะท้อนผลท้ายคาบ 5-10 นาที"
     ],
     "activeLatexSource": "learning-materials/bookref/เอกสารประกอบวิชาบอร์ดเกม/latex_source"
   },
   "sharedWorksheets": [
     {
       "id": "game-observation",
-      "title": "Game Observation Worksheet",
+      "title": "ใบงานสังเกตการเล่นเกม",
       "sourceFile": "chapters/appendix_a.tex",
       "bestFor": [
         "ระหว่างเล่นเกม",
         "บันทึก key decision",
-        "reflection หลังเกม"
+        "การสะท้อนผลหลังเกม"
       ]
     },
     {
       "id": "strategy-analysis",
-      "title": "Strategy Analysis Worksheet",
+      "title": "ใบงานวิเคราะห์กลยุทธ์",
       "sourceFile": "chapters/appendix_b.tex",
       "bestFor": [
         "หลังเล่นเกม",
@@ -49,7 +49,7 @@
       "learningOutcomes": [
         "แยกกลยุทธ์ออกจากยุทธวิธีได้",
         "ระบุผู้ตัดสินใจ ชุดการกระทำ สภาพแวดล้อม และวัตถุประสงค์ได้",
-        "อธิบาย information, uncertainty และ interaction ในสถานการณ์เชิงกลยุทธ์ได้",
+        "อธิบายข้อมูล ความไม่แน่นอน และปฏิสัมพันธ์ในสถานการณ์เชิงกลยุทธ์ได้",
         "วิเคราะห์ Chess และ Splendor ด้วยกรอบกลยุทธ์พื้นฐานได้"
       ],
       "coreConcepts": [
@@ -64,20 +64,20 @@
       ],
       "playFirstFlow": [
         "เริ่มด้วย Splendor quick game หรือ table demo 4-6 รอบ",
-        "ให้ผู้เรียนบันทึก decision ที่คิดว่าสำคัญที่สุด 1 ครั้ง",
+        "ให้ผู้เรียนบันทึกการตัดสินใจ ที่คิดว่าสำคัญที่สุด 1 ครั้ง",
         "ใช้ Chess puzzle สั้นเพื่อเทียบ tactical move กับ strategic plan",
-        "debrief ว่า action เดียวกันอาจเป็นยุทธวิธีหรือกลยุทธ์ขึ้นกับแผนระยะยาว"
+        "อภิปรายหลังเล่นว่า การกระทำเดียวกันอาจเป็นยุทธวิธีหรือกลยุทธ์ขึ้นกับแผนระยะยาว"
       ],
       "interactiveHtmlIdeas": [
-        "Strategy vs Tactics card sorter",
-        "Decision structure canvas: player/action/environment/objective",
-        "Splendor engine-building timeline ให้ลาก action ลง timeline แล้วเห็น compound advantage"
+        "จัดกลุ่มกลยุทธ์กับยุทธวิธี",
+        "แผนผังโครงสร้างการตัดสินใจ: player/action/environment/objective",
+        "ลำดับการสร้างส่วนลดสะสมใน Splendor ให้ลาก action ลง timeline แล้วเห็น compound advantage"
       ],
       "worksheet": "game-observation",
       "submission": {
         "type": "short-reflection",
         "title": "Strategic Move Reflection",
-        "prompt": "เลือก decision สำคัญจากเกมวันนี้ แล้วอธิบายว่าเป็นกลยุทธ์หรือยุทธวิธี พร้อมเหตุผล",
+        "prompt": "เลือกการตัดสินใจสำคัญจากเกมวันนี้ แล้วอธิบายว่าเป็นกลยุทธ์หรือยุทธวิธี พร้อมเหตุผล",
         "estimatedLength": "300-500 คำ"
       }
     },
@@ -113,7 +113,7 @@
       "playFirstFlow": [
         "สอนเล่น One Night Werewolf ด้วย role set พื้นฐานและ night order สั้น",
         "เล่น One Night Werewolf หลายรอบเพื่อให้เห็นข้อมูลที่ซ่อนอยู่และข้อมูลที่เปลี่ยนหลัง night action",
-        "หยุดหลังบางรอบให้ผู้เรียนทำ information map ว่าใครรู้อะไร ใครต้องเดา และ claim ไหนมีหลักฐาน",
+        "หยุดหลังบางรอบให้ผู้เรียนทำ information map ว่าใครรู้อะไร ใครต้องเดา และ คำอ้างใดมีหลักฐาน",
         "เปรียบเทียบสั้น ๆ กับ Love Letter หรือ Avalon หากต้องการเห็นรูปแบบ hidden/asymmetric information แบบอื่น"
       ],
       "interactiveHtmlIdeas": [
@@ -125,7 +125,7 @@
       "submission": {
         "type": "observation-log",
         "title": "Information Structure Log",
-        "prompt": "บันทึก key decision 2 ครั้ง และระบุว่าข้อมูลใดเปิดเผย ซ่อนอยู่ หรือไม่สมมาตร"
+        "prompt": "บันทึกการตัดสินใจสำคัญ 2 ครั้ง และระบุว่าข้อมูลใดเปิดเผย ซ่อนอยู่ หรือไม่สมมาตร"
       }
     },
     {
@@ -215,7 +215,7 @@
       "submission": {
         "type": "calculation-plus-reflection",
         "title": "Risk Decision Note",
-        "prompt": "เลือกตำแหน่งหรือการกระจาย worker แล้วอธิบายด้วย EV, variance และ risk attitude"
+        "prompt": "เลือกตำแหน่งหรือการกระจายคนงาน แล้วอธิบายด้วย EV, variance และ risk attitude"
       }
     },
     {
@@ -249,7 +249,7 @@
       "playFirstFlow": [
         "สอนเล่น C.S. Files ด้วย role set พื้นฐานและ demo สั้น",
         "เล่นจริงหลายโต๊ะ 2-3 รอบ โดยให้จดจังหวะที่ใช้หรือเกือบใช้ Badge",
-        "debrief ว่า Scene tile ใดเป็นหลักฐาน คำพูดใดเป็นเพียงคำอ้าง และ clue ใดเปลี่ยนการตัดสินใจ",
+        "อภิปรายหลังเล่นว่า Scene tile ใดเป็นหลักฐาน คำพูดใดเป็นเพียงคำอ้าง และ clue ใดเปลี่ยนการตัดสินใจ",
         "เชื่อมไปยังทรัพยากรเชิงข้อมูล เช่น เวลา สิทธิ์เดา ความสนใจ และความน่าเชื่อถือ"
       ],
       "interactiveHtmlIdeas": [
@@ -297,7 +297,7 @@
         "ทวนกติกา Avalon แบบสั้นและตั้งเกมด้วย Merlin กับ Assassin เท่านั้น",
         "demo หนึ่ง Quest ให้เห็นความต่างระหว่างการโหวตทีมกับการส่งภารกิจ",
         "เล่นจริง 1-2 รอบ โดยให้ผู้เรียนจับหนึ่งจังหวะที่ความเชื่อใจเปลี่ยน",
-        "debrief ว่าข้อมูลใดเป็นหลักฐาน ข้อมูลใดเป็นคำอ้าง และเสียงโหวตช่วยหรือหลอกเราอย่างไร"
+        "อภิปรายหลังเล่นว่าข้อมูลใดเป็นหลักฐาน ข้อมูลใดเป็นคำอ้าง และเสียงโหวตช่วยหรือหลอกเราอย่างไร"
       ],
       "interactiveHtmlIdeas": [
         "Avalon teach-to-play deck",
@@ -324,7 +324,7 @@
         "7 Wonders"
       ],
       "learningOutcomes": [
-        "อธิบาย scarcity และ opportunity cost ได้",
+        "อธิบายความขาดแคลน (scarcity) และต้นทุนค่าเสียโอกาส (opportunity cost) ได้",
         "วิเคราะห์ diminishing marginal utility ใน Splendor ได้",
         "อธิบาย allocative efficiency, Pareto improvement และ externality ได้",
         "วิเคราะห์ chain dependency และ comparative advantage ใน 7 Wonders ได้"
@@ -343,7 +343,7 @@
         "เล่น Splendor โดยให้บันทึกทุกครั้งที่เลือกหยิบ gem/จอง/ซื้อ",
         "หยุดกลางเกมให้คำนวณ opportunity cost ของ action ถัดไป",
         "ถ้ามีเวลา เล่น 7 Wonders เฉพาะ age/scenario เพื่อดู chain dependency",
-        "debrief ว่าทรัพยากรที่มีเพิ่มขึ้นไม่ได้มีคุณค่าเท่าเดิมเสมอ"
+        "อภิปรายหลังเล่นว่าทรัพยากรที่มีเพิ่มขึ้นไม่ได้มีคุณค่าเท่าเดิมเสมอ"
       ],
       "interactiveHtmlIdeas": [
         "Splendor opportunity cost calculator",
@@ -390,7 +390,7 @@
         "เล่น Stone Age แบบจำกัดรอบเพื่อเน้นการแย่ง action space",
         "ให้ผู้เรียนเขียน priority ก่อนวาง worker แล้วเทียบกับสิ่งที่เกิดจริง",
         "ใช้ Agricola/Architects เป็น scenario cards ถ้าเวลาไม่พอเล่นเต็ม",
-        "debrief ว่าลำดับการลงมือเปลี่ยนมูลค่าของ action อย่างไร"
+        "อภิปรายหลังเล่นว่าลำดับการลงมือเปลี่ยนมูลค่าของ action อย่างไร"
       ],
       "interactiveHtmlIdeas": [
         "Worker placement board simulator",
@@ -437,12 +437,12 @@
         "เล่น Stockpile รอบสั้นเพื่อให้เห็น insider information และ price signal",
         "หรือเล่น Catan trade-heavy โดยตั้งเป้าให้เกิด negotiation หลายครั้ง",
         "ให้ผู้เรียนจดดีลที่สำเร็จ/ล้มเหลว และ BATNA ของแต่ละฝ่าย",
-        "debrief ว่าราคาและข้อเสนอเป็นทั้งข้อมูลและเครื่องมือกลยุทธ์"
+        "อภิปรายหลังเล่นว่าราคาและข้อเสนอเป็นทั้งข้อมูลและเครื่องมือกลยุทธ์"
       ],
       "interactiveHtmlIdeas": [
-        "BATNA negotiation canvas",
-        "Stockpile price signal board",
-        "Catan trade network graph",
+        "แผนผังการเจรจาและ BATNA",
+        "อ่านสัญญาณราคาจาก Stockpile",
+        "กราฟเครือข่ายการแลกเปลี่ยนใน Catan",
         "Coalition risk tracker"
       ],
       "worksheet": "strategy-analysis",
@@ -454,7 +454,7 @@
     },
     {
       "week": 10,
-      "chapter": "แนวคิด Game Theory",
+      "chapter": "แนวคิดทฤษฎีเกม",
       "englishTitle": "Game Theory Concepts",
       "sourceFiles": [
         "chapters/ch08.tex"
@@ -486,9 +486,9 @@
         "เชื่อมกับ Catan repeated trade และการลงโทษผู้เล่นที่ผิดสัญญา"
       ],
       "interactiveHtmlIdeas": [
-        "Payoff matrix builder",
-        "Dominant strategy highlighter",
-        "Nash equilibrium checker",
+        "สร้างเมทริกซ์ผลตอบแทน",
+        "ค้นหากลยุทธ์เด่น",
+        "ตรวจดุลยภาพแนช",
         "Repeated game cooperation simulator"
       ],
       "worksheet": "strategy-analysis",
@@ -532,9 +532,9 @@
         "เทียบกับ Chess center control/piece mobility"
       ],
       "interactiveHtmlIdeas": [
-        "Taluva connectivity graph tool",
-        "Cut vertex detector",
-        "Territory influence heatmap",
+        "กราฟการเชื่อมต่อพื้นที่ใน Taluva",
+        "ค้นหาจุดตัดของกราฟ",
+        "แผนที่แสดงอิทธิพลเหนือพื้นที่",
         "Chess mobility mini-board"
       ],
       "worksheet": "game-observation",
@@ -577,13 +577,13 @@
         "เล่น Evolution โดยบังคับให้บันทึก environment changes เป็นช่วงๆ",
         "หยุดกลางเกมให้ผู้เรียนประเมินว่า strategy เดิมยังเหมาะหรือไม่",
         "ใช้ cross-game flashback ไปยัง 7 Wonders Duel, Catan, Stone Age เพื่อหา Red Queen pattern",
-        "debrief ว่า optimal strategy ที่ถาวรแทบไม่มีในระบบที่เปลี่ยนตลอด"
+        "อภิปรายหลังเล่นว่า optimal strategy ที่ถาวรแทบไม่มีในระบบที่เปลี่ยนตลอด"
       ],
       "interactiveHtmlIdeas": [
-        "Fitness landscape explorer",
-        "Species adaptation tracker",
+        "สำรวจภูมิทัศน์ความเหมาะสม",
+        "ติดตามการปรับตัวของสปีชีส์",
         "Exploration vs exploitation slider",
-        "Red Queen arms race timeline"
+        "ลำดับการแข่งขันปรับตัวตามแนวคิด Red Queen"
       ],
       "worksheet": "game-observation",
       "submission": {
@@ -623,19 +623,19 @@
         "ใช้ Terraforming Mars guided scenario หรือ selected rounds เพราะเกมเต็มยาว",
         "ให้แต่ละกลุ่มเลือก engine/resource system หนึ่งระบบแล้วตามผลสะสม",
         "สังเกต global parameters และ tipping points",
-        "debrief ว่าผู้เล่นไม่ได้ควบคุมระบบทั้งหมด แต่ steer ตำแหน่งของตนในระบบ"
+        "อภิปรายหลังเล่นว่าผู้เล่นไม่ได้ควบคุมระบบทั้งหมด แต่ steer ตำแหน่งของตนในระบบ"
       ],
       "interactiveHtmlIdeas": [
-        "Terraforming parameter dashboard",
-        "Feedback loop mapper",
-        "Tipping point signal tracker",
+        "ติดตามตัวแปรของ Terraforming Mars",
+        "วาดวงจรป้อนกลับ",
+        "ติดตามสัญญาณก่อนถึงจุดเปลี่ยน",
         "Path dependence branching timeline"
       ],
       "worksheet": "strategy-analysis",
       "submission": {
         "type": "systems-map",
         "title": "Emergence and Feedback Map",
-        "prompt": "สร้าง systems map แสดงว่า action หลายฝ่ายทำให้เกิดผลระดับระบบอย่างไร"
+        "prompt": "สร้างแผนภาพระบบ แสดงว่าการกระทำของหลายฝ่ายทำให้เกิดผลระดับระบบอย่างไร"
       }
     },
     {
@@ -650,7 +650,7 @@
         "student-selected game"
       ],
       "learningOutcomes": [
-        "ใช้ 4 layers of strategic thinking เพื่อ diagnose สถานการณ์ได้",
+        "ใช้กรอบการคิดเชิงกลยุทธ์ 4 ชั้นเพื่อวิเคราะห์สถานการณ์ได้",
         "วิเคราะห์สถานการณ์เดียวกันผ่านหลาย frameworks ได้",
         "ระบุ tensions ระหว่าง frameworks และ synthesize recommendation ได้",
         "สะท้อนพัฒนาการของตนในฐานะ strategic thinker ได้"
@@ -670,16 +670,16 @@
         "นำเสนอ recommendation พร้อม reflection รายบุคคล"
       ],
       "interactiveHtmlIdeas": [
-        "Decision diagnostic wizard",
-        "Framework selector",
+        "วิเคราะห์สถานการณ์การตัดสินใจ",
+        "เลือกกรอบคิด",
         "Multi-framework comparison board",
-        "Final project presentation builder"
+        "วางโครงนำเสนอโครงงานท้ายรายวิชา"
       ],
       "worksheet": "strategy-analysis",
       "submission": {
         "type": "final-mini-project",
         "title": "Multi-Framework Strategy Analysis",
-        "prompt": "เลือกเกมหรือสถานการณ์หนึ่ง วิเคราะห์ด้วยอย่างน้อย 3 frameworks และเสนอ strategic recommendation",
+        "prompt": "เลือกเกมหรือสถานการณ์หนึ่ง วิเคราะห์ด้วยกรอบคิดอย่างน้อย 3 กรอบ และเสนอคำแนะนำเชิงกลยุทธ์",
         "deliverables": [
           "group presentation",
           "individual reflection"

@@ -525,7 +525,7 @@
       <div class="hero-copy">
         <p class="kicker">SMA2106 Week 1</p>
         <h1>สังเกตการเล่น Splendor ให้เห็นการคิดเชิงกลยุทธ์</h1>
-        <p class="lead">สำหรับนักศึกษาที่ไม่ได้ลงเล่น ให้สังเกตตามช่วงคะแนนของผู้เล่นที่โฟกัส 3 จังหวะ แล้วคัดลอกข้อความไปส่งใน Google Classroom</p>
+        <p class="lead">สำหรับนักศึกษาที่ไม่ได้ลงเล่น ให้สังเกตตามช่วงคะแนนของผู้เล่นที่เลือกสังเกต 3 จังหวะ แล้วคัดลอกข้อความไปส่งใน Google Classroom</p>
       </div>
 
       <div class="start-card">
@@ -540,12 +540,12 @@
         </div>
 
         <div class="field">
-          <div class="field-title">โฟกัสที่ใคร</div>
+          <div class="field-title">เลือกสังเกตผู้เล่นคนใด</div>
           <div class="option-grid" id="focusOptions" data-path="focus"></div>
         </div>
 
         <button class="primary" id="startButton">เริ่มบันทึกการสังเกต</button>
-        <div class="warning" id="startWarning">กรุณากรอกชื่อ เลือกโต๊ะ และเลือกผู้เล่นที่โฟกัสก่อนเริ่ม</div>
+        <div class="warning" id="startWarning">กรุณากรอกชื่อ เลือกโต๊ะ และเลือกผู้เล่นที่เลือกสังเกตก่อนเริ่ม</div>
       </div>
     </section>
 
@@ -555,22 +555,22 @@
           <div class="meter" aria-label="ความครบถ้วนของบันทึก"><div class="meter-fill" id="meterFill"></div></div>
           <div class="status-text" id="statusText">ยังไม่ได้เริ่ม</div>
         </div>
-        <button class="secondary danger" id="resetButton">Reset draft</button>
+        <button class="secondary danger" id="resetButton">ล้างแบบร่าง</button>
       </div>
 
       <div class="mission-card">
         <div class="mission-icon" aria-hidden="true">?</div>
         <div>
-          <p class="kicker">ภารกิจสังเกตของคุณ</p>
+          <p class="kicker">ภารกิจการสังเกต</p>
           <h2 id="missionText">-</h2>
-          <p id="missionHint">ให้ดูคะแนนของผู้เล่นที่โฟกัสเป็นหลัก: 0-3 คะแนน, 4-9 คะแนน, และ 10+ คะแนน ถ้าเกมจบก่อนถึง 10+ ให้ใช้จังหวะคะแนนสูงสุดที่เห็นแทน</p>
+          <p id="missionHint">ให้ดูคะแนนของผู้เล่นที่เลือกสังเกตเป็นหลัก: 0-3 คะแนน 4-9 คะแนน และ 10+ คะแนน ถ้าเกมจบก่อนถึง 10+ ให้ใช้จังหวะคะแนนสูงสุดที่เห็นแทน</p>
         </div>
       </div>
 
       <div class="concept-grid" aria-label="แนวคิด Week 1">
         <div class="concept-card">
           <strong>Strategy</strong>
-          <p>แผนระยะยาวที่ทำให้ตาถัด ๆ ไปดีขึ้น เช่น สร้าง engine หรือเตรียม Noble</p>
+          <p>แผนระยะยาวที่ทำให้ตาถัด ๆ ไปดีขึ้น เช่นสร้างส่วนลดสะสมหรือเตรียมรับขุนนาง</p>
         </div>
         <div class="concept-card">
           <strong>Tactics</strong>
@@ -589,7 +589,7 @@
         </div>
         <div class="form-grid">
           <div class="field">
-            <div class="field-title">Action ที่เห็น</div>
+            <div class="field-title">การกระทำที่เห็น</div>
             <div class="option-grid" data-path="moments.0.action"></div>
           </div>
           <div class="field">
@@ -605,7 +605,7 @@
             <div class="option-grid" data-path="moments.0.effect"></div>
           </div>
           <div class="field full">
-            <label for="noteOne">note สั้น ๆ (ไม่บังคับ)</label>
+            <label for="noteOne">บันทึกสั้น ๆ (ไม่บังคับ)</label>
             <textarea class="note" id="noteOne" maxlength="140" placeholder="เช่น ผู้เล่น reserve ใบที่อีกคนเก็บ token รออยู่"></textarea>
           </div>
         </div>
@@ -618,7 +618,7 @@
         </div>
         <div class="form-grid">
           <div class="field">
-            <div class="field-title">Action ที่เห็น</div>
+            <div class="field-title">การกระทำที่เห็น</div>
             <div class="option-grid" data-path="moments.1.action"></div>
           </div>
           <div class="field">
@@ -634,7 +634,7 @@
             <div class="option-grid" data-path="moments.1.effect"></div>
           </div>
           <div class="field full">
-            <label for="noteTwo">note สั้น ๆ (ไม่บังคับ)</label>
+            <label for="noteTwo">บันทึกสั้น ๆ (ไม่บังคับ)</label>
             <textarea class="note" id="noteTwo" maxlength="140" placeholder="เช่น หลังการ์ดใหม่เปิดมา ผู้เล่นเปลี่ยนเป้าหมายทันที"></textarea>
           </div>
         </div>
@@ -647,7 +647,7 @@
         </div>
         <div class="form-grid">
           <div class="field">
-            <div class="field-title">Action ที่เห็น</div>
+            <div class="field-title">การกระทำที่เห็น</div>
             <div class="option-grid" data-path="moments.2.action"></div>
           </div>
           <div class="field">
@@ -663,7 +663,7 @@
             <div class="option-grid" data-path="moments.2.effect"></div>
           </div>
           <div class="field full">
-            <label for="noteThree">note สั้น ๆ (ไม่บังคับ)</label>
+            <label for="noteThree">บันทึกสั้น ๆ (ไม่บังคับ)</label>
             <textarea class="note" id="noteThree" maxlength="140" placeholder="เช่น ผู้เล่นเริ่มเปลี่ยนจากสร้าง engine มาเร่งทำแต้มปิดเกม"></textarea>
           </div>
         </div>
@@ -718,18 +718,18 @@
       <div class="output-card">
         <div class="section-head">
           <h3>ข้อความสำหรับส่ง Google Classroom</h3>
-          <span>ตรวจแล้วกด copy</span>
+          <span>ตรวจข้อความแล้วกดคัดลอก</span>
         </div>
         <textarea id="outputText" readonly></textarea>
         <div class="output-actions">
-          <button class="primary" id="copyButton">Copy for Google Classroom</button>
+          <button class="primary" id="copyButton">คัดลอกไปส่ง Google Classroom</button>
           <button class="secondary" id="selectButton">เลือกข้อความทั้งหมด</button>
           <div class="copy-status" id="copyStatus" aria-live="polite"></div>
         </div>
       </div>
     </section>
 
-    <p class="footer-note">ข้อมูลหน้านี้อยู่ในเครื่องของผู้ใช้เท่านั้น ไม่มีการส่งเข้า server หรือฐานข้อมูล</p>
+    <p class="footer-note">ข้อมูลหน้านี้อยู่ในเครื่องของผู้ใช้เท่านั้น ไม่ส่งข้อมูลไปยังเซิร์ฟเวอร์หรือฐานข้อมูล</p>
   </main>
 
   <script>
@@ -738,7 +738,7 @@
     const missions = [
       "จับจังหวะที่ผู้เล่นสร้าง engine เพื่อให้การซื้อการ์ดในอนาคตง่ายขึ้น",
       "จับจังหวะ reserve ที่ช่วยกันคู่แข่งหรือเก็บแผนสำคัญไว้",
-      "จับจังหวะที่ผู้เล่นเตรียม Noble จาก bonus บนการ์ด",
+      "จับจังหวะที่ผู้เล่นเตรียมรับขุนนาง จาก bonus บนการ์ด",
       "จับจังหวะที่ดูเป็น tactics เฉพาะหน้า แต่ส่งผลต่อ strategy ระยะยาว",
       "จับจังหวะ action เล็ก ๆ ที่ทำให้ผู้เล่นได้เปรียบสะสม",
       "จับจังหวะเปลี่ยนแผนหลังการ์ดใหม่หรือ token บนโต๊ะเปลี่ยน"
@@ -761,7 +761,7 @@
       objective: [
         "สร้าง engine ระยะยาว",
         "เอาแต้มเร็ว",
-        "เตรียม Noble",
+        "เตรียมรับขุนนาง",
         "กันโอกาสคู่แข่ง",
         "ทำให้ตาถัดไปมีทางเลือกมากขึ้น",
         "แก้ปัญหาเฉพาะหน้า"
@@ -775,7 +775,7 @@
         "ยังไม่เห็นผลทันที แต่ดูมีแผน",
         "เสี่ยง เพราะใช้ turn แล้วยังไม่คืบคะแนน"
       ],
-      maker: ["ผู้เล่นที่โฟกัส", "ผู้เล่นอื่น", "ทั้งโต๊ะมีผลต่อกัน", "ยังไม่แน่ใจ"],
+      maker: ["ผู้เล่นที่เลือกสังเกต", "ผู้เล่นอื่น", "ทั้งโต๊ะมีผลต่อกัน", "ยังไม่แน่ใจ"],
       choice: ["หยิบ token", "ซื้อการ์ด", "Reserve", "รอจังหวะถัดไป", "เปลี่ยนเป้าหมาย"],
       environment: [
         "token สีที่ต้องการเหลือน้อย",
@@ -785,7 +785,7 @@
         "คะแนนเริ่มห่าง",
         "การ์ดใหม่เปิดมาเปลี่ยนแผน"
       ],
-      goal: ["เอาแต้มเร็ว", "สร้าง bonus/engine", "เตรียม Noble", "ขัดจังหวะคู่แข่ง", "เพิ่มทางเลือกในตาถัดไป"],
+      goal: ["เอาแต้มเร็ว", "สร้าง bonus/engine", "เตรียมรับขุนนาง", "ขัดจังหวะคู่แข่ง", "เพิ่มทางเลือกในตาถัดไป"],
       style: ["แต้มเร็ว", "engine ระยะยาว", "Noble", "Reserve/กันคู่แข่ง", "ความยืดหยุ่นของ token"],
       memorable: ["Strategy", "Tactics", "ทั้งสองอย่าง", "ยังไม่แน่ใจ"],
       nextTry: [
@@ -884,7 +884,7 @@
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
       } catch (error) {
-        copyStatus.textContent = "เครื่องนี้บันทึก draft ไม่สำเร็จ ให้ copy ข้อความก่อนปิดหน้า";
+        copyStatus.textContent = "บันทึกแบบร่างในเครื่องนี้ไม่สำเร็จ คัดลอกข้อความไว้ก่อนปิดหน้า";
       }
     }
 
@@ -987,21 +987,21 @@
         `ภารกิจสังเกต: ${valueOrDash(state.mission)}`,
         "",
         "Moment 1: ช่วง 0-3 คะแนน",
-        `- Action ที่เห็น: ${valueOrDash(state.moments[0].action)}`,
+        `- การกระทำที่เห็น: ${valueOrDash(state.moments[0].action)}`,
         `- มองว่าเป็น: ${valueOrDash(state.moments[0].type)}`,
         `- เป้าหมายที่น่าจะเป็น: ${valueOrDash(state.moments[0].objective)}`,
         `- ผลที่เกิดขึ้น: ${valueOrDash(state.moments[0].effect)}`,
         `- Note: ${valueOrDash(state.moments[0].note)}`,
         "",
         "Moment 2: ช่วง 4-9 คะแนน",
-        `- Action ที่เห็น: ${valueOrDash(state.moments[1].action)}`,
+        `- การกระทำที่เห็น: ${valueOrDash(state.moments[1].action)}`,
         `- มองว่าเป็น: ${valueOrDash(state.moments[1].type)}`,
         `- เป้าหมายที่น่าจะเป็น: ${valueOrDash(state.moments[1].objective)}`,
         `- ผลที่เกิดขึ้น: ${valueOrDash(state.moments[1].effect)}`,
         `- Note: ${valueOrDash(state.moments[1].note)}`,
         "",
         "Moment 3: ช่วง 10+ คะแนน (ถ้าเกมจบก่อน ให้ใช้จังหวะคะแนนสูงสุดที่เห็น)",
-        `- Action ที่เห็น: ${valueOrDash(state.moments[2].action)}`,
+        `- การกระทำที่เห็น: ${valueOrDash(state.moments[2].action)}`,
         `- มองว่าเป็น: ${valueOrDash(state.moments[2].type)}`,
         `- เป้าหมายที่น่าจะเป็น: ${valueOrDash(state.moments[2].objective)}`,
         `- ผลที่เกิดขึ้น: ${valueOrDash(state.moments[2].effect)}`,
@@ -1060,7 +1060,7 @@
     }
 
     function resetDraft() {
-      const ok = window.confirm("ล้าง draft ในเครื่องนี้และเริ่มใหม่?");
+      const ok = window.confirm("ล้างแบบร่างในเครื่องนี้แล้วเริ่มใหม่ไหม?");
       if (!ok) return;
       localStorage.removeItem(STORAGE_KEY);
       state = emptyState();

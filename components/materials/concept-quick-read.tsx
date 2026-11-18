@@ -5,7 +5,7 @@ export function ConceptQuickRead({ blocks }: { blocks: LessonBlock[] }) {
 
   return (
     <section>
-      <h2>Mini concepts</h2>
+      <h2>แนวคิดสำคัญ</h2>
       <div className="concept-grid">
         {blocks.map((block) => (
           <article className="concept-card" key={block.title}>
